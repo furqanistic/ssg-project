@@ -1,0 +1,171 @@
+{
+  "visitors": {
+    "rulesEtiquette": [
+      "All visitors must cover their heads before entering the prayer hall. Scarves are available at the entrance if you don't have one.",
+      "Please remove your shoes before entering the main building. Shoe racks are provided at the entrance.",
+      "Tobacco products and alcohol are strictly prohibited on the Gurudwara premises.",
+      "Please dress modestly. Legs and shoulders should be covered. Long pants or skirts and shirts with sleeves are appropriate."
+    ],
+    "openingTimings": {
+      "dailySchedule": [
+        {
+          "label": "Morning Prayer (Asa Di Var)",
+          "value": "5:00 AM - 7:00 AM"
+        },
+        {
+          "label": "Gurudwara Open",
+          "value": "6:00 AM - 9:00 PM"
+        },
+        {
+          "label": "Evening Prayer (Rehras Sahib)",
+          "value": "6:00 PM - 7:00 PM"
+        },
+        {
+          "label": "Night Prayer (Kirtan Sohila)",
+          "value": "8:30 PM"
+        }
+      ],
+      "langarSchedule": [
+        {
+          "label": "Lunch",
+          "value": "12:00 PM - 2:00 PM"
+        },
+        {
+          "label": "Dinner",
+          "value": "7:00 PM - 8:00 PM"
+        }
+      ],
+      "sundaySpecial": "Weekly Kirtan Darbar: 11:00 AM - 1:00 PM followed by Langar"
+    },
+    "location": {
+      "addressLines": [
+        "Sikh Tempel Berlin",
+        "Wollankstraße 8",
+        "13187 Berlin",
+        "Germany"
+      ],
+      "howToReach": [
+        "U-Bahn: Take U8 to Pankstraße station (5 min walk)",
+        "Tram: M1 or 50 to Wollankstraße/Soldiner Straße"
+      ]
+    }
+  },
+  "events": {
+    "items": [
+      {
+        "title": "Vaisakhi Celebration 2026",
+        "date": "April 14, 2026",
+        "time": "9:00 AM - 6:00 PM",
+        "location": "Singh Sabha Gurudwara Berlin",
+        "category": "yearly",
+        "image": "https://kylroqkdhzsvhfgjwvbg.supabase.co/storage/v1/object/public/dashboard-media/events/1775685407985-9709e7b6-2840-41b0-af4f-aeed0b40bf49.jpg",
+        "description": "Join us for the grand celebration of Vaisakhi, commemorating the formation of the Khalsa."
+      },
+      {
+        "title": "Gurpurab - Guru Nanak Dev Ji",
+        "date": "November 15, 2026",
+        "time": "6:00 AM - 10:00 PM",
+        "location": "Singh Sabha Gurudwara Berlin",
+        "category": "yearly",
+        "image": "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1200&q=80",
+        "description": "Celebrate the birth anniversary of Guru Nanak Dev Ji with kirtan, prayers, and langar."
+      },
+      {
+        "title": "Weekly Kirtan Darbar",
+        "date": "Every Sunday",
+        "time": "11:00 AM - 1:00 PM",
+        "location": "Main Hall",
+        "category": "weekly",
+        "image": "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1200&q=80",
+        "description": "Weekly congregational singing of hymns from Sri Guru Granth Sahib Ji followed by langar."
+      },
+      {
+        "title": "Asa Di Var - Morning Prayer",
+        "date": "Daily",
+        "time": "5:00 AM - 7:00 AM",
+        "location": "Main Hall",
+        "category": "daily",
+        "image": null,
+        "description": "Daily morning prayers with recitation of Asa Di Var."
+      },
+      {
+        "title": "Rehras Sahib - Evening Prayer",
+        "date": "Daily",
+        "time": "6:00 PM - 7:00 PM",
+        "location": "Main Hall",
+        "category": "daily",
+        "image": null,
+        "description": "Daily evening prayers with Rehras Sahib."
+      },
+      {
+        "title": "Gurmukhi Learning Session",
+        "date": "Every Saturday",
+        "time": "3:00 PM - 5:00 PM",
+        "location": "Education Room",
+        "category": "weekly",
+        "image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
+        "description": "Learn to read and write Gurmukhi script. All ages welcome."
+      },
+      {
+        "title": "Monthly Sangat Gathering",
+        "date": "First Saturday of Every Month",
+        "time": "4:00 PM - 7:00 PM",
+        "location": "Community Hall",
+        "category": "monthly",
+        "image": "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80",
+        "description": "Monthly congregation gathering for prayer, discussion, and fellowship."
+      },
+      {
+        "title": "Diwali Celebration",
+        "date": "October 20, 2026",
+        "time": "5:00 PM - 9:00 PM",
+        "location": "Singh Sabha Gurudwara Berlin",
+        "category": "yearly",
+        "image": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80",
+        "description": "Join the community for prayers, kirtan, and celebration on Diwali."
+      }
+    ]
+  },
+  "media": {
+    "cards": [
+      {
+        "id": "photo-gallery",
+        "title": "Photo Gallery",
+        "description": "Browse through albums organized by events, festivals, and community activities. Relive the beautiful moments from our celebrations.",
+        "buttonLabel": "View Photo Albums"
+      },
+      {
+        "id": "videos",
+        "title": "Videos",
+        "description": "Watch recordings of Kirtan, educational sessions, event highlights, and special programs from our Gurudwara.",
+        "buttonLabel": "Watch Videos"
+      },
+      {
+        "id": "live-kirtan",
+        "title": "Live Kirtan",
+        "description": "Listen to live Kirtan streaming from our Gurudwara. Join us virtually for daily prayers and weekend programs.",
+        "buttonLabel": "Listen Live"
+      }
+    ],
+    "updates": [
+      {
+        "title": "Vaisakhi 2026 Photo Album",
+        "description": "145 new photos from our recent Vaisakhi celebration have been added to the gallery.",
+        "action": "View Album"
+      },
+      {
+        "title": "New Educational Video Series",
+        "description": "Watch our new Gurbani Explained series to learn more about Sikh teachings and philosophy.",
+        "action": "Watch Now"
+      }
+    ]
+  },
+  "contact": {
+    "phone": "+49 30 47375651",
+    "email": "info@ssgberlin.de",
+    "addressLines": [
+      "Wollankstraße 8",
+      "13187 Berlin"
+    ]
+  }
+}

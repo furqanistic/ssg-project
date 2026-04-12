@@ -2,6 +2,7 @@ import React from 'react'
 import { Mail, Phone } from 'lucide-react'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
+import { useSiteContentQuery } from '@/hooks/useContent'
 
 const committeeMembers = [
   {
@@ -45,6 +46,23 @@ const committeeMembers = [
 ]
 
 const CommitteePage = () => {
+  const { data: content } = useSiteContentQuery()
+  const committee = content?.aboutUs?.committee ?? {}
+  const heading = committee.heroTitle ?? 'Management Committee'
+  const subtitle = committee.heroSubtitle ?? 'Meet the dedicated team serving our community'
+  const intro =
+    committee.intro ??
+    'Our Management Committee consists of elected volunteers who dedicate their time and effort to ensure the smooth operation of the Gurudwara and service to the community.'
+  const members =
+    Array.isArray(committee.members) && committee.members.length > 0
+      ? committee.members
+      : committeeMembers
+  const ctaTitle = committee.ctaTitle ?? 'Interested in Serving?'
+  const ctaDescription =
+    committee.ctaDescription ??
+    "Committee positions are elected positions. Elections are held annually according to our constitution. If you're interested in serving on the committee, please reach out to us."
+  const ctaButtonLabel = committee.ctaButtonLabel ?? 'Contact Us'
+
   return (
     <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
       <div className='relative'>
@@ -53,10 +71,10 @@ const CommitteePage = () => {
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[1040px]'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Management Committee
+                {heading}
               </h1>
               <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                Meet the dedicated team serving our community
+                {subtitle}
               </p>
             </div>
           </div>
@@ -67,16 +85,14 @@ const CommitteePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[880px] text-center'>
             <p className='text-[17px] leading-[1.6] text-[#5a677a] md:text-[18px]'>
-              Our Management Committee consists of elected volunteers who
-              dedicate their time and effort to ensure the smooth operation of
-              the Gurudwara and service to the community.
+              {intro}
             </p>
           </div>
 
           <div className='mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-            {committeeMembers.map((member) => (
+            {members.map((member, index) => (
               <article
-                key={member.email}
+                key={`${member?.email ?? member?.name ?? 'member'}-${index}`}
                 className='overflow-hidden rounded-[18px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
               >
                 <div className='flex h-[190px] items-center justify-center bg-[linear-gradient(135deg,#e6eefb_0%,#f7ead7_100%)]'>
@@ -116,18 +132,16 @@ const CommitteePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[920px] text-center'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Interested in Serving?
+              {ctaTitle}
             </h2>
             <p className='mx-auto mt-5 max-w-[900px] text-[17px] leading-[1.6] text-[#5a677a] md:text-[18px]'>
-              Committee positions are elected positions. Elections are held
-              annually according to our constitution. If you're interested in
-              serving on the committee, please reach out to us.
+              {ctaDescription}
             </p>
             <button
               type='button'
               className='mt-9 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
             >
-              Contact Us
+              {ctaButtonLabel}
             </button>
           </div>
         </div>

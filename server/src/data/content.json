@@ -58,7 +58,7 @@
         "time": "9:00 AM - 6:00 PM",
         "location": "Singh Sabha Gurudwara Berlin",
         "category": "yearly",
-        "image": "https://kylroqkdhzsvhfgjwvbg.supabase.co/storage/v1/object/public/dashboard-media/events/1775685407985-9709e7b6-2840-41b0-af4f-aeed0b40bf49.jpg",
+        "image": "https://kylroqkdhzsvhfgjwvbg.supabase.co/storage/v1/object/public/dashboard-media/events/1775744886393-3ce586c4-79eb-4bfc-b6f9-f6e11b05401c.png",
         "description": "Join us for the grand celebration of Vaisakhi, commemorating the formation of the Khalsa."
       },
       {
@@ -167,5 +167,178 @@
       "Wollankstraße 8",
       "13187 Berlin"
     ]
+  },
+  "aboutUs": {
+    "history": {
+      "heroTitle": "Our History",
+      "heroSubtitle": "The journey of Singh Sabha Gurudwara Berlin",
+      "sections": [
+        {
+          "title": "Foundation and Early Years",
+          "body": "Singh Sabha Gurudwara Berlin was established to serve the growing Sikh community in Berlin and surrounding areas. Our Gurudwara has been a beacon of spiritual guidance, cultural preservation, and community service."
+        },
+        {
+          "title": "Growth and Development",
+          "body": "Over the years, we have expanded our services to meet the needs of our diverse community. From humble beginnings, we have grown into a vibrant center that welcomes thousands of visitors annually."
+        },
+        {
+          "title": "Community Service",
+          "body": "Throughout our history, we have remained committed to the Sikh principles of seva (selfless service), equality, and compassion. Our langar (community kitchen) has served countless meals, and our doors remain open to all, regardless of background or belief."
+        },
+        {
+          "title": "Looking Forward",
+          "body": "As we continue our journey, we remain dedicated to preserving our rich heritage while adapting to serve future generations. We are committed to being a place of spiritual growth, cultural celebration, and community unity."
+        }
+      ]
+    },
+    "mission": {
+      "heroTitle": "Our Mission",
+      "heroDescription": "To provide a welcoming spiritual home where individuals can connect with Waheguru, practice Sikh values, and serve the community with compassion and humility.",
+      "cards": [
+        {
+          "title": "Spiritual Growth",
+          "description": "Foster spiritual development through daily prayers, kirtan, and the teachings of Sri Guru Granth Sahib Ji.",
+          "accent": "bg-[#f6ab3c]"
+        },
+        {
+          "title": "Community Service",
+          "description": "Embody the principle of seva through langar, volunteer programs, and support for those in need.",
+          "accent": "bg-[#2d4f9f]"
+        },
+        {
+          "title": "Education",
+          "description": "Provide educational programs for all ages to preserve Sikh heritage, language, and values.",
+          "accent": "bg-[#f6ab3c]"
+        },
+        {
+          "title": "Inclusivity",
+          "description": "Welcome people of all backgrounds and create a space of equality, respect, and unity.",
+          "accent": "bg-[#2d4f9f]"
+        }
+      ],
+      "coreValues": [
+        {
+          "title": "Naam Japna",
+          "description": "Meditation on God's name and remembering the Divine in all aspects of life."
+        },
+        {
+          "title": "Kirat Karni",
+          "description": "Earning an honest living through hard work and integrity."
+        },
+        {
+          "title": "Vand Chakna",
+          "description": "Sharing with others and contributing to the welfare of the community."
+        }
+      ]
+    },
+    "committee": {
+      "heroTitle": "Management Committee",
+      "heroSubtitle": "Meet the dedicated team serving our community",
+      "intro": "Our Management Committee consists of elected volunteers who dedicate their time and effort to ensure the smooth operation of the Gurudwara and service to the community.",
+      "members": [
+        {
+          "initials": "SGS",
+          "name": "Sardar Gurmeet Singh",
+          "role": "President",
+          "email": "president@ssgberlin.de",
+          "phone": "+49 30 1234567"
+        },
+        {
+          "initials": "BJK",
+          "name": "Bibi Jaspreet Kaur",
+          "role": "Vice President",
+          "email": "vicepresident@ssgberlin.de",
+          "phone": ""
+        },
+        {
+          "initials": "SHS",
+          "name": "Sardar Harjit Singh",
+          "role": "Secretary",
+          "email": "secretary@ssgberlin.de",
+          "phone": "+49 30 2345678"
+        },
+        {
+          "initials": "BSK",
+          "name": "Bibi Simran Kaur",
+          "role": "Treasurer",
+          "email": "treasurer@ssgberlin.de",
+          "phone": ""
+        },
+        {
+          "initials": "SMS",
+          "name": "Sardar Manpreet Singh",
+          "role": "Events Coordinator",
+          "email": "events@ssgberlin.de",
+          "phone": ""
+        },
+        {
+          "initials": "BNK",
+          "name": "Bibi Navdeep Kaur",
+          "role": "Education Director",
+          "email": "education@ssgberlin.de",
+          "phone": ""
+        }
+      ],
+      "ctaTitle": "Interested in Serving?",
+      "ctaDescription": "Committee positions are elected positions. Elections are held annually according to our constitution. If you're interested in serving on the committee, please reach out to us.",
+      "ctaButtonLabel": "Contact Us"
+    },
+    "governance": {
+      "heroTitle": "Governance & Reports",
+      "heroSubtitle": "Transparency and accountability in our operations",
+      "structureTitle": "Governance Structure",
+      "structureIntro": "Singh Sabha Gurudwara Berlin (e.V.) operates as a registered non-profit association (eingetragener Verein) under German law. Our governance structure ensures democratic decision-making and accountability to our community members.",
+      "structureBlocks": [
+        {
+          "title": "General Assembly",
+          "body": "The highest decision-making body, consisting of all registered members. The General Assembly elects the Management Committee and makes decisions on major organizational matters."
+        },
+        {
+          "title": "Management Committee",
+          "body": "Elected by the General Assembly, the Management Committee oversees day-to-day operations, implements decisions, and ensures compliance with our constitution and German law."
+        },
+        {
+          "title": "Advisory Board",
+          "body": "Provides guidance on religious and cultural matters, ensuring that our activities align with Sikh principles and traditions."
+        }
+      ],
+      "documentsTitle": "Governance Documents",
+      "documents": [
+        {
+          "title": "Constitution & Bylaws",
+          "size": "1.2 MB",
+          "accent": "bg-[#f6ab3c]"
+        },
+        {
+          "title": "Financial Transparency Guidelines",
+          "size": "850 KB",
+          "accent": "bg-[#f6ab3c]"
+        },
+        {
+          "title": "Code of Conduct",
+          "size": "650 KB",
+          "accent": "bg-[#f6ab3c]"
+        }
+      ],
+      "reportsTitle": "Annual Reports",
+      "reports": [
+        {
+          "title": "Annual Report 2025",
+          "size": "2.4 MB"
+        },
+        {
+          "title": "Annual Report 2024",
+          "size": "2.1 MB"
+        },
+        {
+          "title": "Annual Report 2023",
+          "size": "1.8 MB"
+        }
+      ],
+      "financialTitle": "Financial Transparency",
+      "financialDescription": "We are committed to complete transparency in our financial operations. All donations and expenses are recorded and audited annually. Our financial reports are available to all members and published in our annual reports.",
+      "taxTitle": "Tax Deductibility",
+      "taxDescription": "Singh Sabha Gurudwara Berlin (e.V.) is a registered charitable organization in Germany. Donations are tax-deductible. We provide donation receipts for tax purposes."
+    }
   }
 }

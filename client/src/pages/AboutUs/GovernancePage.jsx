@@ -2,6 +2,7 @@ import React from 'react'
 import { Download, FileText } from 'lucide-react'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
+import { useSiteContentQuery } from '@/hooks/useContent'
 
 const governanceDocuments = [
   {
@@ -64,6 +65,50 @@ const DownloadCard = ({ title, size, accent }) => {
 }
 
 const GovernancePage = () => {
+  const { data: content } = useSiteContentQuery()
+  const governance = content?.aboutUs?.governance ?? {}
+  const heading = governance.heroTitle ?? 'Governance & Reports'
+  const subtitle = governance.heroSubtitle ?? 'Transparency and accountability in our operations'
+  const structureTitle = governance.structureTitle ?? 'Governance Structure'
+  const structureIntro =
+    governance.structureIntro ??
+    'Singh Sabha Gurudwara Berlin (e.V.) operates as a registered non-profit association (eingetragener Verein) under German law. Our governance structure ensures democratic decision-making and accountability to our community members.'
+  const structureBlocks =
+    Array.isArray(governance.structureBlocks) && governance.structureBlocks.length > 0
+      ? governance.structureBlocks
+      : [
+          {
+            title: 'General Assembly',
+            body: 'The highest decision-making body, consisting of all registered members. The General Assembly elects the Management Committee and makes decisions on major organizational matters.',
+          },
+          {
+            title: 'Management Committee',
+            body: 'Elected by the General Assembly, the Management Committee oversees day-to-day operations, implements decisions, and ensures compliance with our constitution and German law.',
+          },
+          {
+            title: 'Advisory Board',
+            body: 'Provides guidance on religious and cultural matters, ensuring that our activities align with Sikh principles and traditions.',
+          },
+        ]
+  const documentsTitle = governance.documentsTitle ?? 'Governance Documents'
+  const documents =
+    Array.isArray(governance.documents) && governance.documents.length > 0
+      ? governance.documents
+      : governanceDocuments
+  const reportsTitle = governance.reportsTitle ?? 'Annual Reports'
+  const reports =
+    Array.isArray(governance.reports) && governance.reports.length > 0
+      ? governance.reports
+      : annualReports
+  const financialTitle = governance.financialTitle ?? 'Financial Transparency'
+  const financialDescription =
+    governance.financialDescription ??
+    'We are committed to complete transparency in our financial operations. All donations and expenses are recorded and audited annually. Our financial reports are available to all members and published in our annual reports.'
+  const taxTitle = governance.taxTitle ?? 'Tax Deductibility'
+  const taxDescription =
+    governance.taxDescription ??
+    'Singh Sabha Gurudwara Berlin (e.V.) is a registered charitable organization in Germany. Donations are tax-deductible. We provide donation receipts for tax purposes.'
+
   return (
     <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
       <div className='relative'>
@@ -72,10 +117,10 @@ const GovernancePage = () => {
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[1040px]'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Governance & Reports
+                {heading}
               </h1>
               <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                Transparency and accountability in our operations
+                {subtitle}
               </p>
             </div>
           </div>
@@ -86,38 +131,16 @@ const GovernancePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Governance Structure
+              {structureTitle}
             </h2>
             <div className='mt-6 space-y-3 text-[16px] leading-[1.55] text-[#1d2431] md:text-[17px]'>
-              <p>
-                Singh Sabha Gurudwara Berlin (e.V.) operates as a registered
-                non-profit association (eingetragener Verein) under German law.
-                Our governance structure ensures democratic decision-making and
-                accountability to our community members.
-              </p>
-              <div>
-                <h3 className='font-bold text-[#111318]'>General Assembly</h3>
-                <p>
-                  The highest decision-making body, consisting of all registered
-                  members. The General Assembly elects the Management Committee
-                  and makes decisions on major organizational matters.
-                </p>
-              </div>
-              <div>
-                <h3 className='font-bold text-[#111318]'>Management Committee</h3>
-                <p>
-                  Elected by the General Assembly, the Management Committee
-                  oversees day-to-day operations, implements decisions, and
-                  ensures compliance with our constitution and German law.
-                </p>
-              </div>
-              <div>
-                <h3 className='font-bold text-[#111318]'>Advisory Board</h3>
-                <p>
-                  Provides guidance on religious and cultural matters, ensuring
-                  that our activities align with Sikh principles and traditions.
-                </p>
-              </div>
+              <p>{structureIntro}</p>
+              {structureBlocks.map((block, index) => (
+                <div key={`${block?.title ?? 'block'}-${index}`}>
+                  <h3 className='font-bold text-[#111318]'>{block?.title ?? ''}</h3>
+                  <p>{block?.body ?? ''}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -127,12 +150,12 @@ const GovernancePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Governance Documents
+              {documentsTitle}
             </h2>
             <div className='mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              {governanceDocuments.map((document) => (
+              {documents.map((document, index) => (
                 <DownloadCard
-                  key={document.title}
+                  key={`${document?.title ?? 'document'}-${index}`}
                   title={document.title}
                   size={document.size}
                   accent={document.accent}
@@ -143,12 +166,12 @@ const GovernancePage = () => {
 
           <div className='mt-14'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Annual Reports
+              {reportsTitle}
             </h2>
             <div className='mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              {annualReports.map((report) => (
+              {reports.map((report, index) => (
                 <DownloadCard
-                  key={report.title}
+                  key={`${report?.title ?? 'report'}-${index}`}
                   title={report.title}
                   size={report.size}
                   accent='bg-[#2d4f9f]'
@@ -163,23 +186,18 @@ const GovernancePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Financial Transparency
+              {financialTitle}
             </h2>
             <p className='mt-6 text-[16px] leading-[1.6] text-[#516075] md:text-[17px]'>
-              We are committed to complete transparency in our financial
-              operations. All donations and expenses are recorded and audited
-              annually. Our financial reports are available to all members and
-              published in our annual reports.
+              {financialDescription}
             </p>
 
             <div className='mt-8 rounded-[14px] border border-[#cfe0ff] bg-[#ebf3ff] px-6 py-6'>
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                Tax Deductibility
+                {taxTitle}
               </h3>
               <p className='mt-4 text-[16px] leading-[1.6] text-[#516075] md:text-[17px]'>
-                Singh Sabha Gurudwara Berlin (e.V.) is a registered charitable
-                organization in Germany. Donations are tax-deductible. We
-                provide donation receipts for tax purposes.
+                {taxDescription}
               </p>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React from 'react'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import SiteFooter from '@/components/layout/SiteFooter'
+import { useSiteContentQuery } from '@/hooks/useContent'
 
 const historySections = [
   {
@@ -22,6 +23,15 @@ const historySections = [
 ]
 
 const HistoryPage = () => {
+  const { data: content } = useSiteContentQuery()
+  const history = content?.aboutUs?.history ?? {}
+  const heading = history.heroTitle ?? 'Our History'
+  const subtitle = history.heroSubtitle ?? 'The journey of Singh Sabha Gurudwara Berlin'
+  const sections =
+    Array.isArray(history.sections) && history.sections.length > 0
+      ? history.sections
+      : historySections
+
   return (
     <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
       <div className='relative'>
@@ -30,10 +40,10 @@ const HistoryPage = () => {
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[1040px]'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Our History
+                {heading}
               </h1>
               <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                The journey of Singh Sabha Gurudwara Berlin
+                {subtitle}
               </p>
             </div>
           </div>
@@ -43,13 +53,13 @@ const HistoryPage = () => {
       <section className='px-4 py-18 md:px-6 md:py-20'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px] space-y-3'>
-            {historySections.map((section) => (
-              <div key={section.title}>
+            {sections.map((section, index) => (
+              <div key={`${section?.title ?? 'history'}-${index}`}>
                 <h2 className='text-[22px] font-bold tracking-[-0.02em] text-[#111318]'>
-                  {section.title}
+                  {section?.title ?? ''}
                 </h2>
                 <p className='mt-1 text-[16px] leading-[1.55] text-[#1d2431] md:text-[17px]'>
-                  {section.body}
+                  {section?.body ?? ''}
                 </p>
               </div>
             ))}

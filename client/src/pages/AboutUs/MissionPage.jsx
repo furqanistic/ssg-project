@@ -2,6 +2,7 @@ import React from 'react'
 import { BookOpen, Globe, Heart, Users } from 'lucide-react'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
+import { useSiteContentQuery } from '@/hooks/useContent'
 
 const missionCards = [
   {
@@ -52,6 +53,19 @@ const coreValues = [
 ]
 
 const MissionPage = () => {
+  const { data: content } = useSiteContentQuery()
+  const mission = content?.aboutUs?.mission ?? {}
+  const heading = mission.heroTitle ?? 'Our Mission'
+  const description =
+    mission.heroDescription ??
+    'To provide a welcoming spiritual home where individuals can connect with Waheguru, practice Sikh values, and serve the community with compassion and humility.'
+  const cards =
+    Array.isArray(mission.cards) && mission.cards.length > 0 ? mission.cards : missionCards
+  const values =
+    Array.isArray(mission.coreValues) && mission.coreValues.length > 0
+      ? mission.coreValues
+      : coreValues
+
   return (
     <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
       <div className='relative'>
@@ -60,23 +74,24 @@ const MissionPage = () => {
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[900px] text-center'>
               <h1 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-                Our Mission
+                {heading}
               </h1>
               <p className='mx-auto mt-6 max-w-[900px] text-[17px] leading-[1.6] text-[#516075] md:text-[18px]'>
-                To provide a welcoming spiritual home where individuals can
-                connect with Waheguru, practice Sikh values, and serve the
-                community with compassion and humility.
+                {description}
               </p>
             </div>
 
             <div className='mx-auto mt-12 grid max-w-[870px] grid-cols-1 gap-6 md:grid-cols-2'>
-              {missionCards.map(({ title, description, icon: Icon, accent }) => (
+              {cards.map(({ title, description: cardDescription, accent }, index) => {
+                const icons = [Heart, Users, BookOpen, Globe]
+                const Icon = icons[index % icons.length]
+                return (
                 <article
-                  key={title}
+                  key={`${title ?? 'mission-card'}-${index}`}
                   className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
                 >
                   <div
-                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-[12px] text-white ${accent}`}
+                    className={`mb-5 flex h-12 w-12 items-center justify-center rounded-[12px] text-white ${accent ?? 'bg-[#2d4f9f]'}`}
                   >
                     <Icon className='h-5 w-5 stroke-[2]' />
                   </div>
@@ -84,10 +99,11 @@ const MissionPage = () => {
                     {title}
                   </h2>
                   <p className='mt-3 text-[15px] leading-[1.55] text-[#5a677a] md:text-[16px]'>
-                    {description}
+                    {cardDescription}
                   </p>
                 </article>
-              ))}
+                )
+              })}
             </div>
           </div>
         </section>
@@ -101,9 +117,9 @@ const MissionPage = () => {
             </h2>
 
             <div className='mt-10 space-y-6'>
-              {coreValues.map((value) => (
+              {values.map((value, index) => (
                 <article
-                  key={value.title}
+                  key={`${value?.title ?? 'core-value'}-${index}`}
                   className='rounded-[14px] border border-[#e2e6ed] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
                 >
                   <h3 className='text-[18px] font-extrabold text-[#f39d2f] md:text-[19px]'>

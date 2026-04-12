@@ -17,6 +17,7 @@ const menu = [
   { key: 'events', label: 'Events' },
   { key: 'media', label: 'Media' },
   { key: 'contact', label: 'Contact' },
+  { key: 'about-us', label: 'About Us' },
   { key: 'profile', label: 'Profile' },
 ]
 
@@ -64,6 +65,43 @@ const textareaClass =
   'mt-2 min-h-[96px] w-full rounded-[10px] border border-[#e2e7f0] bg-white p-3 text-[14px] outline-none focus:border-[#9bb0e1]'
 const actionButtonClass =
   'inline-flex h-9 items-center justify-center rounded-[8px] border border-[#d6dfef] px-3 text-[12px] font-semibold text-[#1f3f97] transition hover:bg-[#edf2ff]'
+const defaultAboutUsForm = {
+  history: {
+    heroTitle: '',
+    heroSubtitle: '',
+    sections: [{ title: '', body: '' }],
+  },
+  mission: {
+    heroTitle: '',
+    heroDescription: '',
+    cards: [{ title: '', description: '', accent: '' }],
+    coreValues: [{ title: '', description: '' }],
+  },
+  committee: {
+    heroTitle: '',
+    heroSubtitle: '',
+    intro: '',
+    members: [{ initials: '', name: '', role: '', email: '', phone: '' }],
+    ctaTitle: '',
+    ctaDescription: '',
+    ctaButtonLabel: '',
+  },
+  governance: {
+    heroTitle: '',
+    heroSubtitle: '',
+    structureTitle: '',
+    structureIntro: '',
+    structureBlocks: [{ title: '', body: '' }],
+    documentsTitle: '',
+    documents: [{ title: '', size: '', accent: '' }],
+    reportsTitle: '',
+    reports: [{ title: '', size: '' }],
+    financialTitle: '',
+    financialDescription: '',
+    taxTitle: '',
+    taxDescription: '',
+  },
+}
 
 const DataTable = ({
   title,
@@ -183,6 +221,7 @@ const DashboardPage = () => {
     email: '',
     address: [],
   })
+  const [aboutUsForm, setAboutUsForm] = useState(defaultAboutUsForm)
 
   const [eventDraft, setEventDraft] = useState(emptyEvent)
   const [editingEventIndex, setEditingEventIndex] = useState(null)
@@ -330,6 +369,92 @@ const DashboardPage = () => {
       phone: content.contact?.phone ?? '',
       email: content.contact?.email ?? '',
       address: toTextRows(content.contact?.addressLines),
+    })
+    const aboutUs = content.aboutUs ?? {}
+    setAboutUsForm({
+      history: {
+        heroTitle: aboutUs.history?.heroTitle ?? '',
+        heroSubtitle: aboutUs.history?.heroSubtitle ?? '',
+        sections:
+          Array.isArray(aboutUs.history?.sections) && aboutUs.history.sections.length > 0
+            ? aboutUs.history.sections.map((item) => ({
+                title: item?.title ?? '',
+                body: item?.body ?? '',
+              }))
+            : [{ title: '', body: '' }],
+      },
+      mission: {
+        heroTitle: aboutUs.mission?.heroTitle ?? '',
+        heroDescription: aboutUs.mission?.heroDescription ?? '',
+        cards:
+          Array.isArray(aboutUs.mission?.cards) && aboutUs.mission.cards.length > 0
+            ? aboutUs.mission.cards.map((item) => ({
+                title: item?.title ?? '',
+                description: item?.description ?? '',
+                accent: item?.accent ?? '',
+              }))
+            : [{ title: '', description: '', accent: '' }],
+        coreValues:
+          Array.isArray(aboutUs.mission?.coreValues) && aboutUs.mission.coreValues.length > 0
+            ? aboutUs.mission.coreValues.map((item) => ({
+                title: item?.title ?? '',
+                description: item?.description ?? '',
+              }))
+            : [{ title: '', description: '' }],
+      },
+      committee: {
+        heroTitle: aboutUs.committee?.heroTitle ?? '',
+        heroSubtitle: aboutUs.committee?.heroSubtitle ?? '',
+        intro: aboutUs.committee?.intro ?? '',
+        members:
+          Array.isArray(aboutUs.committee?.members) && aboutUs.committee.members.length > 0
+            ? aboutUs.committee.members.map((item) => ({
+                initials: item?.initials ?? '',
+                name: item?.name ?? '',
+                role: item?.role ?? '',
+                email: item?.email ?? '',
+                phone: item?.phone ?? '',
+              }))
+            : [{ initials: '', name: '', role: '', email: '', phone: '' }],
+        ctaTitle: aboutUs.committee?.ctaTitle ?? '',
+        ctaDescription: aboutUs.committee?.ctaDescription ?? '',
+        ctaButtonLabel: aboutUs.committee?.ctaButtonLabel ?? '',
+      },
+      governance: {
+        heroTitle: aboutUs.governance?.heroTitle ?? '',
+        heroSubtitle: aboutUs.governance?.heroSubtitle ?? '',
+        structureTitle: aboutUs.governance?.structureTitle ?? '',
+        structureIntro: aboutUs.governance?.structureIntro ?? '',
+        structureBlocks:
+          Array.isArray(aboutUs.governance?.structureBlocks) &&
+          aboutUs.governance.structureBlocks.length > 0
+            ? aboutUs.governance.structureBlocks.map((item) => ({
+                title: item?.title ?? '',
+                body: item?.body ?? '',
+              }))
+            : [{ title: '', body: '' }],
+        documentsTitle: aboutUs.governance?.documentsTitle ?? '',
+        documents:
+          Array.isArray(aboutUs.governance?.documents) && aboutUs.governance.documents.length > 0
+            ? aboutUs.governance.documents.map((item) => ({
+                title: item?.title ?? '',
+                size: item?.size ?? '',
+                accent: item?.accent ?? '',
+              }))
+            : [{ title: '', size: '', accent: '' }],
+        reportsTitle: aboutUs.governance?.reportsTitle ?? '',
+        reports:
+          Array.isArray(aboutUs.governance?.reports) && aboutUs.governance.reports.length > 0
+            ? aboutUs.governance.reports.map((item) => ({
+                title: item?.title ?? '',
+                size: item?.size ?? '',
+              }))
+            : [{ title: '', size: '' }],
+        financialTitle: aboutUs.governance?.financialTitle ?? '',
+        financialDescription: aboutUs.governance?.financialDescription ?? '',
+        taxTitle: aboutUs.governance?.taxTitle ?? '',
+        taxDescription: aboutUs.governance?.taxDescription ?? '',
+      },
     })
 
     setEventDraft(emptyEvent)
@@ -622,6 +747,51 @@ const DashboardPage = () => {
     }))
     setContactAddressDraft('')
     setEditingContactAddressIndex(null)
+  }
+
+  const updateAboutUsText = (section, field, value) => {
+    setAboutUsForm((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    }))
+  }
+
+  const updateAboutUsArrayItem = (section, listKey, index, field, value) => {
+    setAboutUsForm((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [listKey]: prev[section][listKey].map((item, itemIndex) =>
+          itemIndex === index ? { ...item, [field]: value } : item,
+        ),
+      },
+    }))
+  }
+
+  const addAboutUsArrayItem = (section, listKey, emptyItem) => {
+    setAboutUsForm((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [listKey]: [...prev[section][listKey], emptyItem],
+      },
+    }))
+  }
+
+  const removeAboutUsArrayItem = (section, listKey, index, emptyItem) => {
+    setAboutUsForm((prev) => {
+      const nextList = prev[section][listKey].filter((_, itemIndex) => itemIndex !== index)
+      return {
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [listKey]: nextList.length > 0 ? nextList : [emptyItem],
+        },
+      }
+    })
   }
 
   const handleProfileUpdate = async () => {
@@ -974,6 +1144,89 @@ const DashboardPage = () => {
             phone: contactForm.phone.trim(),
             email: contactForm.email.trim(),
             addressLines: cleanTextRows(contactForm.address),
+          },
+        })
+      }
+
+      if (active === 'about-us') {
+        await updateMutation.mutateAsync({
+          section: 'aboutUs',
+          data: {
+            history: {
+              heroTitle: aboutUsForm.history.heroTitle.trim(),
+              heroSubtitle: aboutUsForm.history.heroSubtitle.trim(),
+              sections: aboutUsForm.history.sections
+                .map((item) => ({
+                  title: item.title.trim(),
+                  body: item.body.trim(),
+                }))
+                .filter((item) => item.title || item.body),
+            },
+            mission: {
+              heroTitle: aboutUsForm.mission.heroTitle.trim(),
+              heroDescription: aboutUsForm.mission.heroDescription.trim(),
+              cards: aboutUsForm.mission.cards
+                .map((item) => ({
+                  title: item.title.trim(),
+                  description: item.description.trim(),
+                  accent: item.accent.trim(),
+                }))
+                .filter((item) => item.title || item.description || item.accent),
+              coreValues: aboutUsForm.mission.coreValues
+                .map((item) => ({
+                  title: item.title.trim(),
+                  description: item.description.trim(),
+                }))
+                .filter((item) => item.title || item.description),
+            },
+            committee: {
+              heroTitle: aboutUsForm.committee.heroTitle.trim(),
+              heroSubtitle: aboutUsForm.committee.heroSubtitle.trim(),
+              intro: aboutUsForm.committee.intro.trim(),
+              members: aboutUsForm.committee.members
+                .map((item) => ({
+                  initials: item.initials.trim(),
+                  name: item.name.trim(),
+                  role: item.role.trim(),
+                  email: item.email.trim(),
+                  phone: item.phone.trim(),
+                }))
+                .filter((item) => item.initials || item.name || item.role || item.email || item.phone),
+              ctaTitle: aboutUsForm.committee.ctaTitle.trim(),
+              ctaDescription: aboutUsForm.committee.ctaDescription.trim(),
+              ctaButtonLabel: aboutUsForm.committee.ctaButtonLabel.trim(),
+            },
+            governance: {
+              heroTitle: aboutUsForm.governance.heroTitle.trim(),
+              heroSubtitle: aboutUsForm.governance.heroSubtitle.trim(),
+              structureTitle: aboutUsForm.governance.structureTitle.trim(),
+              structureIntro: aboutUsForm.governance.structureIntro.trim(),
+              structureBlocks: aboutUsForm.governance.structureBlocks
+                .map((item) => ({
+                  title: item.title.trim(),
+                  body: item.body.trim(),
+                }))
+                .filter((item) => item.title || item.body),
+              documentsTitle: aboutUsForm.governance.documentsTitle.trim(),
+              documents: aboutUsForm.governance.documents
+                .map((item) => ({
+                  title: item.title.trim(),
+                  size: item.size.trim(),
+                  accent: item.accent.trim(),
+                }))
+                .filter((item) => item.title || item.size || item.accent),
+              reportsTitle: aboutUsForm.governance.reportsTitle.trim(),
+              reports: aboutUsForm.governance.reports
+                .map((item) => ({
+                  title: item.title.trim(),
+                  size: item.size.trim(),
+                }))
+                .filter((item) => item.title || item.size),
+              financialTitle: aboutUsForm.governance.financialTitle.trim(),
+              financialDescription: aboutUsForm.governance.financialDescription.trim(),
+              taxTitle: aboutUsForm.governance.taxTitle.trim(),
+              taxDescription: aboutUsForm.governance.taxDescription.trim(),
+            },
           },
         })
       }
@@ -1903,6 +2156,45 @@ const DashboardPage = () => {
                       />
                     </label>
                   </div>
+                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Sections</p>
+                  <div className='mt-2 space-y-3'>
+                    {aboutUsForm.history.sections.map((section, index) => (
+                      <div key={`history-section-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
+                        <input
+                          value={section.title}
+                          onChange={(event) =>
+                            updateAboutUsArrayItem('history', 'sections', index, 'title', event.target.value)
+                          }
+                          className={inputClass}
+                          placeholder='Section title'
+                        />
+                        <textarea
+                          value={section.body}
+                          onChange={(event) =>
+                            updateAboutUsArrayItem('history', 'sections', index, 'body', event.target.value)
+                          }
+                          className={textareaClass}
+                          placeholder='Section body'
+                        />
+                        <button
+                          type='button'
+                          onClick={() =>
+                            removeAboutUsArrayItem('history', 'sections', index, { title: '', body: '' })
+                          }
+                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
+                        >
+                          Remove Section
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type='button'
+                      onClick={() => addAboutUsArrayItem('history', 'sections', { title: '', body: '' })}
+                      className={actionButtonClass}
+                    >
+                      Add Section
+                    </button>
+                  </div>
                 </div>
 
                 <div className='space-y-5'>
@@ -1975,6 +2267,297 @@ const DashboardPage = () => {
                       }
                     }}
                   />
+                </div>
+              </div>
+            ) : null}
+
+            {active === 'about-us' ? (
+              <div className='mt-6 space-y-5'>
+                <div className={panelClass}>
+                  <h3 className='text-[15px] font-bold text-[#1a2333]'>History</h3>
+                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <label className='text-[13px] font-semibold text-[#33415a]'>
+                      Hero Title
+                      <input
+                        value={aboutUsForm.history.heroTitle}
+                        onChange={(event) =>
+                          updateAboutUsText('history', 'heroTitle', event.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className='text-[13px] font-semibold text-[#33415a]'>
+                      Hero Subtitle
+                      <input
+                        value={aboutUsForm.history.heroSubtitle}
+                        onChange={(event) =>
+                          updateAboutUsText('history', 'heroSubtitle', event.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className={panelClass}>
+                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Mission</h3>
+                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
+                    Hero Title
+                    <input
+                      value={aboutUsForm.mission.heroTitle}
+                      onChange={(event) => updateAboutUsText('mission', 'heroTitle', event.target.value)}
+                      className={inputClass}
+                    />
+                  </label>
+                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
+                    Hero Description
+                    <textarea
+                      value={aboutUsForm.mission.heroDescription}
+                      onChange={(event) =>
+                        updateAboutUsText('mission', 'heroDescription', event.target.value)
+                      }
+                      className={textareaClass}
+                    />
+                  </label>
+                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Mission Cards</p>
+                  <div className='mt-2 space-y-3'>
+                    {aboutUsForm.mission.cards.map((card, index) => (
+                      <div key={`mission-card-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
+                        <input
+                          value={card.title}
+                          onChange={(event) =>
+                            updateAboutUsArrayItem('mission', 'cards', index, 'title', event.target.value)
+                          }
+                          className={inputClass}
+                          placeholder='Card title'
+                        />
+                        <input
+                          value={card.accent}
+                          onChange={(event) =>
+                            updateAboutUsArrayItem('mission', 'cards', index, 'accent', event.target.value)
+                          }
+                          className={inputClass}
+                          placeholder='Accent class (e.g. bg-[#f6ab3c])'
+                        />
+                        <textarea
+                          value={card.description}
+                          onChange={(event) =>
+                            updateAboutUsArrayItem('mission', 'cards', index, 'description', event.target.value)
+                          }
+                          className={textareaClass}
+                          placeholder='Card description'
+                        />
+                        <button
+                          type='button'
+                          onClick={() =>
+                            removeAboutUsArrayItem('mission', 'cards', index, {
+                              title: '',
+                              description: '',
+                              accent: '',
+                            })
+                          }
+                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
+                        >
+                          Remove Card
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type='button'
+                      onClick={() =>
+                        addAboutUsArrayItem('mission', 'cards', {
+                          title: '',
+                          description: '',
+                          accent: '',
+                        })
+                      }
+                      className={actionButtonClass}
+                    >
+                      Add Card
+                    </button>
+                  </div>
+                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Core Values</p>
+                  <div className='mt-2 space-y-3'>
+                    {aboutUsForm.mission.coreValues.map((value, index) => (
+                      <div key={`core-value-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
+                        <input
+                          value={value.title}
+                          onChange={(event) =>
+                            updateAboutUsArrayItem('mission', 'coreValues', index, 'title', event.target.value)
+                          }
+                          className={inputClass}
+                          placeholder='Value title'
+                        />
+                        <textarea
+                          value={value.description}
+                          onChange={(event) =>
+                            updateAboutUsArrayItem(
+                              'mission',
+                              'coreValues',
+                              index,
+                              'description',
+                              event.target.value,
+                            )
+                          }
+                          className={textareaClass}
+                          placeholder='Value description'
+                        />
+                        <button
+                          type='button'
+                          onClick={() =>
+                            removeAboutUsArrayItem('mission', 'coreValues', index, {
+                              title: '',
+                              description: '',
+                            })
+                          }
+                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
+                        >
+                          Remove Value
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type='button'
+                      onClick={() =>
+                        addAboutUsArrayItem('mission', 'coreValues', {
+                          title: '',
+                          description: '',
+                        })
+                      }
+                      className={actionButtonClass}
+                    >
+                      Add Value
+                    </button>
+                  </div>
+                </div>
+
+                <div className={panelClass}>
+                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Committee</h3>
+                  <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <label className='text-[13px] font-semibold text-[#33415a]'>
+                      Hero Title
+                      <input
+                        value={aboutUsForm.committee.heroTitle}
+                        onChange={(event) => updateAboutUsText('committee', 'heroTitle', event.target.value)}
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className='text-[13px] font-semibold text-[#33415a]'>
+                      Hero Subtitle
+                      <input
+                        value={aboutUsForm.committee.heroSubtitle}
+                        onChange={(event) => updateAboutUsText('committee', 'heroSubtitle', event.target.value)}
+                        className={inputClass}
+                      />
+                    </label>
+                  </div>
+                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
+                    Intro
+                    <textarea
+                      value={aboutUsForm.committee.intro}
+                      onChange={(event) => updateAboutUsText('committee', 'intro', event.target.value)}
+                      className={textareaClass}
+                    />
+                  </label>
+                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Members</p>
+                  <div className='mt-2 space-y-3'>
+                    {aboutUsForm.committee.members.map((member, index) => (
+                      <div key={`committee-member-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
+                        <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
+                          <input value={member.initials} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'initials', event.target.value)} className={inputClass} placeholder='Initials' />
+                          <input value={member.name} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'name', event.target.value)} className={inputClass} placeholder='Name' />
+                          <input value={member.role} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'role', event.target.value)} className={inputClass} placeholder='Role' />
+                          <input value={member.email} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'email', event.target.value)} className={inputClass} placeholder='Email' />
+                          <input value={member.phone} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'phone', event.target.value)} className='md:col-span-2 mt-2 h-11 w-full rounded-[10px] border border-[#e2e7f0] bg-white px-3 text-[14px] outline-none focus:border-[#9bb0e1]' placeholder='Phone' />
+                        </div>
+                        <button
+                          type='button'
+                          onClick={() =>
+                            removeAboutUsArrayItem('committee', 'members', index, {
+                              initials: '',
+                              name: '',
+                              role: '',
+                              email: '',
+                              phone: '',
+                            })
+                          }
+                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
+                        >
+                          Remove Member
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type='button'
+                      onClick={() =>
+                        addAboutUsArrayItem('committee', 'members', {
+                          initials: '',
+                          name: '',
+                          role: '',
+                          email: '',
+                          phone: '',
+                        })
+                      }
+                      className={actionButtonClass}
+                    >
+                      Add Member
+                    </button>
+                  </div>
+                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <input value={aboutUsForm.committee.ctaTitle} onChange={(event) => updateAboutUsText('committee', 'ctaTitle', event.target.value)} className={inputClass} placeholder='CTA Title' />
+                    <input value={aboutUsForm.committee.ctaButtonLabel} onChange={(event) => updateAboutUsText('committee', 'ctaButtonLabel', event.target.value)} className={inputClass} placeholder='CTA Button Label' />
+                  </div>
+                  <textarea value={aboutUsForm.committee.ctaDescription} onChange={(event) => updateAboutUsText('committee', 'ctaDescription', event.target.value)} className={textareaClass} placeholder='CTA Description' />
+                </div>
+
+                <div className={panelClass}>
+                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Governance</h3>
+                  <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <input value={aboutUsForm.governance.heroTitle} onChange={(event) => updateAboutUsText('governance', 'heroTitle', event.target.value)} className={inputClass} placeholder='Hero Title' />
+                    <input value={aboutUsForm.governance.heroSubtitle} onChange={(event) => updateAboutUsText('governance', 'heroSubtitle', event.target.value)} className={inputClass} placeholder='Hero Subtitle' />
+                    <input value={aboutUsForm.governance.structureTitle} onChange={(event) => updateAboutUsText('governance', 'structureTitle', event.target.value)} className={inputClass} placeholder='Structure Title' />
+                    <input value={aboutUsForm.governance.documentsTitle} onChange={(event) => updateAboutUsText('governance', 'documentsTitle', event.target.value)} className={inputClass} placeholder='Documents Title' />
+                    <input value={aboutUsForm.governance.reportsTitle} onChange={(event) => updateAboutUsText('governance', 'reportsTitle', event.target.value)} className={inputClass} placeholder='Reports Title' />
+                    <input value={aboutUsForm.governance.financialTitle} onChange={(event) => updateAboutUsText('governance', 'financialTitle', event.target.value)} className={inputClass} placeholder='Financial Title' />
+                    <input value={aboutUsForm.governance.taxTitle} onChange={(event) => updateAboutUsText('governance', 'taxTitle', event.target.value)} className={inputClass} placeholder='Tax Title' />
+                  </div>
+                  <textarea value={aboutUsForm.governance.structureIntro} onChange={(event) => updateAboutUsText('governance', 'structureIntro', event.target.value)} className={textareaClass} placeholder='Structure Intro' />
+                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Structure Blocks</p>
+                  <div className='mt-2 space-y-3'>
+                    {aboutUsForm.governance.structureBlocks.map((block, index) => (
+                      <div key={`structure-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
+                        <input value={block.title} onChange={(event) => updateAboutUsArrayItem('governance', 'structureBlocks', index, 'title', event.target.value)} className={inputClass} placeholder='Block title' />
+                        <textarea value={block.body} onChange={(event) => updateAboutUsArrayItem('governance', 'structureBlocks', index, 'body', event.target.value)} className={textareaClass} placeholder='Block body' />
+                        <button type='button' onClick={() => removeAboutUsArrayItem('governance', 'structureBlocks', index, { title: '', body: '' })} className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'>Remove Block</button>
+                      </div>
+                    ))}
+                    <button type='button' onClick={() => addAboutUsArrayItem('governance', 'structureBlocks', { title: '', body: '' })} className={actionButtonClass}>Add Block</button>
+                  </div>
+                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Documents</p>
+                  <div className='mt-2 space-y-3'>
+                    {aboutUsForm.governance.documents.map((document, index) => (
+                      <div key={`document-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
+                        <input value={document.title} onChange={(event) => updateAboutUsArrayItem('governance', 'documents', index, 'title', event.target.value)} className={inputClass} placeholder='Document title' />
+                        <input value={document.size} onChange={(event) => updateAboutUsArrayItem('governance', 'documents', index, 'size', event.target.value)} className={inputClass} placeholder='Document size' />
+                        <input value={document.accent} onChange={(event) => updateAboutUsArrayItem('governance', 'documents', index, 'accent', event.target.value)} className={inputClass} placeholder='Accent class' />
+                        <button type='button' onClick={() => removeAboutUsArrayItem('governance', 'documents', index, { title: '', size: '', accent: '' })} className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'>Remove Document</button>
+                      </div>
+                    ))}
+                    <button type='button' onClick={() => addAboutUsArrayItem('governance', 'documents', { title: '', size: '', accent: '' })} className={actionButtonClass}>Add Document</button>
+                  </div>
+                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Reports</p>
+                  <div className='mt-2 space-y-3'>
+                    {aboutUsForm.governance.reports.map((report, index) => (
+                      <div key={`report-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
+                        <input value={report.title} onChange={(event) => updateAboutUsArrayItem('governance', 'reports', index, 'title', event.target.value)} className={inputClass} placeholder='Report title' />
+                        <input value={report.size} onChange={(event) => updateAboutUsArrayItem('governance', 'reports', index, 'size', event.target.value)} className={inputClass} placeholder='Report size' />
+                        <button type='button' onClick={() => removeAboutUsArrayItem('governance', 'reports', index, { title: '', size: '' })} className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'>Remove Report</button>
+                      </div>
+                    ))}
+                    <button type='button' onClick={() => addAboutUsArrayItem('governance', 'reports', { title: '', size: '' })} className={actionButtonClass}>Add Report</button>
+                  </div>
+                  <textarea value={aboutUsForm.governance.financialDescription} onChange={(event) => updateAboutUsText('governance', 'financialDescription', event.target.value)} className={textareaClass} placeholder='Financial Description' />
+                  <textarea value={aboutUsForm.governance.taxDescription} onChange={(event) => updateAboutUsText('governance', 'taxDescription', event.target.value)} className={textareaClass} placeholder='Tax Description' />
                 </div>
               </div>
             ) : null}

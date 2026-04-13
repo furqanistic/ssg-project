@@ -10,12 +10,12 @@ import {
 import { Link } from 'react-router-dom'
 
 const quickLinks = [
-  'About Us',
-  'Visitor Guide',
-  'Events & Programs',
-  'Youth & Education',
-  'Media Gallery',
-  'Contact Us',
+  { label: 'About Us', to: '/about-us/history' },
+  { label: 'Visitor Guide', to: '/visitors/guide#visitor-guide' },
+  { label: 'Events & Programs', to: '/events/programs#all' },
+  { label: 'Youth & Education', to: '/youth-education#gurmukhi-class' },
+  { label: 'Media Gallery', to: '/media#photo-gallery' },
+  { label: 'Contact Us', to: '/contact#contact-form' },
 ]
 
 const socialLinks = [
@@ -51,13 +51,13 @@ const SiteFooter = () => {
             <h3 className='text-[18px] font-bold'>Quick Links</h3>
             <div className='mt-7 space-y-3'>
               {quickLinks.map((link) => (
-                <a
-                  key={link}
-                  href='#'
+                <Link
+                  key={link.label}
+                  to={link.to}
                   className='block text-[15px] text-white/88 transition hover:text-white md:text-[16px]'
                 >
-                  {link}
-                </a>
+                  {link.label}
+                </Link>
               ))}
             </div>
           </div>
@@ -77,11 +77,21 @@ const SiteFooter = () => {
               </div>
               <div className='flex items-center justify-center gap-3 md:justify-start'>
                 <Phone className='h-5 w-5 shrink-0 text-[#f6ab3c]' />
-                <span>+49 30 47375651</span>
+                <a
+                  href='tel:+493047375651'
+                  className='transition hover:text-white'
+                >
+                  +49 30 47375651
+                </a>
               </div>
               <div className='flex items-center justify-center gap-3 md:justify-start'>
                 <Mail className='h-5 w-5 shrink-0 text-[#f6ab3c]' />
-                <span>info@ssgberlin.de</span>
+                <a
+                  href='mailto:info@ssgberlin.de'
+                  className='transition hover:text-white'
+                >
+                  info@ssgberlin.de
+                </a>
               </div>
             </div>
           </div>

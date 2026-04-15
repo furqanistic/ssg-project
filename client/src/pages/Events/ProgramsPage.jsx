@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { CalendarDays, Clock3, MapPin } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
@@ -94,29 +95,6 @@ const defaultEvents = [
   },
 ]
 
-const programHighlights = [
-  {
-    title: 'Daily Programs',
-    description:
-      'Morning and evening prayers held every day for spiritual nourishment.',
-  },
-  {
-    title: 'Weekly Programs',
-    description:
-      'Sunday Kirtan Darbar and educational classes for community building.',
-  },
-  {
-    title: 'Monthly Programs',
-    description:
-      'Special gatherings and community events throughout the month.',
-  },
-  {
-    title: 'Yearly Programs',
-    description:
-      'Major festivals and celebrations like Vaisakhi and Gurpurabs.',
-  },
-]
-
 const EventMetaRow = ({ icon: Icon, text }) => (
   <div className='flex items-center gap-2 text-[15px] text-[#5a677a]'>
     <Icon className='h-4 w-4 text-[#f39d2f]' />
@@ -125,6 +103,7 @@ const EventMetaRow = ({ icon: Icon, text }) => (
 )
 
 const ProgramsPage = () => {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const { data: content } = useSiteContentQuery()
@@ -164,18 +143,17 @@ const ProgramsPage = () => {
       : events.filter((event) => event.category === currentTab)
 
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[1040px]'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Events & Programs
+                {t('eventsPage.heading')}
               </h1>
               <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                Join us for spiritual, cultural, and community programs
-                throughout the year
+                {t('eventsPage.subtitle')}
               </p>
             </div>
           </div>
@@ -199,7 +177,7 @@ const ProgramsPage = () => {
                       : 'text-[#111318] hover:text-[#264fb2]'
                   }`}
                 >
-                  {tab === 'all' ? 'All Events' : tab}
+                  {tab === 'all' ? t('eventsPage.tabs.all') : t(`eventsPage.tabs.${tab}`)}
                 </button>
               )
             })}
@@ -248,11 +226,11 @@ const ProgramsPage = () => {
       <section className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <h2 className='text-center text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-            Our Programs
+            {t('eventsPage.programsTitle')}
           </h2>
 
           <div className='mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4'>
-            {programHighlights.map((program) => (
+            {t('eventsPage.highlights', { returnObjects: true }).map((program) => (
               <article
                 key={program.title}
                 className='rounded-[16px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'

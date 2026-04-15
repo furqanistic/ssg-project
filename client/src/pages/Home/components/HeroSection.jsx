@@ -1,8 +1,11 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const HeroSection = () => {
+  const { t } = useTranslation()
+
   return (
-    <section className='relative min-h-[700px] overflow-hidden bg-[#1e3a8a] font-["Manrope","Segoe_UI",sans-serif] text-white md:min-h-[790px]'>
+    <section className='relative min-h-[700px] overflow-hidden bg-[#1e3a8a] font-["Poppins","Segoe_UI",sans-serif] text-white md:min-h-[790px]'>
       <div
         aria-hidden='true'
         className='absolute inset-0 bg-center bg-no-repeat opacity-35'
@@ -30,12 +33,12 @@ const HeroSection = () => {
       />
       <div className='relative z-10 mx-auto flex min-h-[700px] max-w-[1280px] flex-col items-center justify-center px-6 pb-16 pt-24 text-center md:min-h-[790px] md:pb-22 md:pt-30'>
         <h1 className='max-w-[900px] text-[38px] font-extrabold leading-[1.12] tracking-[-0.03em] md:text-[58px]'>
-          Welcome to Singh Sabha
+          {t('home.hero.titleLine1')}
           <br />
-          Gurudwara Berlin
+          {t('home.hero.titleLine2')}
         </h1>
         <p className='mt-6 max-w-[860px] text-[20px] font-medium leading-[1.35] text-white/80 md:text-[28px]'>
-          A spiritual home for all. Experience peace, community, and devotion.
+          {t('home.hero.subtitle')}
         </p>
 
         <div className='mt-8 flex flex-wrap items-center justify-center gap-4'>
@@ -43,13 +46,13 @@ const HeroSection = () => {
             className='h-[50px] min-w-[186px] rounded-[10px] bg-[#f6ab3c] px-7 text-[16px] font-bold text-white transition hover:bg-[#f1a52e] md:h-[56px] md:min-w-[202px] md:text-[17px]'
             type='button'
           >
-            View Programs
+            {t('common.actions.viewPrograms')}
           </button>
           <button
             className='h-[50px] min-w-[142px] rounded-[10px] border border-white/75 bg-white/8 px-7 text-[16px] font-bold text-white backdrop-blur-[1px] transition hover:bg-white/20 md:h-[56px] md:min-w-[154px] md:text-[17px]'
             type='button'
           >
-            Donate
+            {t('common.actions.donate')}
           </button>
         </div>
       </div>

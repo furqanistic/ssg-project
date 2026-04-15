@@ -1,55 +1,39 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { CalendarDays, Heart, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 
-const mediaImages = [
-  {
-    src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=900&q=80',
-    alt: 'Temple lights at night',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=900&q=80',
-    alt: 'Community gathering',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=900&q=80',
-    alt: 'Volunteer outdoors',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80',
-    alt: 'Children learning together',
-  },
-]
-
-const highlights = [
-  {
-    icon: CalendarDays,
-    title: 'Daily Programs',
-    text: 'Morning and evening prayers every day',
-  },
-  {
-    icon: Users,
-    title: 'Open to All',
-    text: 'Everyone is welcome regardless of background',
-  },
-  {
-    icon: Heart,
-    title: 'Free Langar',
-    text: 'Community kitchen serving free meals daily',
-  },
+const imageSources = [
+  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80',
 ]
 
 const MediaFooterSection = () => {
+  const { t } = useTranslation()
+
+  const mediaImages = useMemo(() => {
+    const alts = t('home.mediaFooter.imagesAlt', { returnObjects: true })
+    return imageSources.map((src, index) => ({ src, alt: alts[index] }))
+  }, [t])
+
+  const highlights = useMemo(() => {
+    const cards = t('home.mediaFooter.highlights', { returnObjects: true })
+    const icons = [CalendarDays, Users, Heart]
+    return cards.map((card, index) => ({ ...card, icon: icons[index] }))
+  }, [t])
+
   return (
     <section className='bg-[#f2f2f2]'>
       <div className='px-4 py-14 md:px-6 md:py-16'>
         <div className='mx-auto max-w-[1280px]'>
           <div>
             <h2 className='text-[28px] font-extrabold tracking-[-0.02em] text-[#111318] md:text-[40px]'>
-              Latest Media
+              {t('home.mediaFooter.title')}
             </h2>
             <p className='mt-2 text-[17px] text-[#5a677a]'>
-              Moments from our community
+              {t('home.mediaFooter.subtitle')}
             </p>
           </div>
 

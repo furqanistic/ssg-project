@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 import {
   BookOpen,
   CalendarDays,
-  FileText,
   GraduationCap,
   Heart,
   Users,
 } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
@@ -18,11 +18,9 @@ const scrollTargets = [
   'registration',
 ]
 
-const sectionIntro =
-  'Our education programs are designed to help children and adults connect with their heritage, learn important life skills, and grow as members of both the Sikh and German communities.'
-
 const YouthEducationPage = () => {
   const location = useLocation()
+  const { t } = useTranslation()
 
   useEffect(() => {
     const hash = location.hash.slice(1)
@@ -45,19 +43,20 @@ const YouthEducationPage = () => {
     })
   }, [location.hash])
 
+  const reasons = t('youthPage.reasons', { returnObjects: true })
+
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[1040px]'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Youth & Education
+                {t('youthPage.heading')}
               </h1>
               <p className='mt-3 max-w-[880px] text-[17px] text-white/90 md:text-[18px]'>
-                Nurturing the next generation through spiritual learning,
-                cultural education, and community engagement
+                {t('youthPage.subtitle')}
               </p>
             </div>
           </div>
@@ -68,7 +67,7 @@ const YouthEducationPage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[900px] text-center'>
             <p className='text-[17px] leading-[1.65] text-[#516075] md:text-[18px]'>
-              {sectionIntro}
+              {t('youthPage.intro')}
             </p>
           </div>
         </div>
@@ -81,42 +80,32 @@ const YouthEducationPage = () => {
               <BookOpen className='h-7 w-7 stroke-[2]' />
             </div>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Gurmukhi Classes
+              {t('youthPage.gurmukhiTitle')}
             </h2>
             <p className='mt-6 max-w-[34ch] text-[16px] leading-[1.7] text-[#516075] md:text-[17px]'>
-              Learn to read and write in Gurmukhi, the script used to write
-              Punjabi and the sacred texts of Sikhism. Our classes are
-              structured for different age groups and skill levels.
+              {t('youthPage.gurmukhiDescription')}
             </p>
 
             <div className='mt-7 space-y-5 text-[16px] leading-[1.55] text-[#516075] md:text-[17px]'>
               <div className='flex items-start gap-3'>
                 <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#f39d2f]' />
                 <div>
-                  <h3 className='font-bold text-[#111318]'>Beginner Level</h3>
-                  <p className='mt-1'>
-                    Learn the Gurmukhi alphabet and basic reading
-                  </p>
+                  <h3 className='font-bold text-[#111318]'>{t('youthPage.level1Title')}</h3>
+                  <p className='mt-1'>{t('youthPage.level1Description')}</p>
                 </div>
               </div>
               <div className='flex items-start gap-3'>
                 <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#f39d2f]' />
                 <div>
-                  <h3 className='font-bold text-[#111318]'>
-                    Intermediate Level
-                  </h3>
-                  <p className='mt-1'>
-                    Reading practice with children&apos;s books and simple texts
-                  </p>
+                  <h3 className='font-bold text-[#111318]'>{t('youthPage.level2Title')}</h3>
+                  <p className='mt-1'>{t('youthPage.level2Description')}</p>
                 </div>
               </div>
               <div className='flex items-start gap-3'>
                 <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#f39d2f]' />
                 <div>
-                  <h3 className='font-bold text-[#111318]'>Advanced Level</h3>
-                  <p className='mt-1'>
-                    Reading Gurbani and understanding meanings
-                  </p>
+                  <h3 className='font-bold text-[#111318]'>{t('youthPage.level3Title')}</h3>
+                  <p className='mt-1'>{t('youthPage.level3Description')}</p>
                 </div>
               </div>
             </div>
@@ -126,14 +115,14 @@ const YouthEducationPage = () => {
                 <CalendarDays className='mt-1 h-5 w-5 text-[#f39d2f]' />
                 <div>
                   <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                    Schedule
+                    {t('youthPage.schedule')}
                   </h3>
                   <p className='mt-4 text-[15px] font-bold leading-[1.6] text-[#4f5f77] md:text-[16px]'>
-                    Every Saturday
+                    {t('youthPage.everySaturday')}
                     <br />
                     <span className='font-normal'>3:00 PM - 5:00 PM</span>
                     <br />
-                    <span className='font-normal'>Education Room</span>
+                    <span className='font-normal'>{t('youthPage.educationRoom')}</span>
                   </p>
                 </div>
               </div>
@@ -166,42 +155,32 @@ const YouthEducationPage = () => {
               <GraduationCap className='h-7 w-7 stroke-[2]' />
             </div>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              German Language Classes
+              {t('youthPage.germanTitle')}
             </h2>
             <p className='mt-6 max-w-[36ch] text-[16px] leading-[1.7] text-[#516075] md:text-[17px]'>
-              Integration support through German language education. Our
-              classes help community members of all ages improve their German
-              language skills for daily life, work, and education.
+              {t('youthPage.germanDescription')}
             </p>
 
             <div className='mt-7 space-y-5 text-[16px] leading-[1.55] text-[#516075] md:text-[17px]'>
               <div className='flex items-start gap-3'>
                 <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#2d4f9f]' />
                 <div>
-                  <h3 className='font-bold text-[#111318]'>A1/A2 Level</h3>
-                  <p className='mt-1'>
-                    Basic German for everyday situations
-                  </p>
+                  <h3 className='font-bold text-[#111318]'>{t('youthPage.a1a2')}</h3>
+                  <p className='mt-1'>{t('youthPage.a1a2Desc')}</p>
                 </div>
               </div>
               <div className='flex items-start gap-3'>
                 <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#2d4f9f]' />
                 <div>
-                  <h3 className='font-bold text-[#111318]'>B1/B2 Level</h3>
-                  <p className='mt-1'>
-                    Intermediate German for work and study
-                  </p>
+                  <h3 className='font-bold text-[#111318]'>{t('youthPage.b1b2')}</h3>
+                  <p className='mt-1'>{t('youthPage.b1b2Desc')}</p>
                 </div>
               </div>
               <div className='flex items-start gap-3'>
                 <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#2d4f9f]' />
                 <div>
-                  <h3 className='font-bold text-[#111318]'>
-                    Conversation Practice
-                  </h3>
-                  <p className='mt-1'>
-                    Practice speaking in a supportive environment
-                  </p>
+                  <h3 className='font-bold text-[#111318]'>{t('youthPage.conversation')}</h3>
+                  <p className='mt-1'>{t('youthPage.conversationDesc')}</p>
                 </div>
               </div>
             </div>
@@ -211,14 +190,14 @@ const YouthEducationPage = () => {
                 <CalendarDays className='mt-1 h-5 w-5 text-[#2d4f9f]' />
                 <div>
                   <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                    Schedule
+                    {t('youthPage.schedule')}
                   </h3>
                   <p className='mt-4 text-[15px] font-bold leading-[1.6] text-[#4f5f77] md:text-[16px]'>
-                    Every Sunday
+                    {t('youthPage.everySunday')}
                     <br />
                     <span className='font-normal'>2:00 PM - 4:00 PM</span>
                     <br />
-                    <span className='font-normal'>Community Hall</span>
+                    <span className='font-normal'>{t('youthPage.communityHall')}</span>
                   </p>
                 </div>
               </div>
@@ -234,51 +213,47 @@ const YouthEducationPage = () => {
               <Users className='h-7 w-7 stroke-[2]' />
             </div>
             <h2 className='mt-7 text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Youth Camps & Workshops
+              {t('youthPage.campsTitle')}
             </h2>
             <p className='mx-auto mt-4 max-w-[760px] text-[16px] leading-[1.65] text-[#516075] md:text-[17px]'>
-              Engaging programs that combine fun activities with spiritual and
-              cultural learning
+              {t('youthPage.campsSubtitle')}
             </p>
           </div>
 
           <div className='mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3'>
             <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
               <h3 className='text-[20px] font-bold tracking-[-0.02em] text-[#111318]'>
-                Summer Camp
+                {t('youthPage.summerCamp')}
               </h3>
               <p className='mt-5 text-[15px] leading-[1.65] text-[#516075] md:text-[16px]'>
-                Week-long summer program with sports, arts, kirtan, and Sikh
-                history lessons for ages 8-16.
+                {t('youthPage.summerCampDesc')}
               </p>
               <p className='mt-6 text-[15px] font-semibold text-[#f39d2f] md:text-[16px]'>
-                July - August
+                {t('youthPage.summerCampTime')}
               </p>
             </article>
 
             <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
               <h3 className='text-[20px] font-bold tracking-[-0.02em] text-[#111318]'>
-                Music Workshops
+                {t('youthPage.musicWorkshops')}
               </h3>
               <p className='mt-5 text-[15px] leading-[1.65] text-[#516075] md:text-[16px]'>
-                Learn to play tabla, harmonium, and sing kirtan. Develop
-                musical skills while connecting with Gurbani.
+                {t('youthPage.musicWorkshopsDesc')}
               </p>
               <p className='mt-6 text-[15px] font-semibold text-[#f39d2f] md:text-[16px]'>
-                Monthly Sessions
+                {t('youthPage.musicWorkshopsTime')}
               </p>
             </article>
 
             <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
               <h3 className='text-[20px] font-bold tracking-[-0.02em] text-[#111318]'>
-                Sikh History Classes
+                {t('youthPage.historyClasses')}
               </h3>
               <p className='mt-5 text-[15px] leading-[1.65] text-[#516075] md:text-[16px]'>
-                Interactive lessons about Sikh history, Gurus&apos; lives, and
-                the significance of important events.
+                {t('youthPage.historyClassesDesc')}
               </p>
               <p className='mt-6 text-[15px] font-semibold text-[#f39d2f] md:text-[16px]'>
-                Every 2nd Sunday
+                {t('youthPage.historyClassesTime')}
               </p>
             </article>
           </div>
@@ -288,11 +263,10 @@ const YouthEducationPage = () => {
       <section id='registration' className='px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px] text-center'>
           <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-            Register for Programs
+            {t('youthPage.registrationTitle')}
           </h2>
           <p className='mx-auto mt-5 max-w-[820px] text-[16px] leading-[1.65] text-[#516075] md:text-[17px]'>
-            Interested in enrolling in our educational programs? Contact us to
-            register or learn more.
+            {t('youthPage.registrationDesc')}
           </p>
 
           <div className='mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row'>
@@ -300,13 +274,13 @@ const YouthEducationPage = () => {
               type='button'
               className='inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
             >
-              Contact for Registration
+              {t('common.actions.contactForRegistration')}
             </button>
             <button
               type='button'
               className='inline-flex h-12 items-center justify-center rounded-[12px] border border-[#2d4f9f] px-8 text-[15px] font-semibold text-[#2d4f9f] transition hover:bg-[#eef3ff] md:text-[16px]'
             >
-              View Full Schedule
+              {t('common.actions.viewFullSchedule')}
             </button>
           </div>
         </div>
@@ -315,57 +289,27 @@ const YouthEducationPage = () => {
       <section className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <h2 className='text-center text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-            Why Enroll Your Child?
+            {t('youthPage.whyEnrollTitle')}
           </h2>
 
           <div className='mt-12 grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-4'>
-            <div className='text-center'>
-              <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#f6ab3c] text-white'>
-                <BookOpen className='h-7 w-7 stroke-[2]' />
+            {[BookOpen, Users, GraduationCap, Heart].map((Icon, index) => (
+              <div key={reasons[index].title} className='text-center'>
+                <div
+                  className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white ${
+                    index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]'
+                  }`}
+                >
+                  <Icon className='h-7 w-7 stroke-[2]' />
+                </div>
+                <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
+                  {reasons[index].title}
+                </h3>
+                <p className='mx-auto mt-3 max-w-[240px] text-[15px] leading-[1.6] text-[#516075] md:text-[16px]'>
+                  {reasons[index].text}
+                </p>
               </div>
-              <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                Cultural Connection
-              </h3>
-              <p className='mx-auto mt-3 max-w-[240px] text-[15px] leading-[1.6] text-[#516075] md:text-[16px]'>
-                Stay connected to Sikh heritage and traditions
-              </p>
-            </div>
-
-            <div className='text-center'>
-              <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#2d4f9f] text-white'>
-                <Users className='h-7 w-7 stroke-[2]' />
-              </div>
-              <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                Community Building
-              </h3>
-              <p className='mx-auto mt-3 max-w-[240px] text-[15px] leading-[1.6] text-[#516075] md:text-[16px]'>
-                Make friends and build lasting relationships
-              </p>
-            </div>
-
-            <div className='text-center'>
-              <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#f6ab3c] text-white'>
-                <GraduationCap className='h-7 w-7 stroke-[2]' />
-              </div>
-              <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                Skill Development
-              </h3>
-              <p className='mx-auto mt-3 max-w-[240px] text-[15px] leading-[1.6] text-[#516075] md:text-[16px]'>
-                Learn valuable languages and life skills
-              </p>
-            </div>
-
-            <div className='text-center'>
-              <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#2d4f9f] text-white'>
-                <Heart className='h-7 w-7 stroke-[2]' />
-              </div>
-              <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                Spiritual Growth
-              </h3>
-              <p className='mx-auto mt-3 max-w-[240px] text-[15px] leading-[1.6] text-[#516075] md:text-[16px]'>
-                Develop strong moral and spiritual foundations
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>

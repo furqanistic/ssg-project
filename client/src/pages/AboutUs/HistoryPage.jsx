@@ -1,39 +1,23 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import SiteFooter from '@/components/layout/SiteFooter'
 import { useSiteContentQuery } from '@/hooks/useContent'
 
-const historySections = [
-  {
-    title: 'Foundation and Early Years',
-    body: 'Singh Sabha Gurudwara Berlin was established to serve the growing Sikh community in Berlin and surrounding areas. Our Gurudwara has been a beacon of spiritual guidance, cultural preservation, and community service.',
-  },
-  {
-    title: 'Growth and Development',
-    body: 'Over the years, we have expanded our services to meet the needs of our diverse community. From humble beginnings, we have grown into a vibrant center that welcomes thousands of visitors annually.',
-  },
-  {
-    title: 'Community Service',
-    body: 'Throughout our history, we have remained committed to the Sikh principles of seva (selfless service), equality, and compassion. Our langar (community kitchen) has served countless meals, and our doors remain open to all, regardless of background or belief.',
-  },
-  {
-    title: 'Looking Forward',
-    body: 'As we continue our journey, we remain dedicated to preserving our rich heritage while adapting to serve future generations. We are committed to being a place of spiritual growth, cultural celebration, and community unity.',
-  },
-]
-
 const HistoryPage = () => {
+  const { t } = useTranslation()
   const { data: content } = useSiteContentQuery()
   const history = content?.aboutUs?.history ?? {}
-  const heading = history.heroTitle ?? 'Our History'
-  const subtitle = history.heroSubtitle ?? 'The journey of Singh Sabha Gurudwara Berlin'
+  const heading = history.heroTitle ?? t('about.history.heading')
+  const subtitle = history.heroSubtitle ?? t('about.history.subtitle')
+  const heroImage = history.heroImage ?? ''
   const sections =
     Array.isArray(history.sections) && history.sections.length > 0
       ? history.sections
-      : historySections
+      : t('about.history.sections', { returnObjects: true })
 
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
@@ -53,6 +37,14 @@ const HistoryPage = () => {
       <section className='px-4 py-18 md:px-6 md:py-20'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px] space-y-3'>
+            {heroImage ? (
+              <img
+                src={heroImage}
+                alt={heading}
+                className='mb-6 h-[260px] w-full rounded-[16px] object-cover md:h-[360px]'
+                loading='lazy'
+              />
+            ) : null}
             {sections.map((section, index) => (
               <div key={`${section?.title ?? 'history'}-${index}`}>
                 <h2 className='text-[22px] font-bold tracking-[-0.02em] text-[#111318]'>

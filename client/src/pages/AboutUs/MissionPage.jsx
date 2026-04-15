@@ -1,5 +1,6 @@
 import React from 'react'
 import { BookOpen, Globe, Heart, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useSiteContentQuery } from '@/hooks/useContent'
@@ -35,39 +36,29 @@ const missionCards = [
   },
 ]
 
-const coreValues = [
-  {
-    title: 'Naam Japna',
-    description:
-      "Meditation on God's name and remembering the Divine in all aspects of life.",
-  },
-  {
-    title: 'Kirat Karni',
-    description: 'Earning an honest living through hard work and integrity.',
-  },
-  {
-    title: 'Vand Chakna',
-    description:
-      'Sharing with others and contributing to the welfare of the community.',
-  },
-]
-
 const MissionPage = () => {
+  const { t } = useTranslation()
   const { data: content } = useSiteContentQuery()
   const mission = content?.aboutUs?.mission ?? {}
-  const heading = mission.heroTitle ?? 'Our Mission'
+  const heading = mission.heroTitle ?? t('about.mission.heading')
   const description =
     mission.heroDescription ??
-    'To provide a welcoming spiritual home where individuals can connect with Waheguru, practice Sikh values, and serve the community with compassion and humility.'
+    t('about.mission.description')
+  const heroImage = mission.heroImage ?? ''
   const cards =
-    Array.isArray(mission.cards) && mission.cards.length > 0 ? mission.cards : missionCards
+    Array.isArray(mission.cards) && mission.cards.length > 0
+      ? mission.cards
+      : missionCards.map((card, index) => ({
+          ...card,
+          ...t(`about.mission.cards.${index}`, { returnObjects: true }),
+        }))
   const values =
     Array.isArray(mission.coreValues) && mission.coreValues.length > 0
       ? mission.coreValues
-      : coreValues
+      : t('about.mission.coreValues', { returnObjects: true })
 
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='px-4 pb-18 pt-28 md:px-6 md:pb-20 md:pt-26'>
@@ -82,6 +73,16 @@ const MissionPage = () => {
             </div>
 
             <div className='mx-auto mt-12 grid max-w-[870px] grid-cols-1 gap-6 md:grid-cols-2'>
+              {heroImage ? (
+                <div className='md:col-span-2'>
+                  <img
+                    src={heroImage}
+                    alt={heading}
+                    className='h-[260px] w-full rounded-[16px] object-cover md:h-[360px]'
+                    loading='lazy'
+                  />
+                </div>
+              ) : null}
               {cards.map(({ title, description: cardDescription, accent }, index) => {
                 const icons = [Heart, Users, BookOpen, Globe]
                 const Icon = icons[index % icons.length]
@@ -113,7 +114,7 @@ const MissionPage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[870px]'>
             <h2 className='text-center text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Core Values
+              {t('about.mission.coreValuesTitle')}
             </h2>
 
             <div className='mt-10 space-y-6'>

@@ -1,39 +1,11 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ArrowRight, CalendarDays, Clock3, MapPin } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
-const events = [
-  {
-    id: 1,
-    title: 'Vaisakhi Celebration 2026',
-    date: 'April 14, 2026',
-    time: '9:00 AM - 6:00 PM',
-    location: 'Singh Sabha Gurudwara Berlin',
-    description:
-      'Join us for the grand celebration of Vaisakhi, commemorating the formation of the Khalsa.',
-    image:
-      'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    id: 2,
-    title: 'Weekly Kirtan Darbar',
-    date: 'Every Sunday',
-    time: '11:00 AM - 1:00 PM',
-    location: 'Main Hall',
-    description:
-      'Weekly congregational singing of hymns from Sri Guru Granth Sahib Ji.',
-    image:
-      'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    id: 3,
-    title: 'Gurmukhi Learning Session',
-    date: 'Every Saturday',
-    time: '3:00 PM - 5:00 PM',
-    location: 'Education Room',
-    description: 'Learn to read and write Gurmukhi script. All ages welcome.',
-    image:
-      'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',
-  },
+const eventImages = [
+  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',
 ]
 
 const EventMetaRow = ({ icon: Icon, text }) => (
@@ -44,16 +16,27 @@ const EventMetaRow = ({ icon: Icon, text }) => (
 )
 
 const UpcomingEventsSection = () => {
+  const { t } = useTranslation()
+
+  const events = useMemo(() => {
+    const cards = t('home.events.cards', { returnObjects: true })
+    return cards.map((card, index) => ({
+      ...card,
+      id: index + 1,
+      image: eventImages[index],
+    }))
+  }, [t])
+
   return (
     <section className='bg-[#f2f2f2] px-4 pb-8 pt-2 md:px-6 md:pb-11 md:pt-3'>
       <div className='mx-auto w-full max-w-[1280px]'>
         <div className='mb-5 flex items-start justify-between gap-4 md:mb-6'>
           <div>
             <h2 className='text-[34px] font-extrabold tracking-[-0.02em] text-[#111318] md:text-[38px]'>
-              Upcoming Events
+              {t('home.events.title')}
             </h2>
             <p className='mt-1 text-[15px] text-[#5b687a] md:text-[16px]'>
-              Join us for spiritual and community programs
+              {t('home.events.subtitle')}
             </p>
           </div>
 
@@ -61,7 +44,7 @@ const UpcomingEventsSection = () => {
             type='button'
             className='mt-1 hidden items-center gap-2 text-[14px] font-semibold text-[#f5a437] transition hover:text-[#e99a2b] md:flex'
           >
-            View All Events
+            {t('common.actions.viewAllEvents')}
             <ArrowRight className='h-4 w-4' />
           </button>
         </div>
@@ -104,7 +87,7 @@ const UpcomingEventsSection = () => {
           type='button'
           className='mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[#f5a437] transition hover:text-[#e99a2b] md:hidden'
         >
-          View All Events
+          {t('common.actions.viewAllEvents')}
           <ArrowRight className='h-4 w-4' />
         </button>
       </div>

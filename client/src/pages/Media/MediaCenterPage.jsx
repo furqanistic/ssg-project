@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { ImageIcon, Radio, Video } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
@@ -10,30 +11,18 @@ const scrollTargets = ['photo-gallery', 'videos', 'live-kirtan']
 const defaultMediaCards = [
   {
     id: 'photo-gallery',
-    title: 'Photo Gallery',
-    description:
-      'Browse through albums organized by events, festivals, and community activities. Relive the beautiful moments from our celebrations.',
-    buttonLabel: 'View Photo Albums',
     icon: ImageIcon,
     gradient: 'from-[#ff7a00] to-[#ff6200]',
     buttonClass: 'bg-[#f8a744] hover:bg-[#f29c33]',
   },
   {
     id: 'videos',
-    title: 'Videos',
-    description:
-      'Watch recordings of Kirtan, educational sessions, event highlights, and special programs from our Gurudwara.',
-    buttonLabel: 'Watch Videos',
     icon: Video,
     gradient: 'from-[#2c76f1] to-[#2664d4]',
     buttonClass: 'bg-[#3559a7] hover:bg-[#2f4f96]',
   },
   {
     id: 'live-kirtan',
-    title: 'Live Kirtan',
-    description:
-      'Listen to live Kirtan streaming from our Gurudwara. Join us virtually for daily prayers and weekend programs.',
-    buttonLabel: 'Listen Live',
     icon: Radio,
     gradient: 'from-[#b33cff] to-[#932ff3]',
     buttonClass: 'bg-[#a33af1] hover:bg-[#922de1]',
@@ -42,43 +31,51 @@ const defaultMediaCards = [
 
 const defaultUpdates = [
   {
-    title: 'Vaisakhi 2026 Photo Album',
-    description:
-      '145 new photos from our recent Vaisakhi celebration have been added to the gallery.',
-    action: 'View Album',
     actionClass: 'text-[#f39d2f] hover:text-[#ea951e]',
   },
   {
-    title: 'New Educational Video Series',
-    description:
-      'Watch our new Gurbani Explained series to learn more about Sikh teachings and philosophy.',
-    action: 'Watch Now',
     actionClass: 'text-[#2d4f9f] hover:text-[#2448b3]',
   },
 ]
 
 const MediaCenterPage = () => {
   const location = useLocation()
+  const { t } = useTranslation()
   const { data: content } = useSiteContentQuery()
+
   const mediaCards = React.useMemo(() => {
+    const translatedCards = t('mediaPage.cards', { returnObjects: true })
+
     if (Array.isArray(content?.media?.cards) && content.media.cards.length > 0) {
       return content.media.cards.map((card, index) => ({
         ...defaultMediaCards[index % defaultMediaCards.length],
+        ...translatedCards[index % translatedCards.length],
         ...card,
       }))
     }
-    return defaultMediaCards
-  }, [content])
+
+    return defaultMediaCards.map((card, index) => ({
+      ...card,
+      ...translatedCards[index],
+    }))
+  }, [content, t])
 
   const updates = React.useMemo(() => {
+    const translatedUpdates = t('mediaPage.updates', { returnObjects: true })
+
     if (Array.isArray(content?.media?.updates) && content.media.updates.length > 0) {
       return content.media.updates.map((update, index) => ({
         ...defaultUpdates[index % defaultUpdates.length],
+        ...translatedUpdates[index % translatedUpdates.length],
         ...update,
       }))
     }
-    return defaultUpdates
-  }, [content])
+
+    return defaultUpdates.map((update, index) => ({
+      ...update,
+      ...translatedUpdates[index],
+    }))
+  }, [content, t])
 
   useEffect(() => {
     const hash = location.hash.slice(1)
@@ -102,19 +99,17 @@ const MediaCenterPage = () => {
   }, [location.hash])
 
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#3567c4] px-4 pb-16 pt-28 text-white md:px-6 md:pb-18 md:pt-34'>
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[900px] text-center'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Media Center
+                {t('mediaPage.heading')}
               </h1>
               <p className='mx-auto mt-5 max-w-[840px] text-[17px] leading-[1.65] text-white/90 md:text-[18px]'>
-                Explore our collection of photos, videos, and live Kirtan
-                streaming. Stay connected with our community through visual
-                memories and spiritual content.
+                {t('mediaPage.subtitle')}
               </p>
             </div>
           </div>
@@ -163,11 +158,11 @@ const MediaCenterPage = () => {
       <section className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <h2 className='text-center text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-            Latest Updates
+            {t('mediaPage.updatesTitle')}
           </h2>
 
           <div className='mt-10 grid grid-cols-1 gap-8 xl:grid-cols-2'>
-            {updates.map((update, index) => (
+            {updates.map((update) => (
               <article
                 key={update.title}
                 className='overflow-hidden rounded-[18px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
@@ -184,7 +179,7 @@ const MediaCenterPage = () => {
                     type='button'
                     className={`mt-5 text-[15px] font-semibold transition ${update.actionClass}`}
                   >
-                    {update.action} {index === 0 ? '->' : '->'}
+                    {update.action} -&gt;
                   </button>
                 </div>
               </article>

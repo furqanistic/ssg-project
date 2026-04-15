@@ -11,14 +11,45 @@ import {
   updateProfileRequest,
 } from '@/services/authApi'
 import { useAuthStore } from '@/store/authStore'
+import { 
+  Users, 
+  Calendar, 
+  Clock3 as Clock,
+  Image as ImageIcon, 
+  Mail, 
+  Info, 
+  User, 
+  LogOut,
+  Plus,
+  Trash2,
+  Edit2,
+  Save,
+  ChevronRight,
+  Menu as MenuIcon,
+  X,
+  PlusCircle,
+  FileText,
+  ShieldCheck,
+  LayoutDashboard,
+  Search
+} from 'lucide-react'
+
+const ICON_MAP = {
+  Users: Users,
+  Calendar: Calendar,
+  ImageIcon: ImageIcon,
+  Mail: Mail,
+  Info: Info,
+  User: User,
+}
 
 const menu = [
-  { key: 'visitors', label: 'Visitors' },
-  { key: 'events', label: 'Events' },
-  { key: 'media', label: 'Media' },
-  { key: 'contact', label: 'Contact' },
-  { key: 'about-us', label: 'About Us' },
-  { key: 'profile', label: 'Profile' },
+  { key: 'visitors', label: 'Visitors', icon: 'Users' },
+  { key: 'events', label: 'Events', icon: 'Calendar' },
+  { key: 'media', label: 'Media', icon: 'ImageIcon' },
+  { key: 'contact', label: 'Contact', icon: 'Mail' },
+  { key: 'about-us', label: 'About Us', icon: 'Info' },
+  { key: 'profile', label: 'Profile', icon: 'User' },
 ]
 
 const EVENT_CATEGORIES = ['all', 'daily', 'weekly', 'monthly', 'yearly']
@@ -57,23 +88,22 @@ const emptyMediaUpdate = {
 
 const emptyPair = { label: '', value: '' }
 
-const panelClass =
-  'rounded-[12px] border border-[#dce4f0] bg-[#fbfcff] p-4 shadow-[0_1px_0_rgba(18,33,70,0.02)]'
-const inputClass =
-  'mt-2 h-11 w-full rounded-[10px] border border-[#e2e7f0] bg-white px-3 text-[14px] outline-none focus:border-[#9bb0e1]'
-const textareaClass =
-  'mt-2 min-h-[96px] w-full rounded-[10px] border border-[#e2e7f0] bg-white p-3 text-[14px] outline-none focus:border-[#9bb0e1]'
-const actionButtonClass =
-  'inline-flex h-9 items-center justify-center rounded-[8px] border border-[#d6dfef] px-3 text-[12px] font-semibold text-[#1f3f97] transition hover:bg-[#edf2ff]'
+const panelClass = 'rounded-[24px] border border-gray-100 bg-white p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden transition-all duration-300'
+const inputClass = 'mt-2 h-11 w-full rounded-[14px] border border-gray-200 bg-gray-50 px-4 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:bg-gray-100/50 focus:border-[#001da5] focus:bg-white focus:ring-4 focus:ring-[#001da5]/5'
+const textareaClass = 'mt-2 min-h-[120px] w-full rounded-[14px] border border-gray-200 bg-gray-50 p-4 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:bg-gray-100/50 focus:border-[#001da5] focus:bg-white focus:ring-4 focus:ring-[#001da5]/5'
+const actionButtonClass = 'inline-flex h-10 items-center justify-center rounded-[12px] border border-gray-200 bg-gray-50 px-5 text-[13px] font-semibold text-gray-700 transition-all hover:bg-gray-100 hover:text-[#001da5] hover:border-[#001da5]/30 active:scale-95'
+const primaryButtonClass = 'inline-flex h-10 items-center justify-center rounded-[12px] bg-[#001da5] px-5 text-[13px] font-bold text-white transition-all hover:bg-[#001580] shadow-lg shadow-blue-500/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed'
 const defaultAboutUsForm = {
   history: {
     heroTitle: '',
     heroSubtitle: '',
+    heroImage: '',
     sections: [{ title: '', body: '' }],
   },
   mission: {
     heroTitle: '',
     heroDescription: '',
+    heroImage: '',
     cards: [{ title: '', description: '', accent: '' }],
     coreValues: [{ title: '', description: '' }],
   },
@@ -81,7 +111,7 @@ const defaultAboutUsForm = {
     heroTitle: '',
     heroSubtitle: '',
     intro: '',
-    members: [{ initials: '', name: '', role: '', email: '', phone: '' }],
+    members: [{ initials: '', name: '', role: '', email: '', phone: '', image: '' }],
     ctaTitle: '',
     ctaDescription: '',
     ctaButtonLabel: '',
@@ -89,6 +119,7 @@ const defaultAboutUsForm = {
   governance: {
     heroTitle: '',
     heroSubtitle: '',
+    heroImage: '',
     structureTitle: '',
     structureIntro: '',
     structureBlocks: [{ title: '', body: '' }],
@@ -114,9 +145,11 @@ const DataTable = ({
 }) => {
   return (
     <div className={panelClass}>
-      <div className='mb-3 flex items-center justify-between'>
-        <h3 className='text-[14px] font-bold text-[#1a2333]'>{title}</h3>
-        <p className='text-[12px] text-[#64748b]'>Total: {rows.length}</p>
+      <div className='mb-6 flex items-center justify-between'>
+        <div>
+          <h3 className='text-[16px] font-bold text-gray-900 tracking-tight'>{title}</h3>
+          <p className='mt-0.5 text-[12px] text-gray-500'>Total entries: {rows.length}</p>
+        </div>
       </div>
 
       <div className='overflow-x-auto'>
@@ -126,44 +159,44 @@ const DataTable = ({
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className='border-b border-[#e3e9f4] px-2 py-2 text-left text-[12px] font-semibold uppercase tracking-[0.05em] text-[#6a7790]'
+                  className='border-b border-gray-100 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400'
                 >
                   {column.label}
                 </th>
               ))}
               {showActions ? (
-                <th className='border-b border-[#e3e9f4] px-2 py-2 text-left text-[12px] font-semibold uppercase tracking-[0.05em] text-[#6a7790]'>
+                <th className='border-b border-gray-100 px-4 py-3 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400'>
                   Actions
                 </th>
               ) : null}
             </tr>
           </thead>
-          <tbody>
+          <tbody className='divide-y divide-gray-50'>
             {rows.length > 0 ? (
               rows.map((row, index) => (
-                <tr key={`${title}-${index}`}>
+                <tr key={`${title}-${index}`} className='group hover:bg-gray-50/50 transition-colors'>
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className='border-b border-[#eef2f8] px-2 py-2 text-[13px] text-[#243047]'
+                      className='px-4 py-4 text-[13px] text-gray-700 font-medium'
                     >
-                      {column.render ? column.render(row) : row[column.key] || '-'}
+                      {column.render ? column.render(row) : (row[column.key] || '-')}
                     </td>
                   ))}
                   {showActions ? (
-                    <td className='border-b border-[#eef2f8] px-2 py-2'>
-                      <div className='flex gap-2'>
+                    <td className='px-4 py-4'>
+                      <div className='flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity'>
                         <button
                           type='button'
                           onClick={() => onEdit(index)}
-                          className='inline-flex h-8 items-center justify-center rounded-[8px] border border-[#d6dfef] px-3 text-[12px] font-semibold text-[#1f3f97] transition hover:bg-[#edf2ff]'
+                          className='inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
                         >
                           Edit
                         </button>
                         <button
                           type='button'
                           onClick={() => onDelete(index)}
-                          className='inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] transition hover:bg-[#fff3f3]'
+                          className='inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
                         >
                           Delete
                         </button>
@@ -176,7 +209,7 @@ const DataTable = ({
               <tr>
                 <td
                   colSpan={showActions ? columns.length + 1 : columns.length}
-                  className='px-3 py-5 text-center text-[13px] text-[#6a7790]'
+                  className='px-4 py-12 text-center text-[13px] text-gray-400'
                 >
                   {emptyMessage}
                 </td>
@@ -270,6 +303,7 @@ const DashboardPage = () => {
   })
   const [modalImageFile, setModalImageFile] = useState(null)
   const [isUploadingModalImage, setIsUploadingModalImage] = useState(false)
+  const [isUploadingAboutImage, setIsUploadingAboutImage] = useState(false)
   const [editFocusId, setEditFocusId] = useState('')
   const [editFocusMessage, setEditFocusMessage] = useState('')
   const [isProfileSaving, setIsProfileSaving] = useState(false)
@@ -375,6 +409,7 @@ const DashboardPage = () => {
       history: {
         heroTitle: aboutUs.history?.heroTitle ?? '',
         heroSubtitle: aboutUs.history?.heroSubtitle ?? '',
+        heroImage: aboutUs.history?.heroImage ?? '',
         sections:
           Array.isArray(aboutUs.history?.sections) && aboutUs.history.sections.length > 0
             ? aboutUs.history.sections.map((item) => ({
@@ -386,6 +421,7 @@ const DashboardPage = () => {
       mission: {
         heroTitle: aboutUs.mission?.heroTitle ?? '',
         heroDescription: aboutUs.mission?.heroDescription ?? '',
+        heroImage: aboutUs.mission?.heroImage ?? '',
         cards:
           Array.isArray(aboutUs.mission?.cards) && aboutUs.mission.cards.length > 0
             ? aboutUs.mission.cards.map((item) => ({
@@ -413,9 +449,10 @@ const DashboardPage = () => {
                 name: item?.name ?? '',
                 role: item?.role ?? '',
                 email: item?.email ?? '',
-                phone: item?.phone ?? '',
+              phone: item?.phone ?? '',
+              image: item?.image ?? '',
               }))
-            : [{ initials: '', name: '', role: '', email: '', phone: '' }],
+            : [{ initials: '', name: '', role: '', email: '', phone: '', image: '' }],
         ctaTitle: aboutUs.committee?.ctaTitle ?? '',
         ctaDescription: aboutUs.committee?.ctaDescription ?? '',
         ctaButtonLabel: aboutUs.committee?.ctaButtonLabel ?? '',
@@ -423,6 +460,7 @@ const DashboardPage = () => {
       governance: {
         heroTitle: aboutUs.governance?.heroTitle ?? '',
         heroSubtitle: aboutUs.governance?.heroSubtitle ?? '',
+        heroImage: aboutUs.governance?.heroImage ?? '',
         structureTitle: aboutUs.governance?.structureTitle ?? '',
         structureIntro: aboutUs.governance?.structureIntro ?? '',
         structureBlocks:
@@ -542,7 +580,7 @@ const DashboardPage = () => {
 
   const getPanelClass = (id) =>
     `${panelClass} ${
-      editFocusId === id ? 'ring-2 ring-[#2b4faa] ring-offset-2 ring-offset-white' : ''
+      editFocusId === id ? 'ring-2 ring-black ring-offset-2 ring-offset-white' : ''
     }`
 
   const focusEditForm = (id, ref, message) => {
@@ -794,6 +832,25 @@ const DashboardPage = () => {
     })
   }
 
+  const uploadAboutImage = async (file, applyUrl, successMessage = 'Image uploaded.') => {
+    resetStatus()
+    if (!file) {
+      setError('Please choose an image file first.')
+      return
+    }
+
+    try {
+      setIsUploadingAboutImage(true)
+      const uploaded = await uploadContentImage(file, 'aboutUs')
+      applyUrl(uploaded.url || '')
+      setSuccess(successMessage)
+    } catch (uploadError) {
+      setError(uploadError.message || 'Failed to upload image.')
+    } finally {
+      setIsUploadingAboutImage(false)
+    }
+  }
+
   const handleProfileUpdate = async () => {
     resetStatus()
 
@@ -906,13 +963,16 @@ const DashboardPage = () => {
 
     let nextData = { ...data }
 
-    if (type === 'events' && modalImageFile) {
+    if ((type === 'events' || type === 'about-committee-member') && modalImageFile) {
       try {
         setIsUploadingModalImage(true)
-        const uploaded = await uploadContentImage(modalImageFile, 'events')
+        const uploaded = await uploadContentImage(
+          modalImageFile,
+          type === 'events' ? 'events' : 'aboutUs',
+        )
         nextData.image = uploaded.url || ''
       } catch (uploadError) {
-        setError(uploadError.message || 'Failed to upload event image.')
+        setError(uploadError.message || 'Failed to upload image.')
         setIsUploadingModalImage(false)
         return
       } finally {
@@ -1057,6 +1117,88 @@ const DashboardPage = () => {
         })
       }
 
+      if (type === 'about-history-section') {
+        setAboutUsForm((prev) => ({
+          ...prev,
+          history: {
+            ...prev.history,
+            sections: prev.history.sections.map((row, i) =>
+              i === index ? { ...row, ...nextData } : row,
+            ),
+          },
+        }))
+      }
+
+      if (type === 'about-mission-card') {
+        setAboutUsForm((prev) => ({
+          ...prev,
+          mission: {
+            ...prev.mission,
+            cards: prev.mission.cards.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
+          },
+        }))
+      }
+
+      if (type === 'about-mission-value') {
+        setAboutUsForm((prev) => ({
+          ...prev,
+          mission: {
+            ...prev.mission,
+            coreValues: prev.mission.coreValues.map((row, i) =>
+              i === index ? { ...row, ...nextData } : row,
+            ),
+          },
+        }))
+      }
+
+      if (type === 'about-committee-member') {
+        setAboutUsForm((prev) => ({
+          ...prev,
+          committee: {
+            ...prev.committee,
+            members: prev.committee.members.map((row, i) =>
+              i === index ? { ...row, ...nextData } : row,
+            ),
+          },
+        }))
+      }
+
+      if (type === 'about-governance-structure') {
+        setAboutUsForm((prev) => ({
+          ...prev,
+          governance: {
+            ...prev.governance,
+            structureBlocks: prev.governance.structureBlocks.map((row, i) =>
+              i === index ? { ...row, ...nextData } : row,
+            ),
+          },
+        }))
+      }
+
+      if (type === 'about-governance-document') {
+        setAboutUsForm((prev) => ({
+          ...prev,
+          governance: {
+            ...prev.governance,
+            documents: prev.governance.documents.map((row, i) =>
+              i === index ? { ...row, ...nextData } : row,
+            ),
+          },
+        }))
+      }
+
+      if (type === 'about-governance-report') {
+        setAboutUsForm((prev) => ({
+          ...prev,
+          governance: {
+            ...prev.governance,
+            reports: prev.governance.reports.map((row, i) =>
+              i === index ? { ...row, ...nextData } : row,
+            ),
+          },
+        }))
+      }
+
       closeEditModal()
       setSuccess('Entry updated and saved.')
     } catch (requestError) {
@@ -1155,6 +1297,7 @@ const DashboardPage = () => {
             history: {
               heroTitle: aboutUsForm.history.heroTitle.trim(),
               heroSubtitle: aboutUsForm.history.heroSubtitle.trim(),
+              heroImage: aboutUsForm.history.heroImage.trim(),
               sections: aboutUsForm.history.sections
                 .map((item) => ({
                   title: item.title.trim(),
@@ -1165,6 +1308,7 @@ const DashboardPage = () => {
             mission: {
               heroTitle: aboutUsForm.mission.heroTitle.trim(),
               heroDescription: aboutUsForm.mission.heroDescription.trim(),
+              heroImage: aboutUsForm.mission.heroImage.trim(),
               cards: aboutUsForm.mission.cards
                 .map((item) => ({
                   title: item.title.trim(),
@@ -1190,8 +1334,9 @@ const DashboardPage = () => {
                   role: item.role.trim(),
                   email: item.email.trim(),
                   phone: item.phone.trim(),
+                  image: item.image.trim(),
                 }))
-                .filter((item) => item.initials || item.name || item.role || item.email || item.phone),
+                .filter((item) => item.initials || item.name || item.role || item.email || item.phone || item.image),
               ctaTitle: aboutUsForm.committee.ctaTitle.trim(),
               ctaDescription: aboutUsForm.committee.ctaDescription.trim(),
               ctaButtonLabel: aboutUsForm.committee.ctaButtonLabel.trim(),
@@ -1199,6 +1344,7 @@ const DashboardPage = () => {
             governance: {
               heroTitle: aboutUsForm.governance.heroTitle.trim(),
               heroSubtitle: aboutUsForm.governance.heroSubtitle.trim(),
+              heroImage: aboutUsForm.governance.heroImage.trim(),
               structureTitle: aboutUsForm.governance.structureTitle.trim(),
               structureIntro: aboutUsForm.governance.structureIntro.trim(),
               structureBlocks: aboutUsForm.governance.structureBlocks
@@ -1237,6 +1383,102 @@ const DashboardPage = () => {
     }
   }
 
+  const buildAboutUsPayload = () => ({
+    history: {
+      heroTitle: aboutUsForm.history.heroTitle.trim(),
+      heroSubtitle: aboutUsForm.history.heroSubtitle.trim(),
+      heroImage: aboutUsForm.history.heroImage.trim(),
+      sections: aboutUsForm.history.sections
+        .map((item) => ({
+          title: item.title.trim(),
+          body: item.body.trim(),
+        }))
+        .filter((item) => item.title || item.body),
+    },
+    mission: {
+      heroTitle: aboutUsForm.mission.heroTitle.trim(),
+      heroDescription: aboutUsForm.mission.heroDescription.trim(),
+      heroImage: aboutUsForm.mission.heroImage.trim(),
+      cards: aboutUsForm.mission.cards
+        .map((item) => ({
+          title: item.title.trim(),
+          description: item.description.trim(),
+          accent: item.accent.trim(),
+        }))
+        .filter((item) => item.title || item.description || item.accent),
+      coreValues: aboutUsForm.mission.coreValues
+        .map((item) => ({
+          title: item.title.trim(),
+          description: item.description.trim(),
+        }))
+        .filter((item) => item.title || item.description),
+    },
+    committee: {
+      heroTitle: aboutUsForm.committee.heroTitle.trim(),
+      heroSubtitle: aboutUsForm.committee.heroSubtitle.trim(),
+      intro: aboutUsForm.committee.intro.trim(),
+      members: aboutUsForm.committee.members
+        .map((item) => ({
+          initials: item.initials.trim(),
+          name: item.name.trim(),
+          role: item.role.trim(),
+          email: item.email.trim(),
+          phone: item.phone.trim(),
+          image: item.image.trim(),
+        }))
+        .filter((item) => item.initials || item.name || item.role || item.email || item.phone || item.image),
+      ctaTitle: aboutUsForm.committee.ctaTitle.trim(),
+      ctaDescription: aboutUsForm.committee.ctaDescription.trim(),
+      ctaButtonLabel: aboutUsForm.committee.ctaButtonLabel.trim(),
+    },
+    governance: {
+      heroTitle: aboutUsForm.governance.heroTitle.trim(),
+      heroSubtitle: aboutUsForm.governance.heroSubtitle.trim(),
+      heroImage: aboutUsForm.governance.heroImage.trim(),
+      structureTitle: aboutUsForm.governance.structureTitle.trim(),
+      structureIntro: aboutUsForm.governance.structureIntro.trim(),
+      structureBlocks: aboutUsForm.governance.structureBlocks
+        .map((item) => ({
+          title: item.title.trim(),
+          body: item.body.trim(),
+        }))
+        .filter((item) => item.title || item.body),
+      documentsTitle: aboutUsForm.governance.documentsTitle.trim(),
+      documents: aboutUsForm.governance.documents
+        .map((item) => ({
+          title: item.title.trim(),
+          size: item.size.trim(),
+          accent: item.accent.trim(),
+        }))
+        .filter((item) => item.title || item.size || item.accent),
+      reportsTitle: aboutUsForm.governance.reportsTitle.trim(),
+      reports: aboutUsForm.governance.reports
+        .map((item) => ({
+          title: item.title.trim(),
+          size: item.size.trim(),
+        }))
+        .filter((item) => item.title || item.size),
+      financialTitle: aboutUsForm.governance.financialTitle.trim(),
+      financialDescription: aboutUsForm.governance.financialDescription.trim(),
+      taxTitle: aboutUsForm.governance.taxTitle.trim(),
+      taxDescription: aboutUsForm.governance.taxDescription.trim(),
+    },
+  })
+
+  const saveAboutUsSection = async (sectionLabel = 'About Us section') => {
+    setError('')
+    setSuccess('')
+    try {
+      await updateMutation.mutateAsync({
+        section: 'aboutUs',
+        data: buildAboutUsPayload(),
+      })
+      setSuccess(`${sectionLabel} saved and published.`)
+    } catch (requestError) {
+      setError(requestError.message)
+    }
+  }
+
   const handleLogout = () => {
     logout()
     navigate('/auth', { replace: true })
@@ -1244,647 +1486,685 @@ const DashboardPage = () => {
 
   if (isLoading) {
     return (
-      <div className='grid min-h-screen place-items-center bg-[#f4f7ff] font-["Manrope","Segoe_UI",sans-serif]'>
-        <p className='text-[16px] text-[#5f6c87]'>Loading dashboard...</p>
+      <div className='grid min-h-screen place-items-center bg-[#f4f7ff] font-["Poppins","Segoe_UI",sans-serif]'>
+        <p className='text-[16px] text-gray-500'>Loading dashboard...</p>
       </div>
     )
   }
 
   return (
-    <div className='min-h-screen bg-[#eef3ff] font-["Manrope","Segoe_UI",sans-serif] text-[#121521]'>
-      <div className='mx-auto w-full max-w-[1440px] lg:flex'>
-        <aside className='hidden min-h-screen w-[280px] shrink-0 border-r border-[#d6dfef] bg-white p-5 lg:block'>
-          <div className='rounded-[14px] bg-[#2b4faa] px-4 py-4 text-white'>
-            <p className='text-[13px] font-semibold uppercase tracking-[0.08em] text-white/80'>
-              Admin
-            </p>
-            <p className='mt-1 text-[16px] font-bold'>{user?.email ?? 'Admin User'}</p>
+    <div className='min-h-screen bg-[#f8faff] font-["Poppins","Segoe_UI",sans-serif] text-gray-900 selection:bg-[#001da5]/10 selection:text-[#001da5]'>
+      <div className='mx-auto w-full max-w-[1600px] lg:flex'>
+        {/* Sidebar */}
+        <aside className='hidden min-h-screen w-[280px] shrink-0 border-r border-gray-100 bg-white p-8 lg:block sticky top-0'>
+          <div className='mb-10 flex items-center gap-3 px-2'>
+            <div className='flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
+              <LayoutDashboard size={22} strokeWidth={2.5} />
+            </div>
+            <div>
+              <h2 className='text-[15px] font-bold tracking-tight text-gray-900'>SSG Admin</h2>
+              <p className='text-[10px] font-bold text-gray-400 uppercase tracking-widest'>Control Center</p>
+            </div>
           </div>
 
-          <nav className='mt-6 space-y-2'>
-            {menu.map((item) => (
-              <button
-                key={item.key}
-                type='button'
-                onClick={() => {
-                  switchSection(item.key)
-                }}
-                className={`flex w-full items-center rounded-[10px] px-4 py-3 text-left text-[14px] font-semibold transition ${
-                  active === item.key
-                    ? 'bg-[#e9efff] text-[#1f3f97]'
-                    : 'text-[#4d5d76] hover:bg-[#f4f7ff]'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
+          <div className='mb-8 px-2'>
+            <p className='text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 ml-1'>
+              Management
+            </p>
+            <nav className='space-y-1.5'>
+              {menu.map((item) => {
+                const Icon = ICON_MAP[item.icon]
+                return (
+                  <button
+                    key={item.key}
+                    type='button'
+                    onClick={() => switchSection(item.key)}
+                    className={`group flex w-full items-center gap-3 rounded-[12px] px-4 py-3 text-left text-[14px] font-bold transition-all duration-300 ${
+                      active === item.key
+                        ? 'bg-[#001da5] text-white shadow-lg shadow-blue-500/20'
+                        : 'text-gray-500 hover:bg-gray-50 hover:text-[#001da5]'
+                    }`}
+                  >
+                    <Icon size={18} className={`${active === item.key ? 'text-white' : 'text-gray-400 group-hover:text-[#001da5]'} transition-colors`} />
+                    {item.label}
+                    {active === item.key && <ChevronRight size={14} className='ml-auto' />}
+                  </button>
+                )
+              })}
+            </nav>
+          </div>
 
-          <button
-            type='button'
-            onClick={handleLogout}
-            className='mt-8 inline-flex h-10 w-full items-center justify-center rounded-[10px] border border-[#d7deea] text-[14px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-          >
-            Logout
-          </button>
+          <div className='mt-auto pt-8 border-t border-gray-100 px-2'>
+            <div className='mb-6 flex items-center gap-3 px-1'>
+              <div className='flex h-9 w-9 items-center justify-center rounded-full bg-gray-50 border border-gray-100'>
+                <User size={16} className='text-gray-400' />
+              </div>
+              <div className='flex-1 overflow-hidden'>
+                <p className='text-[13px] font-bold text-gray-900 truncate'>{user?.email?.split('@')[0] ?? 'Admin'}</p>
+                <p className='text-[11px] text-gray-400 truncate'>{user?.email ?? 'admin@example.com'}</p>
+              </div>
+            </div>
+
+            <button
+              type='button'
+              onClick={handleLogout}
+              className='flex w-full items-center gap-3 rounded-[12px] px-4 py-3 text-left text-[14px] font-bold text-red-500/70 transition-all hover:bg-red-50 hover:text-red-600'
+            >
+              <LogOut size={18} />
+              Sign Out
+            </button>
+          </div>
         </aside>
 
-        <main className='flex-1 p-4 sm:p-5 md:p-6 lg:p-8'>
-          <div className='mb-4 rounded-[14px] border border-[#d8dfeb] bg-white p-3 shadow-[0_3px_12px_rgba(18,33,70,0.05)] lg:hidden'>
-            <div className='flex items-center justify-between gap-3'>
-              <div>
-                <p className='text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5f6c87]'>
-                  Admin
-                </p>
-                <p className='text-[13px] font-bold text-[#1a2333]'>{user?.email ?? 'Admin User'}</p>
+        <main className='flex-1 px-4 py-8 sm:px-8 md:px-12 lg:px-16'>
+          {/* Mobile Header */}
+          <div className='mb-8 rounded-[24px] border border-gray-100 bg-white/80 backdrop-blur-xl p-6 shadow-sm lg:hidden'>
+            <div className='flex items-center justify-between mb-6'>
+              <div className='flex items-center gap-3'>
+                <div className='flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
+                  <LayoutDashboard size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                   <h2 className='text-[14px] font-bold tracking-tight text-gray-900'>SSG Admin</h2>
+                   <p className='text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none'>Mobile Access</p>
+                </div>
               </div>
               <button
                 type='button'
                 onClick={handleLogout}
-                className='inline-flex h-9 shrink-0 items-center justify-center rounded-[8px] border border-[#d7deea] px-3 text-[12px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
+                className='flex h-9 w-9 items-center justify-center rounded-[10px] border border-gray-100 text-red-500/70 hover:bg-red-50 hover:text-red-600 transition-colors'
               >
-                Logout
+                <LogOut size={18} />
               </button>
             </div>
 
-            <div className='mt-3 flex gap-2 overflow-x-auto pb-1'>
-              {menu.map((item) => (
-                <button
-                  key={`mobile-${item.key}`}
-                  type='button'
-                  onClick={() => {
-                    switchSection(item.key)
-                  }}
-                  className={`inline-flex h-9 shrink-0 items-center rounded-[8px] px-3 text-[12px] font-semibold transition ${
-                    active === item.key
-                      ? 'bg-[#e9efff] text-[#1f3f97]'
-                      : 'border border-[#d7deea] bg-white text-[#4d5d76]'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+            <div className='flex gap-2 overflow-x-auto pb-2 scrollbar-hide'>
+              {menu.map((item) => {
+                const Icon = ICON_MAP[item.icon]
+                return (
+                  <button
+                    key={`mobile-${item.key}`}
+                    type='button'
+                    onClick={() => switchSection(item.key)}
+                    className={`inline-flex shrink-0 items-center gap-2 rounded-[12px] px-4 py-2.5 text-[12px] font-bold transition-all duration-300 ${
+                      active === item.key
+                        ? 'bg-[#001da5] text-white shadow-lg shadow-blue-500/20'
+                        : 'border border-gray-100 bg-gray-50 text-gray-500 hover:text-[#001da5]'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    {item.label}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
-          <div className='rounded-[18px] border border-[#d8dfeb] bg-white p-4 shadow-[0_6px_20px_rgba(18,33,70,0.06)] sm:p-5 md:p-6 lg:p-8'>
-            <h1 className='text-[32px] font-extrabold tracking-[-0.03em] text-[#111318]'>
-              {sectionLabel} Management
-            </h1>
-            <p className='mt-2 text-[15px] text-[#5f6c87]'>
-              Use the forms to add or edit entries, then save when you are ready to publish.
-            </p>
+          <div className='animate-in fade-in slide-in-from-bottom-4 duration-700'>
+            <div className='mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6'>
+              <div>
+                <nav className='flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-widest text-gray-400'>
+                  <span>Portal</span>
+                  <ChevronRight size={10} strokeWidth={3} />
+                  <span className='text-gray-600'>{sectionLabel}</span>
+                </nav>
+                <h1 className='text-[48px] font-black tracking-[-0.04em] text-gray-900 leading-tight'>
+                  {sectionLabel}
+                </h1>
+                <p className='mt-3 text-[16px] text-gray-600 max-w-xl font-medium leading-relaxed'>
+                  Refine and manage the content displayed on the {sectionLabel.toLowerCase()} section of your public website.
+                </p>
+              </div>
+              
+              {active !== 'about-us' && active !== 'profile' ? (
+                <div className='flex gap-3'>
+                  <button
+                    type='button'
+                    onClick={onSave}
+                    className='inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-[#001da5] px-6 text-[14px] font-bold text-white transition-all hover:bg-[#001580] active:scale-95 shadow-xl shadow-blue-500/20'
+                  >
+                    <Save size={18} />
+                    Publish Changes
+                  </button>
+                </div>
+              ) : null}
+            </div>
 
             {error ? (
-              <p className='mt-5 rounded-[10px] border border-[#f2b5b5] bg-[#fff0f0] px-4 py-3 text-[14px] font-medium text-[#a32020]'>
+              <div className='mb-8 flex items-center gap-3 rounded-[16px] border border-red-500/20 bg-red-500/5 px-5 py-4 text-[14px] font-bold text-red-400'>
+                <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/10'>
+                  <X size={14} />
+                </div>
                 {error}
-              </p>
+              </div>
             ) : null}
 
             {success ? (
-              <p className='mt-5 rounded-[10px] border border-[#b8dfcb] bg-[#ebfff3] px-4 py-3 text-[14px] font-medium text-[#1c6b44]'>
+              <div className='mb-8 flex items-center gap-3 rounded-[16px] border border-green-500/20 bg-green-500/5 px-5 py-4 text-[14px] font-bold text-green-400'>
+                <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500/10'>
+                  <ShieldCheck size={14} />
+                </div>
                 {success}
-              </p>
+              </div>
             ) : null}
 
             {editFocusMessage ? (
-              <p className='mt-5 rounded-[10px] border border-[#bfd6fb] bg-[#eef6ff] px-4 py-3 text-[14px] font-semibold text-[#1f3f97]'>
+              <div className='mb-8 flex items-center gap-3 rounded-[16px] border border-blue-500/20 bg-blue-500/5 px-5 py-4 text-[14px] font-bold text-blue-400'>
+                <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/10'>
+                  <Info size={14} />
+                </div>
                 {editFocusMessage}
-              </p>
+              </div>
             ) : null}
 
             {active === 'visitors' ? (
-              <div className='mt-6 space-y-5'>
-                <div className='flex justify-end'>
-                  <button type='button' onClick={() => showForm('visitorsRule')} className={actionButtonClass}>
-                    Add Rule
-                  </button>
-                </div>
-                {openForms.visitorsRule ? (
-                <div ref={visitorRuleFormRef} className={getPanelClass('visitors-rule-form')}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Rules & Etiquette</h3>
-                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                    Rule
-                    <textarea
-                      value={visitorDrafts.rule}
-                      onChange={(event) =>
-                        setVisitorDrafts((prev) => ({ ...prev, rule: event.target.value }))
-                      }
-                      className={textareaClass}
-                      placeholder='Enter rule for visitors'
-                    />
-                  </label>
-                  <div className='mt-3 flex gap-2'>
-                    <button
-                      type='button'
-                      onClick={() => upsertVisitorsText('rules', 'rule', 'rule')}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                    >
-                      {visitorEditing.rule === null ? 'Add Rule' : 'Update Rule'}
-                    </button>
-                    {visitorEditing.rule !== null ? (
-                      <button
-                        type='button'
-                        onClick={() => {
-                          setVisitorEditing((prev) => ({ ...prev, rule: null }))
-                          setVisitorDrafts((prev) => ({ ...prev, rule: '' }))
-                        }}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                      >
-                        Cancel Edit
-                      </button>
-                    ) : null}
-                    <button
-                      type='button'
-                      onClick={() => hideForm('visitorsRule')}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                    >
-                      Close Form
-                    </button>
-                  </div>
-                </div>
-                ) : null}
-
-                <DataTable
-                  title='Rules List'
-                  rows={visitorsForm.rules}
-                  columns={[{ key: 'text', label: 'Rule' }]}
-                  emptyMessage='No visitor rules added yet.'
-                  onEdit={(index) => startEdit('visitors-rule', index, visitorsForm.rules[index])}
-                  onDelete={(index) =>
-                    removeVisitorsRow('rules', index, 'rule', { key: 'rule', value: '' })
-                  }
-                />
-
-                <div className='space-y-5'>
-                  <div className='flex justify-end'>
-                    <button type='button' onClick={() => showForm('visitorsDaily')} className={actionButtonClass}>
-                      Add Daily Slot
-                    </button>
-                  </div>
-                  {openForms.visitorsDaily ? (
-                  <div ref={visitorDailyFormRef} className={getPanelClass('visitors-daily-form')}>
-                    <h3 className='text-[15px] font-bold text-[#1a2333]'>Daily Schedule</h3>
-                    <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Label
-                        <input
-                          value={visitorDrafts.daily.label}
-                          onChange={(event) =>
-                            setVisitorDrafts((prev) => ({
-                              ...prev,
-                              daily: { ...prev.daily, label: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                          placeholder='Morning Prayer'
-                        />
-                      </label>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Time
-                        <input
-                          value={visitorDrafts.daily.value}
-                          onChange={(event) =>
-                            setVisitorDrafts((prev) => ({
-                              ...prev,
-                              daily: { ...prev.daily, value: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                          placeholder='5:00 AM - 7:00 AM'
-                        />
-                      </label>
+              <div className='mt-10 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700'>
+                {/* Rules Section */}
+                <div className='space-y-6'>
+                  <div className='flex justify-between items-center bg-gray-50 p-5 rounded-[22px] border border-gray-100'>
+                    <div className='flex items-center gap-4'>
+                      <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
+                        <FileText size={20} />
+                      </div>
+                      <div>
+                        <h4 className='text-[15px] font-bold text-gray-900'>Rules & Etiquette</h4>
+                        <p className='text-[12px] text-gray-400'>Define social and religious conduct</p>
+                      </div>
                     </div>
-                    <div className='mt-3 flex gap-2'>
-                      <button
-                        type='button'
-                        onClick={() => upsertVisitorsPair('daily', 'daily', 'daily')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                      >
-                        {visitorEditing.daily === null ? 'Add Daily Slot' : 'Update Daily Slot'}
-                      </button>
-                      {visitorEditing.daily !== null ? (
+                    <button type='button' onClick={() => showForm('visitorsRule')} className={actionButtonClass}>
+                      <Plus size={16} className='mr-2' />
+                      New Rule
+                    </button>
+                  </div>
+                  
+                  {openForms.visitorsRule ? (
+                    <div ref={visitorRuleFormRef} className={getPanelClass('visitors-rule-form')}>
+                      <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Rule Text
+                        <textarea
+                          value={visitorDrafts.rule}
+                          onChange={(event) =>
+                            setVisitorDrafts((prev) => ({ ...prev, rule: event.target.value }))
+                          }
+                          className={textareaClass}
+                          placeholder='e.g. Please remove shoes...'
+                        />
+                      </label>
+                      <div className='mt-6 flex gap-3 justify-end'>
+                        <button type='button' onClick={() => hideForm('visitorsRule')} className={actionButtonClass}>Cancel</button>
                         <button
                           type='button'
-                          onClick={() => {
-                            setVisitorEditing((prev) => ({ ...prev, daily: null }))
-                            setVisitorDrafts((prev) => ({ ...prev, daily: emptyPair }))
-                          }}
-                          className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
+                          onClick={() => upsertVisitorsText('rules', 'rule', 'rule')}
+                          className={primaryButtonClass}
                         >
-                          Cancel Edit
+                          <Save size={14} className='mr-1.5' />
+                          Save Rule
                         </button>
-                      ) : null}
-                      <button
-                        type='button'
-                        onClick={() => hideForm('visitorsDaily')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                      >
-                        Close Form
-                      </button>
+                      </div>
                     </div>
-                  </div>
                   ) : null}
 
                   <DataTable
-                    title='Daily Schedule List'
-                    rows={visitorsForm.daily}
-                    columns={[
-                      { key: 'label', label: 'Label' },
-                      { key: 'value', label: 'Time' },
-                    ]}
-                    emptyMessage='No daily schedule entries yet.'
-                    onEdit={(index) => startEdit('visitors-daily', index, visitorsForm.daily[index])}
+                    title='Current Conduct Policy'
+                    rows={visitorsForm.rules}
+                    columns={[{ key: 'text', label: 'Registered Rule' }]}
+                    emptyMessage='No community rules defined.'
+                    onEdit={(index) => startEdit('visitors-rule', index, visitorsForm.rules[index])}
                     onDelete={(index) =>
-                      removeVisitorsRow('daily', index, 'daily', { key: 'daily', value: emptyPair })
+                      removeVisitorsRow('rules', index, 'rule', { key: 'rule', value: '' })
                     }
                   />
                 </div>
 
-                <div className='space-y-5'>
-                  <div className='flex justify-end'>
-                    <button type='button' onClick={() => showForm('visitorsLangar')} className={actionButtonClass}>
-                      Add Langar Slot
-                    </button>
-                  </div>
-                  {openForms.visitorsLangar ? (
-                  <div ref={visitorLangarFormRef} className={getPanelClass('visitors-langar-form')}>
-                    <h3 className='text-[15px] font-bold text-[#1a2333]'>Langar Schedule</h3>
-                    <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Label
-                        <input
-                          value={visitorDrafts.langar.label}
-                          onChange={(event) =>
-                            setVisitorDrafts((prev) => ({
-                              ...prev,
-                              langar: { ...prev.langar, label: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                          placeholder='Lunch'
-                        />
-                      </label>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Time
-                        <input
-                          value={visitorDrafts.langar.value}
-                          onChange={(event) =>
-                            setVisitorDrafts((prev) => ({
-                              ...prev,
-                              langar: { ...prev.langar, value: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                          placeholder='12:00 PM - 2:00 PM'
-                        />
-                      </label>
+
+                {/* Schedules Section */}
+                <div className='space-y-6 pt-10 border-t border-gray-100'>
+                   <div className='flex items-center gap-4 mb-4'>
+                    <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-orange-500/5 border border-orange-500/10 text-orange-500'>
+                      <Clock size={20} />
                     </div>
-                    <div className='mt-3 flex gap-2'>
-                      <button
-                        type='button'
-                        onClick={() => upsertVisitorsPair('langar', 'langar', 'langar')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                      >
-                        {visitorEditing.langar === null ? 'Add Langar Slot' : 'Update Langar Slot'}
-                      </button>
-                      {visitorEditing.langar !== null ? (
-                        <button
-                          type='button'
-                          onClick={() => {
-                            setVisitorEditing((prev) => ({ ...prev, langar: null }))
-                            setVisitorDrafts((prev) => ({ ...prev, langar: emptyPair }))
-                          }}
-                          className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                        >
-                          Cancel Edit
+                    <div>
+                      <h4 className='text-[15px] font-bold text-gray-900'>Visitor Timings</h4>
+                      <p className='text-[12px] text-gray-400'>Manage daily and special kitchen schedules</p>
+                    </div>
+                  </div>
+
+                  <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+                    {/* Daily Logic */}
+                    <div className='space-y-5'>
+                      <div className='flex justify-between items-center'>
+                        <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Daily Darshan</h5>
+                        <button type='button' onClick={() => showForm('visitorsDaily')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5'>
+                          <Plus size={12} /> Add Slot
                         </button>
+                      </div>
+                      
+                      {openForms.visitorsDaily ? (
+                      <div ref={visitorDailyFormRef} className={getPanelClass('visitors-daily-form')}>
+                        <div className='grid grid-cols-1 gap-4'>
+                          <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Activity Label
+                            <input
+                              value={visitorDrafts.daily.label}
+                              onChange={(event) =>
+                                setVisitorDrafts((prev) => ({
+                                  ...prev,
+                                  daily: { ...prev.daily, label: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Time Range
+                            <input
+                              value={visitorDrafts.daily.value}
+                              onChange={(event) =>
+                                setVisitorDrafts((prev) => ({
+                                  ...prev,
+                                  daily: { ...prev.daily, value: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                        </div>
+                        <div className='mt-4 flex gap-2 justify-end'>
+                          <button type='button' onClick={() => hideForm('visitorsDaily')} className={actionButtonClass}>Cancel</button>
+                          <button
+                            type='button'
+                            onClick={() => upsertVisitorsPair('daily', 'daily', 'daily')}
+                            className={primaryButtonClass}
+                          >
+                            <Save size={14} className='mr-1.5' />
+                            Save
+                          </button>
+                        </div>
+                      </div>
                       ) : null}
-                      <button
-                        type='button'
-                        onClick={() => hideForm('visitorsLangar')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                      >
-                        Close Form
-                      </button>
+
+                      <DataTable
+                        title=''
+                        rows={visitorsForm.daily}
+                        columns={[
+                          { key: 'label', label: 'Activity' },
+                          { key: 'value', label: 'Time' },
+                        ]}
+                        emptyMessage='No daily times set.'
+                        onEdit={(index) => startEdit('visitors-daily', index, visitorsForm.daily[index])}
+                        onDelete={(index) =>
+                          removeVisitorsRow('daily', index, 'daily', { key: 'daily', value: emptyPair })
+                        }
+                      />
+                    </div>
+
+                    {/* Langar Logic */}
+                    <div className='space-y-5'>
+                      <div className='flex justify-between items-center'>
+                        <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Langar (Kitchen)</h5>
+                        <button type='button' onClick={() => showForm('visitorsLangar')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5'>
+                          <Plus size={12} /> Add Slot
+                        </button>
+                      </div>
+
+                      {openForms.visitorsLangar ? (
+                      <div ref={visitorLangarFormRef} className={getPanelClass('visitors-langar-form')}>
+                         <div className='grid grid-cols-1 gap-4'>
+                          <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Meal Type
+                            <input
+                              value={visitorDrafts.langar.label}
+                              onChange={(event) =>
+                                setVisitorDrafts((prev) => ({
+                                  ...prev,
+                                  langar: { ...prev.langar, label: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Serving Hours
+                            <input
+                              value={visitorDrafts.langar.value}
+                              onChange={(event) =>
+                                setVisitorDrafts((prev) => ({
+                                  ...prev,
+                                  langar: { ...prev.langar, value: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                        </div>
+                        <div className='mt-4 flex gap-2 justify-end'>
+                          <button type='button' onClick={() => hideForm('visitorsLangar')} className={actionButtonClass}>Cancel</button>
+                          <button
+                            type='button'
+                            onClick={() => upsertVisitorsPair('langar', 'langar', 'langar')}
+                            className={primaryButtonClass}
+                          >
+                            <Save size={14} className='mr-1.5' />
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                      ) : null}
+
+                      <DataTable
+                        title=''
+                        rows={visitorsForm.langar}
+                        columns={[
+                          { key: 'label', label: 'Meal' },
+                          { key: 'value', label: 'Hours' },
+                        ]}
+                        emptyMessage='No kitchen times set.'
+                        onEdit={(index) =>
+                          startEdit('visitors-langar', index, visitorsForm.langar[index])
+                        }
+                        onDelete={(index) =>
+                          removeVisitorsRow('langar', index, 'langar', {
+                            key: 'langar',
+                            value: emptyPair,
+                          })
+                        }
+                      />
                     </div>
                   </div>
-                  ) : null}
 
-                  <DataTable
-                    title='Langar Schedule List'
-                    rows={visitorsForm.langar}
-                    columns={[
-                      { key: 'label', label: 'Label' },
-                      { key: 'value', label: 'Time' },
-                    ]}
-                    emptyMessage='No langar schedule entries yet.'
-                    onEdit={(index) =>
-                      startEdit('visitors-langar', index, visitorsForm.langar[index])
-                    }
-                    onDelete={(index) =>
-                      removeVisitorsRow('langar', index, 'langar', {
-                        key: 'langar',
-                        value: emptyPair,
-                      })
-                    }
-                  />
-                </div>
-
-                <div className={getPanelClass('visitors-sunday-special')}>
-                  <label className='block text-[14px] font-semibold text-[#1a2333]'>
-                    Sunday Special
+                  <div className='mt-6'>
+                    <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-2'>
+                        Sunday Special Program
+                    </label>
                     <textarea
                       value={visitorsForm.sundaySpecial}
                       onChange={(event) =>
                         setVisitorsForm((prev) => ({ ...prev, sundaySpecial: event.target.value }))
                       }
                       className={textareaClass}
-                      placeholder='Weekly Kirtan Darbar details'
+                      placeholder='Weekly Kirtan Darbar details...'
                     />
-                  </label>
+                  </div>
                 </div>
 
-                <div className='space-y-5'>
-                  <div className='flex justify-end'>
-                    <button type='button' onClick={() => showForm('visitorsAddress')} className={actionButtonClass}>
-                      Add Address Line
-                    </button>
-                  </div>
-                  {openForms.visitorsAddress ? (
-                  <div ref={visitorAddressFormRef} className={getPanelClass('visitors-address-form')}>
-                    <h3 className='text-[15px] font-bold text-[#1a2333]'>Address Lines</h3>
-                    <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                      Address Line
-                      <input
-                        value={visitorDrafts.address}
-                        onChange={(event) =>
-                          setVisitorDrafts((prev) => ({ ...prev, address: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='Wollankstraße 8'
-                      />
-                    </label>
-                    <div className='mt-3 flex gap-2'>
-                      <button
-                        type='button'
-                        onClick={() => upsertVisitorsText('address', 'address', 'address')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                      >
-                        {visitorEditing.address === null
-                          ? 'Add Address Line'
-                          : 'Update Address Line'}
-                      </button>
-                      {visitorEditing.address !== null ? (
-                        <button
-                          type='button'
-                          onClick={() => {
-                            setVisitorEditing((prev) => ({ ...prev, address: null }))
-                            setVisitorDrafts((prev) => ({ ...prev, address: '' }))
-                          }}
-                          className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                        >
-                          Cancel Edit
+                {/* Location & Access Section */}
+                <div className='space-y-10 pt-10 border-t border-gray-100'>
+                  <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+                    {/* Address Lines */}
+                    <div className='space-y-5'>
+                      <div className='flex justify-between items-center'>
+                        <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Address Registry</h5>
+                        <button type='button' onClick={() => showForm('visitorsAddress')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5 font-bold uppercase tracking-widest'>
+                          <Plus size={12} /> Add Line
                         </button>
+                      </div>
+
+                      {openForms.visitorsAddress ? (
+                      <div ref={visitorAddressFormRef} className={getPanelClass('visitors-address-form')}>
+                        <label className='block text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                          Physical Line
+                          <input
+                            value={visitorDrafts.address}
+                            onChange={(event) =>
+                              setVisitorDrafts((prev) => ({ ...prev, address: event.target.value }))
+                            }
+                            className={inputClass}
+                            placeholder='e.g. Wollankstraße 1'
+                          />
+                        </label>
+                        <div className='mt-4 flex gap-2 justify-end'>
+                          <button type='button' onClick={() => hideForm('visitorsAddress')} className={actionButtonClass}>Cancel</button>
+                          <button
+                            type='button'
+                            onClick={() => upsertVisitorsText('address', 'address', 'address')}
+                            className={primaryButtonClass}
+                          >
+                             <Save size={14} className='mr-1.5' />
+                            Save
+                          </button>
+                        </div>
+                      </div>
                       ) : null}
-                      <button
-                        type='button'
-                        onClick={() => hideForm('visitorsAddress')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                      >
-                        Close Form
-                      </button>
+
+                      <DataTable
+                        title=''
+                        rows={visitorsForm.address}
+                        columns={[{ key: 'text', label: 'Registered Line' }]}
+                        emptyMessage='No address lines.'
+                        onEdit={(index) =>
+                          startEdit('visitors-address', index, visitorsForm.address[index])
+                        }
+                        onDelete={(index) =>
+                          removeVisitorsRow('address', index, 'address', {
+                            key: 'address',
+                            value: '',
+                          })
+                        }
+                      />
+                    </div>
+
+                    {/* How to reach */}
+                    <div className='space-y-5'>
+                       <div className='flex justify-between items-center'>
+                        <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Route Instructions</h5>
+                        <button type='button' onClick={() => showForm('visitorsReach')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5 font-bold uppercase tracking-widest'>
+                          <Plus size={12} /> Add Rule
+                        </button>
+                      </div>
+
+                      {openForms.visitorsReach ? (
+                      <div ref={visitorReachFormRef} className={getPanelClass('visitors-reach-form')}>
+                        <label className='block text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                          Instruction
+                          <input
+                            value={visitorDrafts.reach}
+                            onChange={(event) =>
+                              setVisitorDrafts((prev) => ({ ...prev, reach: event.target.value }))
+                            }
+                            className={inputClass}
+                            placeholder='U-Bahn: U8 Pankstraße'
+                          />
+                        </label>
+                        <div className='mt-4 flex gap-2 justify-end'>
+                          <button type='button' onClick={() => hideForm('visitorsReach')} className={actionButtonClass}>Cancel</button>
+                          <button
+                            type='button'
+                            onClick={() => upsertVisitorsText('reach', 'reach', 'reach')}
+                            className={primaryButtonClass}
+                          >
+                             <Save size={14} className='mr-1.5' />
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                      ) : null}
+
+                      <DataTable
+                        title=''
+                        rows={visitorsForm.reach}
+                        columns={[{ key: 'text', label: 'Instruction' }]}
+                        emptyMessage='No route info set.'
+                        onEdit={(index) =>
+                          startEdit('visitors-reach', index, visitorsForm.reach[index])
+                        }
+                        onDelete={(index) =>
+                          removeVisitorsRow('reach', index, 'reach', {
+                            key: 'reach',
+                            value: '',
+                          })
+                        }
+                      />
                     </div>
                   </div>
-                  ) : null}
-
-                  <DataTable
-                    title='Address Lines List'
-                    rows={visitorsForm.address}
-                    columns={[{ key: 'text', label: 'Address Line' }]}
-                    emptyMessage='No address lines yet.'
-                    onEdit={(index) =>
-                      startEdit('visitors-address', index, visitorsForm.address[index])
-                    }
-                    onDelete={(index) =>
-                      removeVisitorsRow('address', index, 'address', {
-                        key: 'address',
-                        value: '',
-                      })
-                    }
-                  />
-                </div>
-
-                <div className='space-y-5'>
-                  <div className='flex justify-end'>
-                    <button type='button' onClick={() => showForm('visitorsReach')} className={actionButtonClass}>
-                      Add Route Line
-                    </button>
-                  </div>
-                  {openForms.visitorsReach ? (
-                  <div ref={visitorReachFormRef} className={getPanelClass('visitors-reach-form')}>
-                    <h3 className='text-[15px] font-bold text-[#1a2333]'>How To Reach</h3>
-                    <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                      Route Instruction
-                      <input
-                        value={visitorDrafts.reach}
-                        onChange={(event) =>
-                          setVisitorDrafts((prev) => ({ ...prev, reach: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='U-Bahn: U8 to Pankstraße'
-                      />
-                    </label>
-                    <div className='mt-3 flex gap-2'>
-                      <button
-                        type='button'
-                        onClick={() => upsertVisitorsText('reach', 'reach', 'reach')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                      >
-                        {visitorEditing.reach === null ? 'Add Route Line' : 'Update Route Line'}
-                      </button>
-                      {visitorEditing.reach !== null ? (
-                        <button
-                          type='button'
-                          onClick={() => {
-                            setVisitorEditing((prev) => ({ ...prev, reach: null }))
-                            setVisitorDrafts((prev) => ({ ...prev, reach: '' }))
-                          }}
-                          className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                        >
-                          Cancel Edit
-                        </button>
-                      ) : null}
-                      <button
-                        type='button'
-                        onClick={() => hideForm('visitorsReach')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                      >
-                        Close Form
-                      </button>
-                    </div>
-                  </div>
-                  ) : null}
-
-                  <DataTable
-                    title='How To Reach List'
-                    rows={visitorsForm.reach}
-                    columns={[{ key: 'text', label: 'Route' }]}
-                    emptyMessage='No route lines yet.'
-                    onEdit={(index) => startEdit('visitors-reach', index, visitorsForm.reach[index])}
-                    onDelete={(index) =>
-                      removeVisitorsRow('reach', index, 'reach', { key: 'reach', value: '' })
-                    }
-                  />
                 </div>
               </div>
-            ) : null}
-
-            {active === 'events' ? (
-              <div className='mt-6 space-y-5'>
-                <div className='flex justify-end'>
+            ) : null}            {active === 'events' ? (
+              <div className='mt-10 space-y-10'>
+                <div className='flex justify-between items-center bg-gray-50 p-5 rounded-[22px] border border-gray-100'>
+                   <div className='flex items-center gap-4'>
+                    <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
+                      <Calendar size={20} />
+                    </div>
+                    <div>
+                      <h4 className='text-[15px] font-bold text-gray-900'>Scheduled Events</h4>
+                      <p className='text-[12px] text-gray-400'>Create and organize congregational activities</p>
+                    </div>
+                  </div>
                   <button type='button' onClick={() => showForm('events')} className={actionButtonClass}>
-                    Add Event
+                    <Plus size={16} className='mr-2' />
+                    New Event
                   </button>
                 </div>
+
                 {openForms.events ? (
-                <div ref={eventFormRef} className={getPanelClass('events-form')}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Create / Edit Event</h3>
-                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Title
-                      <input
-                        value={eventDraft.title}
-                        onChange={(event) =>
-                          setEventDraft((prev) => ({ ...prev, title: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='Vaisakhi Celebration 2026'
-                      />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Date
-                      <input
-                        value={eventDraft.date}
-                        onChange={(event) =>
-                          setEventDraft((prev) => ({ ...prev, date: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='April 14, 2026'
-                      />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Time
-                      <input
-                        value={eventDraft.time}
-                        onChange={(event) =>
-                          setEventDraft((prev) => ({ ...prev, time: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='9:00 AM - 6:00 PM'
-                      />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Location
-                      <input
-                        value={eventDraft.location}
-                        onChange={(event) =>
-                          setEventDraft((prev) => ({ ...prev, location: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='Main Hall'
-                      />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Category
-                      <select
-                        value={eventDraft.category}
-                        onChange={(event) =>
-                          setEventDraft((prev) => ({ ...prev, category: event.target.value }))
-                        }
-                        className={inputClass}
-                      >
-                        {EVENT_CATEGORIES.map((category) => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Event Image
-                      <input
-                        type='file'
-                        accept='image/*'
-                        onChange={(event) => setEventImageFile(event.target.files?.[0] ?? null)}
-                        className='mt-2 block w-full rounded-[10px] border border-[#e2e7f0] bg-white px-3 py-2 text-[13px] text-[#1a2333] file:mr-3 file:rounded-[8px] file:border-0 file:bg-[#edf2ff] file:px-3 file:py-2 file:text-[12px] file:font-semibold file:text-[#1f3f97] hover:file:bg-[#dfe8ff]'
-                      />
-                      <div className='mt-2 flex flex-wrap items-center gap-2'>
+                <div ref={eventFormRef} className={`${getPanelClass('events-form')} !p-0 shadow-xl border-gray-100`}>
+                  <div className='bg-gray-50 border-b border-gray-100 p-8 rounded-t-[24px]'>
+                    <h3 className='text-[20px] font-black text-gray-900 tracking-tight'>Configure Event</h3>
+                    <p className='text-[13px] text-gray-400 font-medium'>Populate the details for your new event entry</p>
+                  </div>
+                  
+                  <div className='p-8 space-y-8'>
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Event Title
+                        <input
+                          value={eventDraft.title}
+                          onChange={(event) =>
+                            setEventDraft((prev) => ({ ...prev, title: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='e.g. Vaisakhi Celebration 2026'
+                        />
+                      </label>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Scheduled Date
+                        <input
+                          value={eventDraft.date}
+                          onChange={(event) =>
+                            setEventDraft((prev) => ({ ...prev, date: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='April 14, 2026'
+                        />
+                      </label>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Timing
+                        <input
+                          value={eventDraft.time}
+                          onChange={(event) =>
+                            setEventDraft((prev) => ({ ...prev, time: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='9:00 AM - 6:00 PM'
+                        />
+                      </label>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Specific Location
+                        <input
+                          value={eventDraft.location}
+                          onChange={(event) =>
+                            setEventDraft((prev) => ({ ...prev, location: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='Gurdwara Main Hall'
+                        />
+                      </label>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Event Category
+                        <select
+                          value={eventDraft.category}
+                          onChange={(event) =>
+                            setEventDraft((prev) => ({ ...prev, category: event.target.value }))
+                          }
+                          className={inputClass}
+                        >
+                          {EVENT_CATEGORIES.map((category) => (
+                            <option key={category} value={category}>
+                              {category.charAt(0).toUpperCase() + category.slice(1)}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <div className='space-y-3'>
+                        <span className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>Cover Image</span>
+                        <div className='flex items-center gap-3'>
+                           <label className='flex-1 flex h-11 items-center justify-center rounded-[12px] border border-gray-100 bg-gray-50 px-4 text-[14px] text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-900 transition-all'>
+                            <ImageIcon size={16} className='mr-2 font-bold' />
+                            {eventImageFile ? eventImageFile.name : 'Choose local file'}
+                            <input
+                              type='file'
+                              accept='image/*'
+                              onChange={(event) => setEventImageFile(event.target.files?.[0] ?? null)}
+                              className='hidden'
+                            />
+                          </label>
+                          <button
+                            type='button'
+                            onClick={uploadEventImage}
+                            disabled={isUploadingEventImage || !eventImageFile}
+                            className={actionButtonClass}
+                          >
+                            {isUploadingEventImage ? 'Uploading...' : 'Upload'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {eventDraft.image && (
+                      <div className='relative rounded-[16px] overflow-hidden border border-gray-100 group'>
+                        <img src={eventDraft.image} alt='Event preview' className='h-[240px] w-full object-cover transition-transform duration-500 group-hover:scale-105' />
+                        <div className='absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent' />
                         <button
                           type='button'
-                          onClick={uploadEventImage}
-                          disabled={isUploadingEventImage}
-                          className='inline-flex h-9 items-center justify-center rounded-[8px] border border-[#d6dfef] px-3 text-[12px] font-semibold text-[#1f3f97] transition hover:bg-[#edf2ff] disabled:cursor-not-allowed disabled:opacity-70'
+                          onClick={() => setEventDraft((prev) => ({ ...prev, image: '' }))}
+                          className='absolute top-4 right-4 h-9 w-9 flex items-center justify-center rounded-full bg-red-500/80 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity'
                         >
-                          {isUploadingEventImage ? 'Uploading...' : 'Upload Image'}
+                          <Trash2 size={16} />
                         </button>
-                        <span className='text-[12px] text-[#6a7790]'>
-                          {eventImageFile ? eventImageFile.name : 'No file selected'}
-                        </span>
                       </div>
+                    )}
+
+                    <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                      Full Description
+                      <textarea
+                        value={eventDraft.description}
+                        onChange={(event) =>
+                          setEventDraft((prev) => ({ ...prev, description: event.target.value }))
+                        }
+                        className={textareaClass}
+                        placeholder='Elaborate on the significance and itinerary of the event...'
+                      />
                     </label>
-                  </div>
-                  {eventDraft.image ? (
-                    <div className='mt-3 rounded-[10px] border border-[#dce4f0] bg-white p-3'>
-                      <img src={eventDraft.image} alt='Event preview' className='h-[180px] w-full rounded-[8px] object-cover' />
+
+                    <div className='flex justify-end gap-3 pt-4'>
+                       <button
+                        type='button'
+                        onClick={() => hideForm('events')}
+                        className={actionButtonClass}
+                      >
+                        Discard
+                      </button>
+                      {editingEventIndex !== null && (
+                        <button
+                          type='button'
+                          onClick={() => {
+                            setEditingEventIndex(null)
+                            setEventDraft(emptyEvent)
+                          }}
+                          className={actionButtonClass}
+                        >
+                          Cancel Modification
+                        </button>
+                      )}
                       <button
                         type='button'
-                        onClick={() => setEventDraft((prev) => ({ ...prev, image: '' }))}
-                        className='mt-3 inline-flex h-9 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] transition hover:bg-[#fff3f3]'
+                        onClick={upsertEvent}
+                        className={primaryButtonClass}
                       >
-                        Remove Image
+                        <Plus size={16} className='mr-2' />
+                        {editingEventIndex === null ? 'Create Event' : 'Update Event'}
                       </button>
                     </div>
-                  ) : null}
-                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                    Description
-                    <textarea
-                      value={eventDraft.description}
-                      onChange={(event) =>
-                        setEventDraft((prev) => ({ ...prev, description: event.target.value }))
-                      }
-                      className={textareaClass}
-                      placeholder='Event details'
-                    />
-                  </label>
-
-                  <div className='mt-3 flex gap-2'>
-                    <button
-                      type='button'
-                      onClick={upsertEvent}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                    >
-                      {editingEventIndex === null ? 'Add Event' : 'Update Event'}
-                    </button>
-                    {editingEventIndex !== null ? (
-                      <button
-                        type='button'
-                        onClick={() => {
-                          setEditingEventIndex(null)
-                          setEventDraft(emptyEvent)
-                        }}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                      >
-                        Cancel Edit
-                      </button>
-                    ) : null}
-                    <button
-                      type='button'
-                      onClick={() => hideForm('events')}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                    >
-                      Close Form
-                    </button>
                   </div>
                 </div>
                 ) : null}
@@ -1913,301 +2193,271 @@ const DashboardPage = () => {
             ) : null}
 
             {active === 'media' ? (
-              <div className='mt-6 space-y-5'>
-                <div className='flex justify-end'>
-                  <button type='button' onClick={() => showForm('mediaCards')} className={actionButtonClass}>
-                    Add Media Card
-                  </button>
-                </div>
-                {openForms.mediaCards ? (
-                <div ref={mediaCardFormRef} className={getPanelClass('media-card-form')}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Create / Edit Media Card</h3>
-                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      ID
-                      <input
-                        value={mediaCardDraft.id}
-                        onChange={(event) =>
-                          setMediaCardDraft((prev) => ({ ...prev, id: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='photo-gallery'
-                      />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Title
-                      <input
-                        value={mediaCardDraft.title}
-                        onChange={(event) =>
-                          setMediaCardDraft((prev) => ({ ...prev, title: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='Photo Gallery'
-                      />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a] md:col-span-2'>
-                      Button Label
-                      <input
-                        value={mediaCardDraft.buttonLabel}
+              <div className='mt-10 space-y-12'>
+                {/* Media Cards Section */}
+                <div className='space-y-6'>
+                  <div className='flex justify-between items-center bg-gray-50 p-5 rounded-[22px] border border-gray-100'>
+                    <div className='flex items-center gap-4'>
+                      <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
+                        <ImageIcon size={20} />
+                      </div>
+                      <div>
+                        <h4 className='text-[15px] font-bold text-gray-900'>Interactive Media Cards</h4>
+                        <p className='text-[12px] text-gray-400'>Manage the quick-access media categories</p>
+                      </div>
+                    </div>
+                    <button type='button' onClick={() => showForm('mediaCards')} className={actionButtonClass}>
+                      <Plus size={16} className='mr-2' />
+                      New Card
+                    </button>
+                  </div>
+
+                  {openForms.mediaCards ? (
+                  <div ref={mediaCardFormRef} className={getPanelClass('media-card-form')}>
+                    <div className='flex items-center gap-3 mb-8'>
+                      <div className='flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
+                        <LayoutDashboard size={20} />
+                      </div>
+                      <h3 className='text-[18px] font-black text-gray-900 tracking-tight'>Card Configuration</h3>
+                    </div>
+
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Component ID
+                        <input
+                          value={mediaCardDraft.id}
+                          onChange={(event) =>
+                            setMediaCardDraft((prev) => ({ ...prev, id: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='e.g. photo-gallery'
+                        />
+                      </label>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Primary Title
+                        <input
+                          value={mediaCardDraft.title}
+                          onChange={(event) =>
+                            setMediaCardDraft((prev) => ({ ...prev, title: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='Photo Gallery'
+                        />
+                      </label>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1 md:col-span-2'>
+                        Action Button Label
+                        <input
+                          value={mediaCardDraft.buttonLabel}
+                          onChange={(event) =>
+                            setMediaCardDraft((prev) => ({
+                              ...prev,
+                              buttonLabel: event.target.value,
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='View Photo Albums'
+                        />
+                      </label>
+                    </div>
+                    <label className='mt-6 block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                      Contextual Description
+                      <textarea
+                        value={mediaCardDraft.description}
                         onChange={(event) =>
                           setMediaCardDraft((prev) => ({
                             ...prev,
-                            buttonLabel: event.target.value,
+                            description: event.target.value,
                           }))
                         }
-                        className={inputClass}
-                        placeholder='View Photo Albums'
+                        className={textareaClass}
+                        placeholder='Describe what users will find here...'
                       />
                     </label>
-                  </div>
-                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                    Description
-                    <textarea
-                      value={mediaCardDraft.description}
-                      onChange={(event) =>
-                        setMediaCardDraft((prev) => ({
-                          ...prev,
-                          description: event.target.value,
-                        }))
-                      }
-                      className={textareaClass}
-                      placeholder='Card description'
-                    />
-                  </label>
 
-                  <div className='mt-3 flex gap-2'>
-                    <button
-                      type='button'
-                      onClick={upsertMediaCard}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                    >
-                      {editingMediaCardIndex === null ? 'Add Card' : 'Update Card'}
-                    </button>
-                    {editingMediaCardIndex !== null ? (
+                    <div className='mt-8 pt-6 border-t border-white/5 flex gap-3 justify-end'>
+                      <button type='button' onClick={() => hideForm('mediaCards')} className={actionButtonClass}>Discard</button>
                       <button
                         type='button'
-                        onClick={() => {
-                          setEditingMediaCardIndex(null)
-                          setMediaCardDraft(emptyMediaCard)
-                        }}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
+                        onClick={upsertMediaCard}
+                        className={primaryButtonClass}
                       >
-                        Cancel Edit
+                        {editingMediaCardIndex === null ? 'Create Card' : 'Update Card'}
                       </button>
-                    ) : null}
-                    <button
-                      type='button'
-                      onClick={() => hideForm('mediaCards')}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                    >
-                      Close Form
+                    </div>
+                  </div>
+                  ) : null}
+
+                  <DataTable
+                    title='Available Media Categories'
+                    rows={mediaCardsRows}
+                    columns={[
+                      { key: 'id', label: 'ID' },
+                      { key: 'title', label: 'Title' },
+                      { key: 'buttonLabel', label: 'Action Button' },
+                    ]}
+                    emptyMessage='No media categories defined.'
+                    onEdit={(index) => startEdit('media-cards', index, mediaCardsRows[index])}
+                    onDelete={(index) => {
+                      setMediaCardsRows((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
+                    }}
+                  />
+                </div>
+
+                {/* Media Updates Section */}
+                <div className='space-y-6 pt-10 border-t border-gray-100'>
+                  <div className='flex justify-between items-center bg-gray-50 p-5 rounded-[22px] border border-gray-100'>
+                    <div className='flex items-center gap-4'>
+                      <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
+                        <ImageIcon size={20} />
+                      </div>
+                      <div>
+                        <h4 className='text-[15px] font-bold text-gray-900'>System Updates</h4>
+                        <p className='text-[12px] text-gray-400'>Push new content notifications</p>
+                      </div>
+                    </div>
+                    <button type='button' onClick={() => showForm('mediaUpdates')} className={actionButtonClass}>
+                      <Plus size={16} className='mr-2' />
+                      New Update
                     </button>
                   </div>
-                </div>
-                ) : null}
 
-                <DataTable
-                  title='Media Cards Table View'
-                  rows={mediaCardsRows}
-                  columns={[
-                    { key: 'id', label: 'ID' },
-                    { key: 'title', label: 'Title' },
-                    { key: 'buttonLabel', label: 'Button Label' },
-                  ]}
-                  emptyMessage='No media cards created yet.'
-                  onEdit={(index) => startEdit('media-cards', index, mediaCardsRows[index])}
-                  onDelete={(index) => {
-                    setMediaCardsRows((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
-                    if (editingMediaCardIndex === index) {
-                      setEditingMediaCardIndex(null)
-                      setMediaCardDraft(emptyMediaCard)
-                    }
-                  }}
-                />
+                  {openForms.mediaUpdates ? (
+                  <div ref={mediaUpdateFormRef} className={getPanelClass('media-update-form')}>
+                    <div className='flex items-center gap-3 mb-8'>
+                      <div className='flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
+                        <PlusCircle size={20} />
+                      </div>
+                      <h3 className='text-[18px] font-black text-gray-900 tracking-tight'>Update Configuration</h3>
+                    </div>
 
-                <div className='flex justify-end'>
-                  <button type='button' onClick={() => showForm('mediaUpdates')} className={actionButtonClass}>
-                    Add Media Update
-                  </button>
-                </div>
-                {openForms.mediaUpdates ? (
-                <div ref={mediaUpdateFormRef} className={getPanelClass('media-update-form')}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Create / Edit Media Update</h3>
-                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Title
-                      <input
-                        value={mediaUpdateDraft.title}
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Headline
+                        <input
+                          value={mediaUpdateDraft.title}
+                          onChange={(event) =>
+                            setMediaUpdateDraft((prev) => ({ ...prev, title: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='Vaisakhi 2026 Photo Album'
+                        />
+                      </label>
+                      <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        CTA Label
+                        <input
+                          value={mediaUpdateDraft.action}
+                          onChange={(event) =>
+                            setMediaUpdateDraft((prev) => ({ ...prev, action: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='View Album'
+                        />
+                      </label>
+                    </div>
+                    <label className='mt-6 block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                      Short Description
+                      <textarea
+                        value={mediaUpdateDraft.description}
                         onChange={(event) =>
-                          setMediaUpdateDraft((prev) => ({ ...prev, title: event.target.value }))
+                          setMediaUpdateDraft((prev) => ({
+                            ...prev,
+                            description: event.target.value,
+                          }))
                         }
-                        className={inputClass}
-                        placeholder='Vaisakhi 2026 Photo Album'
+                        className={textareaClass}
+                        placeholder='Catchy context for the update...'
                       />
                     </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Action
-                      <input
-                        value={mediaUpdateDraft.action}
-                        onChange={(event) =>
-                          setMediaUpdateDraft((prev) => ({ ...prev, action: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='View Album'
-                      />
-                    </label>
-                  </div>
-                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                    Description
-                    <textarea
-                      value={mediaUpdateDraft.description}
-                      onChange={(event) =>
-                        setMediaUpdateDraft((prev) => ({
-                          ...prev,
-                          description: event.target.value,
-                        }))
-                      }
-                      className={textareaClass}
-                      placeholder='Update details'
-                    />
-                  </label>
 
-                  <div className='mt-3 flex gap-2'>
-                    <button
-                      type='button'
-                      onClick={upsertMediaUpdate}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                    >
-                      {editingMediaUpdateIndex === null ? 'Add Update' : 'Update Entry'}
-                    </button>
-                    {editingMediaUpdateIndex !== null ? (
+                    <div className='mt-8 pt-6 border-t border-white/5 flex gap-3 justify-end'>
+                      <button type='button' onClick={() => hideForm('mediaUpdates')} className={actionButtonClass}>Discard</button>
                       <button
                         type='button'
-                        onClick={() => {
-                          setEditingMediaUpdateIndex(null)
-                          setMediaUpdateDraft(emptyMediaUpdate)
-                        }}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
+                        onClick={upsertMediaUpdate}
+                        className={primaryButtonClass}
                       >
-                        Cancel Edit
+                        {editingMediaUpdateIndex === null ? 'Publish Update' : 'Synchronize Update'}
                       </button>
-                    ) : null}
-                    <button
-                      type='button'
-                      onClick={() => hideForm('mediaUpdates')}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                    >
-                      Close Form
-                    </button>
+                    </div>
                   </div>
-                </div>
-                ) : null}
+                  ) : null}
 
-                <DataTable
-                  title='Media Updates Table View'
-                  rows={mediaUpdatesRows}
-                  columns={[
-                    { key: 'title', label: 'Title' },
-                    { key: 'action', label: 'Action' },
-                    {
-                      key: 'description',
-                      label: 'Description',
-                      render: (row) => row.description || '-',
-                    },
-                  ]}
-                  emptyMessage='No media updates created yet.'
-                  onEdit={(index) => startEdit('media-updates', index, mediaUpdatesRows[index])}
-                  onDelete={(index) => {
-                    setMediaUpdatesRows((prev) =>
-                      prev.filter((_, itemIndex) => itemIndex !== index),
-                    )
-                    if (editingMediaUpdateIndex === index) {
-                      setEditingMediaUpdateIndex(null)
-                      setMediaUpdateDraft(emptyMediaUpdate)
-                    }
-                  }}
-                />
+                  <DataTable
+                    title='Recent Media Feed'
+                    rows={mediaUpdatesRows}
+                    columns={[
+                      { key: 'title', label: 'Headline' },
+                      { key: 'action', label: 'Call to Action' },
+                      {
+                        key: 'description',
+                        label: 'Context',
+                        render: (row) => row.description || '<span className="text-white/20">Empty</span>',
+                      },
+                    ]}
+                    emptyMessage='No system updates found.'
+                    onEdit={(index) => startEdit('media-updates', index, mediaUpdatesRows[index])}
+                    onDelete={(index) => {
+                      setMediaUpdatesRows((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
+                    }}
+                  />
+                </div>
               </div>
-            ) : null}
+            ) : null}            {active === 'contact' ? (
+              <div className='mt-10 space-y-10'>
+                <div className={panelClass}>
+                   <div className='flex items-center gap-4 mb-8 pb-6 border-b border-gray-100'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
+                      <Mail size={24} />
+                    </div>
+                    <div>
+                      <h3 className='text-[18px] font-bold text-gray-900 tracking-tight'>Direct Communications</h3>
+                      <p className='text-[12px] text-gray-400'>Update primary reachable contact channels</p>
+                    </div>
+                  </div>
 
-            {active === 'contact' ? (
-              <div className='mt-6 space-y-5'>
-                <div className={getPanelClass('contact-main-form')}>
-                  <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
-                    <label className='text-[14px] font-semibold text-[#1a2333]'>
-                      Phone
+                  <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                    <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                      Public Phone Number
                       <input
                         value={contactForm.phone}
                         onChange={(event) =>
                           setContactForm((prev) => ({ ...prev, phone: event.target.value }))
                         }
                         className={inputClass}
+                        placeholder='+49 (0) 123 456789'
                       />
                     </label>
 
-                    <label className='text-[14px] font-semibold text-[#1a2333]'>
-                      Email
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                      Official Support Email
                       <input
                         value={contactForm.email}
                         onChange={(event) =>
                           setContactForm((prev) => ({ ...prev, email: event.target.value }))
                         }
                         className={inputClass}
+                        placeholder='contact@gurdwara-berlin.de'
                       />
                     </label>
                   </div>
-                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Sections</p>
-                  <div className='mt-2 space-y-3'>
-                    {aboutUsForm.history.sections.map((section, index) => (
-                      <div key={`history-section-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
-                        <input
-                          value={section.title}
-                          onChange={(event) =>
-                            updateAboutUsArrayItem('history', 'sections', index, 'title', event.target.value)
-                          }
-                          className={inputClass}
-                          placeholder='Section title'
-                        />
-                        <textarea
-                          value={section.body}
-                          onChange={(event) =>
-                            updateAboutUsArrayItem('history', 'sections', index, 'body', event.target.value)
-                          }
-                          className={textareaClass}
-                          placeholder='Section body'
-                        />
-                        <button
-                          type='button'
-                          onClick={() =>
-                            removeAboutUsArrayItem('history', 'sections', index, { title: '', body: '' })
-                          }
-                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
-                        >
-                          Remove Section
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      type='button'
-                      onClick={() => addAboutUsArrayItem('history', 'sections', { title: '', body: '' })}
-                      className={actionButtonClass}
-                    >
-                      Add Section
-                    </button>
-                  </div>
                 </div>
 
-                <div className='space-y-5'>
-                  <div className='flex justify-end'>
+                <div className='space-y-6 pt-10 border-t border-gray-100'>
+                  <div className='flex justify-between items-center bg-gray-50 p-4 rounded-[18px] border border-gray-100'>
+                    <div>
+                      <h4 className='text-[14px] font-bold text-gray-900'>Regional Office Address</h4>
+                      <p className='text-[12px] text-gray-400'>Manage display address lines</p>
+                    </div>
                     <button type='button' onClick={() => showForm('contactAddress')} className={actionButtonClass}>
-                      Add Address Line
+                      <Plus size={16} className='mr-2' />
+                      Add Line
                     </button>
                   </div>
+
                   {openForms.contactAddress ? (
                   <div ref={contactAddressFormRef} className={getPanelClass('contact-address-form')}>
-                    <h3 className='text-[15px] font-bold text-[#1a2333]'>Contact Address</h3>
-                    <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                      Address Line
+                    <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                      Physical Address Line
                       <input
                         value={contactAddressDraft}
                         onChange={(event) => setContactAddressDraft(event.target.value)}
@@ -2215,44 +2465,25 @@ const DashboardPage = () => {
                         placeholder='13187 Berlin'
                       />
                     </label>
-                    <div className='mt-3 flex gap-2'>
+                    <div className='mt-6 flex gap-3 justify-end'>
+                      <button type='button' onClick={() => hideForm('contactAddress')} className={actionButtonClass}>Discard</button>
                       <button
                         type='button'
                         onClick={upsertContactAddress}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
+                        className={primaryButtonClass}
                       >
-                        {editingContactAddressIndex === null
-                          ? 'Add Address Line'
-                          : 'Update Address Line'}
-                      </button>
-                      {editingContactAddressIndex !== null ? (
-                        <button
-                          type='button'
-                          onClick={() => {
-                            setEditingContactAddressIndex(null)
-                            setContactAddressDraft('')
-                          }}
-                          className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                        >
-                          Cancel Edit
-                        </button>
-                      ) : null}
-                      <button
-                        type='button'
-                        onClick={() => hideForm('contactAddress')}
-                        className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                      >
-                        Close Form
+                         <Save size={16} className='mr-2' />
+                        {editingContactAddressIndex === null ? 'Add Address' : 'Update Address'}
                       </button>
                     </div>
                   </div>
                   ) : null}
 
                   <DataTable
-                    title='Address Lines Table View'
+                    title='Contact Address Repository'
                     rows={contactForm.address}
-                    columns={[{ key: 'text', label: 'Address Line' }]}
-                    emptyMessage='No contact address lines yet.'
+                    columns={[{ key: 'text', label: 'Registered Line' }]}
+                    emptyMessage='No contact address lines defined.'
                     onEdit={(index) =>
                       startEdit('contact-address', index, contactForm.address[index])
                     }
@@ -2261,10 +2492,6 @@ const DashboardPage = () => {
                         ...prev,
                         address: prev.address.filter((_, itemIndex) => itemIndex !== index),
                       }))
-                      if (editingContactAddressIndex === index) {
-                        setEditingContactAddressIndex(null)
-                        setContactAddressDraft('')
-                      }
                     }}
                   />
                 </div>
@@ -2272,317 +2499,417 @@ const DashboardPage = () => {
             ) : null}
 
             {active === 'about-us' ? (
-              <div className='mt-6 space-y-5'>
+              <div className='mt-10 space-y-8'>
                 <div className={panelClass}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>History</h3>
-                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Hero Title
-                      <input
-                        value={aboutUsForm.history.heroTitle}
-                        onChange={(event) =>
-                          updateAboutUsText('history', 'heroTitle', event.target.value)
-                        }
-                        className={inputClass}
-                      />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Hero Subtitle
-                      <input
-                        value={aboutUsForm.history.heroSubtitle}
-                        onChange={(event) =>
-                          updateAboutUsText('history', 'heroSubtitle', event.target.value)
-                        }
-                        className={inputClass}
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <div className={panelClass}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Mission</h3>
-                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                    Hero Title
+                  <h3 className='text-[18px] font-bold text-gray-900 tracking-tight'>About Pages Overview</h3>
+                  <p className='mt-1 text-[12px] text-gray-500'>Update core headings and media. Use tables below for item-level edits.</p>
+                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <input
+                      value={aboutUsForm.history.heroTitle}
+                      onChange={(event) => updateAboutUsText('history', 'heroTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='History hero title'
+                    />
+                    <input
+                      value={aboutUsForm.history.heroSubtitle}
+                      onChange={(event) => updateAboutUsText('history', 'heroSubtitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='History hero subtitle'
+                    />
                     <input
                       value={aboutUsForm.mission.heroTitle}
                       onChange={(event) => updateAboutUsText('mission', 'heroTitle', event.target.value)}
                       className={inputClass}
+                      placeholder='Mission hero title'
                     />
-                  </label>
-                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                    Hero Description
-                    <textarea
-                      value={aboutUsForm.mission.heroDescription}
-                      onChange={(event) =>
-                        updateAboutUsText('mission', 'heroDescription', event.target.value)
-                      }
-                      className={textareaClass}
+                    <input
+                      value={aboutUsForm.committee.heroTitle}
+                      onChange={(event) => updateAboutUsText('committee', 'heroTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Committee hero title'
                     />
-                  </label>
-                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Mission Cards</p>
-                  <div className='mt-2 space-y-3'>
-                    {aboutUsForm.mission.cards.map((card, index) => (
-                      <div key={`mission-card-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
-                        <input
-                          value={card.title}
-                          onChange={(event) =>
-                            updateAboutUsArrayItem('mission', 'cards', index, 'title', event.target.value)
-                          }
-                          className={inputClass}
-                          placeholder='Card title'
-                        />
-                        <input
-                          value={card.accent}
-                          onChange={(event) =>
-                            updateAboutUsArrayItem('mission', 'cards', index, 'accent', event.target.value)
-                          }
-                          className={inputClass}
-                          placeholder='Accent class (e.g. bg-[#f6ab3c])'
-                        />
-                        <textarea
-                          value={card.description}
-                          onChange={(event) =>
-                            updateAboutUsArrayItem('mission', 'cards', index, 'description', event.target.value)
-                          }
-                          className={textareaClass}
-                          placeholder='Card description'
-                        />
-                        <button
-                          type='button'
-                          onClick={() =>
-                            removeAboutUsArrayItem('mission', 'cards', index, {
-                              title: '',
-                              description: '',
-                              accent: '',
-                            })
-                          }
-                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
-                        >
-                          Remove Card
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      type='button'
-                      onClick={() =>
-                        addAboutUsArrayItem('mission', 'cards', {
-                          title: '',
-                          description: '',
-                          accent: '',
-                        })
-                      }
-                      className={actionButtonClass}
-                    >
-                      Add Card
-                    </button>
+                    <input
+                      value={aboutUsForm.governance.heroTitle}
+                      onChange={(event) => updateAboutUsText('governance', 'heroTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Governance hero title'
+                    />
+                    <input
+                      value={aboutUsForm.governance.heroSubtitle}
+                      onChange={(event) => updateAboutUsText('governance', 'heroSubtitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Governance hero subtitle'
+                    />
                   </div>
-                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Core Values</p>
-                  <div className='mt-2 space-y-3'>
-                    {aboutUsForm.mission.coreValues.map((value, index) => (
-                      <div key={`core-value-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
-                        <input
-                          value={value.title}
-                          onChange={(event) =>
-                            updateAboutUsArrayItem('mission', 'coreValues', index, 'title', event.target.value)
-                          }
-                          className={inputClass}
-                          placeholder='Value title'
-                        />
-                        <textarea
-                          value={value.description}
-                          onChange={(event) =>
-                            updateAboutUsArrayItem(
-                              'mission',
-                              'coreValues',
-                              index,
-                              'description',
-                              event.target.value,
-                            )
-                          }
-                          className={textareaClass}
-                          placeholder='Value description'
-                        />
-                        <button
-                          type='button'
-                          onClick={() =>
-                            removeAboutUsArrayItem('mission', 'coreValues', index, {
-                              title: '',
-                              description: '',
-                            })
-                          }
-                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
-                        >
-                          Remove Value
-                        </button>
-                      </div>
-                    ))}
+                  <div className='mt-4 flex justify-end'>
                     <button
                       type='button'
-                      onClick={() =>
-                        addAboutUsArrayItem('mission', 'coreValues', {
-                          title: '',
-                          description: '',
-                        })
-                      }
-                      className={actionButtonClass}
+                      onClick={() => void saveAboutUsSection('About page headings')}
+                      disabled={updateMutation.isPending}
+                      className={primaryButtonClass}
                     >
-                      Add Value
+                      <Save size={14} className='mr-1.5' />
+                      {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
                     </button>
                   </div>
                 </div>
 
                 <div className={panelClass}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Committee</h3>
-                  <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Hero Title
+                  <h3 className='text-[16px] font-bold text-gray-900 tracking-tight'>Hero Images</h3>
+                  <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-3'>
+                    <div>
                       <input
-                        value={aboutUsForm.committee.heroTitle}
-                        onChange={(event) => updateAboutUsText('committee', 'heroTitle', event.target.value)}
+                        value={aboutUsForm.history.heroImage}
+                        onChange={(event) => updateAboutUsText('history', 'heroImage', event.target.value)}
                         className={inputClass}
+                        placeholder='History image URL'
                       />
-                    </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Hero Subtitle
+                      <label className='mt-2 inline-flex h-9 cursor-pointer items-center rounded-[10px] border border-gray-200 bg-gray-50 px-3 text-[12px] font-semibold text-gray-700'>
+                        Upload
+                        <input
+                          type='file'
+                          accept='image/*'
+                          className='hidden'
+                          onChange={(event) => {
+                            const file = event.target.files?.[0]
+                            if (!file) return
+                            void uploadAboutImage(file, (url) => updateAboutUsText('history', 'heroImage', url), 'History image uploaded.')
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <div>
                       <input
-                        value={aboutUsForm.committee.heroSubtitle}
-                        onChange={(event) => updateAboutUsText('committee', 'heroSubtitle', event.target.value)}
+                        value={aboutUsForm.mission.heroImage}
+                        onChange={(event) => updateAboutUsText('mission', 'heroImage', event.target.value)}
                         className={inputClass}
+                        placeholder='Mission image URL'
                       />
-                    </label>
+                      <label className='mt-2 inline-flex h-9 cursor-pointer items-center rounded-[10px] border border-gray-200 bg-gray-50 px-3 text-[12px] font-semibold text-gray-700'>
+                        Upload
+                        <input
+                          type='file'
+                          accept='image/*'
+                          className='hidden'
+                          onChange={(event) => {
+                            const file = event.target.files?.[0]
+                            if (!file) return
+                            void uploadAboutImage(file, (url) => updateAboutUsText('mission', 'heroImage', url), 'Mission image uploaded.')
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        value={aboutUsForm.governance.heroImage}
+                        onChange={(event) => updateAboutUsText('governance', 'heroImage', event.target.value)}
+                        className={inputClass}
+                        placeholder='Governance image URL'
+                      />
+                      <label className='mt-2 inline-flex h-9 cursor-pointer items-center rounded-[10px] border border-gray-200 bg-gray-50 px-3 text-[12px] font-semibold text-gray-700'>
+                        Upload
+                        <input
+                          type='file'
+                          accept='image/*'
+                          className='hidden'
+                          onChange={(event) => {
+                            const file = event.target.files?.[0]
+                            if (!file) return
+                            void uploadAboutImage(file, (url) => updateAboutUsText('governance', 'heroImage', url), 'Governance image uploaded.')
+                          }}
+                        />
+                      </label>
+                    </div>
                   </div>
-                  <label className='mt-3 block text-[13px] font-semibold text-[#33415a]'>
-                    Intro
-                    <textarea
-                      value={aboutUsForm.committee.intro}
-                      onChange={(event) => updateAboutUsText('committee', 'intro', event.target.value)}
-                      className={textareaClass}
-                    />
-                  </label>
-                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Members</p>
-                  <div className='mt-2 space-y-3'>
-                    {aboutUsForm.committee.members.map((member, index) => (
-                      <div key={`committee-member-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
-                        <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-                          <input value={member.initials} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'initials', event.target.value)} className={inputClass} placeholder='Initials' />
-                          <input value={member.name} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'name', event.target.value)} className={inputClass} placeholder='Name' />
-                          <input value={member.role} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'role', event.target.value)} className={inputClass} placeholder='Role' />
-                          <input value={member.email} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'email', event.target.value)} className={inputClass} placeholder='Email' />
-                          <input value={member.phone} onChange={(event) => updateAboutUsArrayItem('committee', 'members', index, 'phone', event.target.value)} className='md:col-span-2 mt-2 h-11 w-full rounded-[10px] border border-[#e2e7f0] bg-white px-3 text-[14px] outline-none focus:border-[#9bb0e1]' placeholder='Phone' />
-                        </div>
-                        <button
-                          type='button'
-                          onClick={() =>
-                            removeAboutUsArrayItem('committee', 'members', index, {
-                              initials: '',
-                              name: '',
-                              role: '',
-                              email: '',
-                              phone: '',
-                            })
-                          }
-                          className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'
-                        >
-                          Remove Member
-                        </button>
-                      </div>
-                    ))}
+                  {isUploadingAboutImage ? <p className='mt-2 text-[12px] text-gray-500'>Uploading...</p> : null}
+                  <div className='mt-4 flex justify-end'>
                     <button
                       type='button'
-                      onClick={() =>
-                        addAboutUsArrayItem('committee', 'members', {
-                          initials: '',
-                          name: '',
-                          role: '',
-                          email: '',
-                          phone: '',
-                        })
-                      }
-                      className={actionButtonClass}
+                      onClick={() => void saveAboutUsSection('About page images')}
+                      disabled={updateMutation.isPending}
+                      className={primaryButtonClass}
                     >
-                      Add Member
+                      <Save size={14} className='mr-1.5' />
+                      {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
                     </button>
                   </div>
-                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <input value={aboutUsForm.committee.ctaTitle} onChange={(event) => updateAboutUsText('committee', 'ctaTitle', event.target.value)} className={inputClass} placeholder='CTA Title' />
-                    <input value={aboutUsForm.committee.ctaButtonLabel} onChange={(event) => updateAboutUsText('committee', 'ctaButtonLabel', event.target.value)} className={inputClass} placeholder='CTA Button Label' />
-                  </div>
-                  <textarea value={aboutUsForm.committee.ctaDescription} onChange={(event) => updateAboutUsText('committee', 'ctaDescription', event.target.value)} className={textareaClass} placeholder='CTA Description' />
                 </div>
 
-                <div className={panelClass}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Governance</h3>
-                  <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <input value={aboutUsForm.governance.heroTitle} onChange={(event) => updateAboutUsText('governance', 'heroTitle', event.target.value)} className={inputClass} placeholder='Hero Title' />
-                    <input value={aboutUsForm.governance.heroSubtitle} onChange={(event) => updateAboutUsText('governance', 'heroSubtitle', event.target.value)} className={inputClass} placeholder='Hero Subtitle' />
-                    <input value={aboutUsForm.governance.structureTitle} onChange={(event) => updateAboutUsText('governance', 'structureTitle', event.target.value)} className={inputClass} placeholder='Structure Title' />
-                    <input value={aboutUsForm.governance.documentsTitle} onChange={(event) => updateAboutUsText('governance', 'documentsTitle', event.target.value)} className={inputClass} placeholder='Documents Title' />
-                    <input value={aboutUsForm.governance.reportsTitle} onChange={(event) => updateAboutUsText('governance', 'reportsTitle', event.target.value)} className={inputClass} placeholder='Reports Title' />
-                    <input value={aboutUsForm.governance.financialTitle} onChange={(event) => updateAboutUsText('governance', 'financialTitle', event.target.value)} className={inputClass} placeholder='Financial Title' />
-                    <input value={aboutUsForm.governance.taxTitle} onChange={(event) => updateAboutUsText('governance', 'taxTitle', event.target.value)} className={inputClass} placeholder='Tax Title' />
-                  </div>
-                  <textarea value={aboutUsForm.governance.structureIntro} onChange={(event) => updateAboutUsText('governance', 'structureIntro', event.target.value)} className={textareaClass} placeholder='Structure Intro' />
-                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Structure Blocks</p>
-                  <div className='mt-2 space-y-3'>
-                    {aboutUsForm.governance.structureBlocks.map((block, index) => (
-                      <div key={`structure-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
-                        <input value={block.title} onChange={(event) => updateAboutUsArrayItem('governance', 'structureBlocks', index, 'title', event.target.value)} className={inputClass} placeholder='Block title' />
-                        <textarea value={block.body} onChange={(event) => updateAboutUsArrayItem('governance', 'structureBlocks', index, 'body', event.target.value)} className={textareaClass} placeholder='Block body' />
-                        <button type='button' onClick={() => removeAboutUsArrayItem('governance', 'structureBlocks', index, { title: '', body: '' })} className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'>Remove Block</button>
-                      </div>
-                    ))}
-                    <button type='button' onClick={() => addAboutUsArrayItem('governance', 'structureBlocks', { title: '', body: '' })} className={actionButtonClass}>Add Block</button>
-                  </div>
-                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Documents</p>
-                  <div className='mt-2 space-y-3'>
-                    {aboutUsForm.governance.documents.map((document, index) => (
-                      <div key={`document-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
-                        <input value={document.title} onChange={(event) => updateAboutUsArrayItem('governance', 'documents', index, 'title', event.target.value)} className={inputClass} placeholder='Document title' />
-                        <input value={document.size} onChange={(event) => updateAboutUsArrayItem('governance', 'documents', index, 'size', event.target.value)} className={inputClass} placeholder='Document size' />
-                        <input value={document.accent} onChange={(event) => updateAboutUsArrayItem('governance', 'documents', index, 'accent', event.target.value)} className={inputClass} placeholder='Accent class' />
-                        <button type='button' onClick={() => removeAboutUsArrayItem('governance', 'documents', index, { title: '', size: '', accent: '' })} className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'>Remove Document</button>
-                      </div>
-                    ))}
-                    <button type='button' onClick={() => addAboutUsArrayItem('governance', 'documents', { title: '', size: '', accent: '' })} className={actionButtonClass}>Add Document</button>
-                  </div>
-                  <p className='mt-4 text-[13px] font-semibold text-[#33415a]'>Reports</p>
-                  <div className='mt-2 space-y-3'>
-                    {aboutUsForm.governance.reports.map((report, index) => (
-                      <div key={`report-${index}`} className='rounded-[10px] border border-[#e2e7f0] bg-white p-3'>
-                        <input value={report.title} onChange={(event) => updateAboutUsArrayItem('governance', 'reports', index, 'title', event.target.value)} className={inputClass} placeholder='Report title' />
-                        <input value={report.size} onChange={(event) => updateAboutUsArrayItem('governance', 'reports', index, 'size', event.target.value)} className={inputClass} placeholder='Report size' />
-                        <button type='button' onClick={() => removeAboutUsArrayItem('governance', 'reports', index, { title: '', size: '' })} className='mt-2 inline-flex h-8 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] hover:bg-[#fff3f3]'>Remove Report</button>
-                      </div>
-                    ))}
-                    <button type='button' onClick={() => addAboutUsArrayItem('governance', 'reports', { title: '', size: '' })} className={actionButtonClass}>Add Report</button>
-                  </div>
-                  <textarea value={aboutUsForm.governance.financialDescription} onChange={(event) => updateAboutUsText('governance', 'financialDescription', event.target.value)} className={textareaClass} placeholder='Financial Description' />
-                  <textarea value={aboutUsForm.governance.taxDescription} onChange={(event) => updateAboutUsText('governance', 'taxDescription', event.target.value)} className={textareaClass} placeholder='Tax Description' />
+                <DataTable
+                  title='History Sections'
+                  rows={aboutUsForm.history.sections}
+                  columns={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'body', label: 'Body' },
+                  ]}
+                  emptyMessage='No history sections yet.'
+                  onEdit={(index) => startEdit('about-history-section', index, aboutUsForm.history.sections[index])}
+                  onDelete={(index) =>
+                    removeAboutUsArrayItem('history', 'sections', index, { title: '', body: '' })
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() => addAboutUsArrayItem('history', 'sections', { title: '', body: '' })}
+                  className={actionButtonClass}
+                >
+                  <Plus size={14} className='mr-1.5' /> Add History Section
+                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => void saveAboutUsSection('History sections')}
+                    disabled={updateMutation.isPending}
+                    className={primaryButtonClass}
+                  >
+                    <Save size={14} className='mr-1.5' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                  </button>
+                </div>
+
+                <DataTable
+                  title='Mission Cards'
+                  rows={aboutUsForm.mission.cards}
+                  columns={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'description', label: 'Description' },
+                    { key: 'accent', label: 'Accent' },
+                  ]}
+                  emptyMessage='No mission cards yet.'
+                  onEdit={(index) => startEdit('about-mission-card', index, aboutUsForm.mission.cards[index])}
+                  onDelete={(index) =>
+                    removeAboutUsArrayItem('mission', 'cards', index, { title: '', description: '', accent: '' })
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() => addAboutUsArrayItem('mission', 'cards', { title: '', description: '', accent: '' })}
+                  className={actionButtonClass}
+                >
+                  <Plus size={14} className='mr-1.5' /> Add Mission Card
+                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => void saveAboutUsSection('Mission cards')}
+                    disabled={updateMutation.isPending}
+                    className={primaryButtonClass}
+                  >
+                    <Save size={14} className='mr-1.5' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                  </button>
+                </div>
+
+                <DataTable
+                  title='Mission Core Values'
+                  rows={aboutUsForm.mission.coreValues}
+                  columns={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'description', label: 'Description' },
+                  ]}
+                  emptyMessage='No core values yet.'
+                  onEdit={(index) => startEdit('about-mission-value', index, aboutUsForm.mission.coreValues[index])}
+                  onDelete={(index) =>
+                    removeAboutUsArrayItem('mission', 'coreValues', index, { title: '', description: '' })
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() => addAboutUsArrayItem('mission', 'coreValues', { title: '', description: '' })}
+                  className={actionButtonClass}
+                >
+                  <Plus size={14} className='mr-1.5' /> Add Core Value
+                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => void saveAboutUsSection('Mission core values')}
+                    disabled={updateMutation.isPending}
+                    className={primaryButtonClass}
+                  >
+                    <Save size={14} className='mr-1.5' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                  </button>
+                </div>
+
+                <DataTable
+                  title='Committee Members'
+                  rows={aboutUsForm.committee.members}
+                  columns={[
+                    { key: 'name', label: 'Name' },
+                    { key: 'role', label: 'Role' },
+                    { key: 'email', label: 'Email' },
+                    { key: 'phone', label: 'Phone' },
+                    { key: 'image', label: 'Image URL' },
+                  ]}
+                  emptyMessage='No members yet.'
+                  onEdit={(index) => startEdit('about-committee-member', index, aboutUsForm.committee.members[index])}
+                  onDelete={(index) =>
+                    removeAboutUsArrayItem('committee', 'members', index, {
+                      initials: '',
+                      name: '',
+                      role: '',
+                      email: '',
+                      phone: '',
+                      image: '',
+                    })
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() =>
+                    addAboutUsArrayItem('committee', 'members', {
+                      initials: '',
+                      name: '',
+                      role: '',
+                      email: '',
+                      phone: '',
+                      image: '',
+                    })
+                  }
+                  className={actionButtonClass}
+                >
+                  <Plus size={14} className='mr-1.5' /> Add Member
+                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => void saveAboutUsSection('Committee members')}
+                    disabled={updateMutation.isPending}
+                    className={primaryButtonClass}
+                  >
+                    <Save size={14} className='mr-1.5' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                  </button>
+                </div>
+
+                <DataTable
+                  title='Governance Structure Blocks'
+                  rows={aboutUsForm.governance.structureBlocks}
+                  columns={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'body', label: 'Body' },
+                  ]}
+                  emptyMessage='No structure blocks yet.'
+                  onEdit={(index) =>
+                    startEdit('about-governance-structure', index, aboutUsForm.governance.structureBlocks[index])
+                  }
+                  onDelete={(index) =>
+                    removeAboutUsArrayItem('governance', 'structureBlocks', index, { title: '', body: '' })
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() => addAboutUsArrayItem('governance', 'structureBlocks', { title: '', body: '' })}
+                  className={actionButtonClass}
+                >
+                  <Plus size={14} className='mr-1.5' /> Add Structure Block
+                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => void saveAboutUsSection('Governance structure')}
+                    disabled={updateMutation.isPending}
+                    className={primaryButtonClass}
+                  >
+                    <Save size={14} className='mr-1.5' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                  </button>
+                </div>
+
+                <DataTable
+                  title='Governance Documents'
+                  rows={aboutUsForm.governance.documents}
+                  columns={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'size', label: 'Size' },
+                    { key: 'accent', label: 'Accent' },
+                  ]}
+                  emptyMessage='No documents yet.'
+                  onEdit={(index) =>
+                    startEdit('about-governance-document', index, aboutUsForm.governance.documents[index])
+                  }
+                  onDelete={(index) =>
+                    removeAboutUsArrayItem('governance', 'documents', index, { title: '', size: '', accent: '' })
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() => addAboutUsArrayItem('governance', 'documents', { title: '', size: '', accent: '' })}
+                  className={actionButtonClass}
+                >
+                  <Plus size={14} className='mr-1.5' /> Add Document
+                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => void saveAboutUsSection('Governance documents')}
+                    disabled={updateMutation.isPending}
+                    className={primaryButtonClass}
+                  >
+                    <Save size={14} className='mr-1.5' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                  </button>
+                </div>
+
+                <DataTable
+                  title='Governance Reports'
+                  rows={aboutUsForm.governance.reports}
+                  columns={[
+                    { key: 'title', label: 'Title' },
+                    { key: 'size', label: 'Size' },
+                  ]}
+                  emptyMessage='No reports yet.'
+                  onEdit={(index) => startEdit('about-governance-report', index, aboutUsForm.governance.reports[index])}
+                  onDelete={(index) =>
+                    removeAboutUsArrayItem('governance', 'reports', index, { title: '', size: '' })
+                  }
+                />
+                <button
+                  type='button'
+                  onClick={() => addAboutUsArrayItem('governance', 'reports', { title: '', size: '' })}
+                  className={actionButtonClass}
+                >
+                  <Plus size={14} className='mr-1.5' /> Add Report
+                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => void saveAboutUsSection('Governance reports')}
+                    disabled={updateMutation.isPending}
+                    className={primaryButtonClass}
+                  >
+                    <Save size={14} className='mr-1.5' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                  </button>
                 </div>
               </div>
             ) : null}
-
             {active === 'profile' ? (
-              <div className='mt-6 space-y-5'>
+              <div className='mt-10 space-y-8'>
                 <div className={panelClass}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>My Profile</h3>
-                  <p className='mt-1 text-[13px] text-[#5f6c87]'>
-                    Update your login email or password.
-                  </p>
-                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <label className='text-[13px] font-semibold text-[#33415a] md:col-span-2'>
-                      Email
+                  <div className='flex items-center gap-4 mb-8 pb-6 border-b border-white/5'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-[14px] bg-white/5 border border-white/10 text-white'>
+                      <User size={24} />
+                    </div>
+                    <div>
+                      <h3 className='text-[18px] font-bold text-white tracking-tight'>My Profile</h3>
+                      <p className='text-[12px] text-white/40'>Manage your personal account credentials</p>
+                    </div>
+                  </div>
+
+                  <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1 md:col-span-2'>
+                      Login Email
                       <input
                         type='email'
                         value={profileForm.email}
-                        onChange={(event) =>
-                          setProfileForm((prev) => ({ ...prev, email: event.target.value }))
-                        }
-                        className={inputClass}
+                        readOnly
+                        className={`${inputClass} opacity-50 cursor-not-allowed`}
                         placeholder='you@example.com'
                       />
                     </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
                       New Password
                       <input
                         type='password'
@@ -2591,11 +2918,11 @@ const DashboardPage = () => {
                           setProfileForm((prev) => ({ ...prev, password: event.target.value }))
                         }
                         className={inputClass}
-                        placeholder='Minimum 8 characters'
+                        placeholder='Min 8 characters'
                       />
                     </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Confirm Password
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                      Confirm New Password
                       <input
                         type='password'
                         value={profileForm.confirmPassword}
@@ -2610,23 +2937,32 @@ const DashboardPage = () => {
                       />
                     </label>
                   </div>
-                  <button
-                    type='button'
-                    onClick={handleProfileUpdate}
-                    disabled={isProfileSaving}
-                    className='mt-4 inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599] disabled:cursor-not-allowed disabled:opacity-70'
-                  >
-                    {isProfileSaving ? 'Updating...' : 'Update Profile'}
-                  </button>
+                  <div className='mt-8 pt-6 border-t border-white/5 flex justify-end'>
+                    <button
+                      type='button'
+                      onClick={handleProfileUpdate}
+                      disabled={isProfileSaving}
+                      className={primaryButtonClass}
+                    >
+                      <Save size={16} className='mr-2' />
+                      {isProfileSaving ? 'Updating...' : 'Save Profile Changes'}
+                    </button>
+                  </div>
                 </div>
 
                 <div className={panelClass}>
-                  <h3 className='text-[15px] font-bold text-[#1a2333]'>Create User</h3>
-                  <p className='mt-1 text-[13px] text-[#5f6c87]'>
-                    Add a new user and assign their app role (admin or user).
-                  </p>
-                  <div className='mt-3 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
+                  <div className='flex items-center gap-4 mb-8 pb-6 border-b border-white/5'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-[14px] bg-white/5 border border-white/10 text-white'>
+                      <PlusCircle size={24} />
+                    </div>
+                    <div>
+                      <h3 className='text-[18px] font-bold text-white tracking-tight'>System Users</h3>
+                      <p className='text-[12px] text-white/40'>Grant administrative access to others</p>
+                    </div>
+                  </div>
+
+                  <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
                       Name
                       <input
                         value={newUserForm.name}
@@ -2634,11 +2970,11 @@ const DashboardPage = () => {
                           setNewUserForm((prev) => ({ ...prev, name: event.target.value }))
                         }
                         className={inputClass}
-                        placeholder='Optional name'
+                        placeholder='Full Name'
                       />
                     </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      App Role
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                      Access Level
                       <select
                         value={newUserForm.role}
                         onChange={(event) =>
@@ -2646,12 +2982,12 @@ const DashboardPage = () => {
                         }
                         className={inputClass}
                       >
-                        <option value='user'>user</option>
-                        <option value='admin'>admin</option>
+                        <option value='user' className='bg-[#0a0a0b]'>User</option>
+                        <option value='admin' className='bg-[#0a0a0b]'>Admin</option>
                       </select>
                     </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Email
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                      Email Address
                       <input
                         type='email'
                         value={newUserForm.email}
@@ -2659,11 +2995,11 @@ const DashboardPage = () => {
                           setNewUserForm((prev) => ({ ...prev, email: event.target.value }))
                         }
                         className={inputClass}
-                        placeholder='new.user@example.com'
+                        placeholder='email@example.com'
                       />
                     </label>
-                    <label className='text-[13px] font-semibold text-[#33415a]'>
-                      Password
+                    <label className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                      Initial Password
                       <input
                         type='password'
                         value={newUserForm.password}
@@ -2671,353 +3007,638 @@ const DashboardPage = () => {
                           setNewUserForm((prev) => ({ ...prev, password: event.target.value }))
                         }
                         className={inputClass}
-                        placeholder='Minimum 8 characters'
+                        placeholder='Min 8 chars'
                       />
                     </label>
                   </div>
-                  <button
-                    type='button'
-                    onClick={handleCreateUser}
-                    disabled={isCreatingUser}
-                    className='mt-4 inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599] disabled:cursor-not-allowed disabled:opacity-70'
-                  >
-                    {isCreatingUser ? 'Creating...' : 'Create User'}
-                  </button>
+                  <div className='mt-8 pt-6 border-t border-white/5 flex justify-end'>
+                    <button
+                      type='button'
+                      onClick={handleCreateUser}
+                      disabled={isCreatingUser}
+                      className={primaryButtonClass}
+                    >
+                      <Plus size={16} className='mr-2' />
+                      {isCreatingUser ? 'Creating...' : 'Register New User'}
+                    </button>
+                  </div>
                 </div>
 
-                <DataTable
-                  title='Users'
-                  rows={users}
-                  columns={[
-                    { key: 'email', label: 'Email' },
-                    { key: 'role', label: 'Role' },
-                    { key: 'name', label: 'Name' },
-                  ]}
-                  emptyMessage={usersLoading ? 'Loading users...' : 'No users found.'}
-                  showActions={false}
-                />
+                <div className='mt-8'>
+                  <DataTable
+                    title='Current Administrators'
+                    rows={users}
+                    columns={[
+                      { key: 'name', label: 'Name' },
+                      { key: 'email', label: 'Email Address' },
+                      { 
+                        key: 'role', 
+                        label: 'Access Role',
+                        render: (row) => (
+                          <span className='inline-flex items-center rounded-full bg-[#001da5]/5 px-2.5 py-0.5 text-[11px] font-bold text-[#001da5] border border-[#001da5]/10'>
+                            {row.role.toUpperCase()}
+                          </span>
+                        )
+                      },
+                    ]}
+                    emptyMessage={usersLoading ? 'Synchronizing user database...' : 'No other administrators found.'}
+                    showActions={false}
+                  />
+                </div>
               </div>
             ) : null}
 
             {editModal.open ? (
-              <div className='fixed inset-0 z-40 flex items-center justify-center bg-[#10172bcc] p-4'>
-                <div className='flex max-h-[90vh] w-full max-w-[720px] flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_20px_70px_rgba(0,0,0,0.35)]'>
-                  <div className='overflow-y-auto px-5 pb-4 pt-5'>
-                  <h3 className='text-[18px] font-bold text-[#121521]'>Update Entry</h3>
-                  <p className='mt-1 text-[13px] text-[#5f6c87]'>
-                    Update the values below and save this edit.
-                  </p>
-
-                  {['visitors-rule', 'visitors-address', 'visitors-reach', 'contact-address'].includes(
-                    editModal.type,
-                  ) ? (
-                    <label className='mt-4 block text-[13px] font-semibold text-[#33415a]'>
-                      Text
-                      <textarea
-                        value={editModal.data.text ?? ''}
-                        onChange={(event) =>
-                          setEditModal((prev) => ({
-                            ...prev,
-                            data: { ...prev.data, text: event.target.value },
-                          }))
-                        }
-                        className={textareaClass}
-                        placeholder='Edit text'
-                      />
-                    </label>
-                  ) : null}
-
-                  {['visitors-daily', 'visitors-langar'].includes(editModal.type) ? (
-                    <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Label
-                        <input
-                          value={editModal.data.label ?? ''}
-                          onChange={(event) =>
-                            setEditModal((prev) => ({
-                              ...prev,
-                              data: { ...prev.data, label: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                        />
-                      </label>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Value
-                        <input
-                          value={editModal.data.value ?? ''}
-                          onChange={(event) =>
-                            setEditModal((prev) => ({
-                              ...prev,
-                              data: { ...prev.data, value: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                        />
-                      </label>
+              <div className='fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300'>
+                <div className='flex max-h-[90vh] w-full max-w-[720px] flex-col overflow-hidden rounded-[32px] border border-gray-100 bg-white shadow-[0_30px_100px_-15px_rgba(0,0,0,0.1)] animate-in zoom-in-95 duration-300'>
+                  <div className='overflow-y-auto px-8 pb-8 pt-8'>
+                    <div className='flex items-center gap-4 mb-8 pb-6 border-b border-gray-100'>
+                      <div className='flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
+                        <Edit2 size={24} />
+                      </div>
+                      <div>
+                        <h3 className='text-[20px] font-bold text-gray-900 tracking-tight'>Update Entry</h3>
+                        <p className='text-[13px] text-gray-400'>Synchronize these changes with the public website</p>
+                      </div>
+                      <button onClick={closeEditModal} className='ml-auto h-10 w-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-gray-900'>
+                        <X size={20} />
+                      </button>
                     </div>
-                  ) : null}
 
-                  {editModal.type === 'events' ? (
-                    <div className='mt-4 space-y-4'>
-                      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Title
+                    <div className='space-y-6'>
+                    {['visitors-rule', 'visitors-address', 'visitors-reach', 'contact-address'].includes(
+                      editModal.type,
+                    ) ? (
+                      <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                        Text Content
+                        <textarea
+                          value={editModal.data.text ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, text: event.target.value },
+                            }))
+                          }
+                          className={textareaClass}
+                          placeholder='Edit text content...'
+                        />
+                      </label>
+                    ) : null}
+
+                    {['visitors-daily', 'visitors-langar'].includes(editModal.type) ? (
+                      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                        <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                          Label
                           <input
-                            value={editModal.data.title ?? ''}
+                            value={editModal.data.label ?? ''}
                             onChange={(event) =>
                               setEditModal((prev) => ({
                                 ...prev,
-                                data: { ...prev.data, title: event.target.value },
+                                data: { ...prev.data, label: event.target.value },
                               }))
                             }
                             className={inputClass}
+                            placeholder='e.g. Morning Prayer'
                           />
                         </label>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Date
+                        <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                          Time Window
                           <input
-                            value={editModal.data.date ?? ''}
+                            value={editModal.data.value ?? ''}
                             onChange={(event) =>
                               setEditModal((prev) => ({
                                 ...prev,
-                                data: { ...prev.data, date: event.target.value },
+                                data: { ...prev.data, value: event.target.value },
                               }))
                             }
                             className={inputClass}
+                            placeholder='e.g. 5:00 AM - 7:00 AM'
                           />
                         </label>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Time
-                          <input
-                            value={editModal.data.time ?? ''}
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'events' ? (
+                      <div className='space-y-6'>
+                        <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Event Title
+                            <input
+                              value={editModal.data.title ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, title: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Event Date
+                            <input
+                              value={editModal.data.date ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, date: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Start Time
+                            <input
+                              value={editModal.data.time ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, time: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Event Location
+                            <input
+                              value={editModal.data.location ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, location: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Category
+                            <select
+                              value={editModal.data.category ?? 'all'}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, category: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            >
+                              {EVENT_CATEGORIES.map((category) => (
+                                <option key={category} value={category} className='bg-[#0a0a0b]'>
+                                  {category}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <div className='md:col-span-2 space-y-3'>
+                            <span className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>Update Image Resources</span>
+                            <div className='flex items-center gap-3'>
+                              <label className='flex-1 flex h-11 items-center justify-center rounded-[12px] border border-white/5 bg-white/[0.03] px-4 text-[14px] text-white/40 cursor-pointer hover:bg-white/5 hover:text-white transition-all'>
+                                <ImageIcon size={16} className='mr-2' />
+                                {modalImageFile ? modalImageFile.name : 'Replace current image'}
+                                <input
+                                  type='file'
+                                  accept='image/*'
+                                  onChange={(event) => setModalImageFile(event.target.files?.[0] ?? null)}
+                                  className='hidden'
+                                />
+                              </label>
+                            </div>
+                            {editModal.data.image && (
+                              <div className='relative mt-3 rounded-[16px] overflow-hidden border border-white/10 group h-[180px]'>
+                                <img src={editModal.data.image} alt='Current' className='h-full w-full object-cover' />
+                                <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
+                                   <p className='text-[12px] font-bold'>Current Visual Resource</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <label className='block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                          Description
+                          <textarea
+                            value={editModal.data.description ?? ''}
                             onChange={(event) =>
                               setEditModal((prev) => ({
                                 ...prev,
-                                data: { ...prev.data, time: event.target.value },
+                                data: { ...prev.data, description: event.target.value },
                               }))
                             }
-                            className={inputClass}
+                            className={textareaClass}
                           />
                         </label>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Location
-                          <input
-                            value={editModal.data.location ?? ''}
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'media-cards' ? (
+                      <div className='space-y-6'>
+                        <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Component Identifier (ID)
+                            <input
+                              value={editModal.data.id ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, id: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Display Title
+                            <input
+                              value={editModal.data.title ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, title: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='md:col-span-2 text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                            Interactive Label (Button)
+                            <input
+                              value={editModal.data.buttonLabel ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, buttonLabel: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                        </div>
+                        <label className='block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                          Supporting Description
+                          <textarea
+                            value={editModal.data.description ?? ''}
                             onChange={(event) =>
                               setEditModal((prev) => ({
                                 ...prev,
-                                data: { ...prev.data, location: event.target.value },
+                                data: { ...prev.data, description: event.target.value },
                               }))
                             }
-                            className={inputClass}
+                            className={textareaClass}
                           />
                         </label>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Category
-                          <select
-                            value={editModal.data.category ?? 'all'}
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'media-updates' ? (
+                      <div className='space-y-6'>
+                        <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Update Headline
+                            <input
+                              value={editModal.data.title ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, title: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                            Call To Action
+                            <input
+                              value={editModal.data.action ?? ''}
+                              onChange={(event) =>
+                                setEditModal((prev) => ({
+                                  ...prev,
+                                  data: { ...prev.data, action: event.target.value },
+                                }))
+                              }
+                              className={inputClass}
+                            />
+                          </label>
+                        </div>
+                        <label className='block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                          Brief Context
+                          <textarea
+                            value={editModal.data.description ?? ''}
                             onChange={(event) =>
                               setEditModal((prev) => ({
                                 ...prev,
-                                data: { ...prev.data, category: event.target.value },
+                                data: { ...prev.data, description: event.target.value },
+                              }))
+                            }
+                            className={textareaClass}
+                          />
+                        </label>
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'about-history-section' ? (
+                      <div className='space-y-6'>
+                        <input
+                          value={editModal.data.title ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, title: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Section title'
+                        />
+                        <textarea
+                          value={editModal.data.body ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, body: event.target.value },
+                            }))
+                          }
+                          className={textareaClass}
+                          placeholder='Section body'
+                        />
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'about-mission-card' ? (
+                      <div className='space-y-6'>
+                        <input
+                          value={editModal.data.title ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, title: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Card title'
+                        />
+                        <input
+                          value={editModal.data.accent ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, accent: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Accent'
+                        />
+                        <textarea
+                          value={editModal.data.description ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, description: event.target.value },
+                            }))
+                          }
+                          className={textareaClass}
+                          placeholder='Card description'
+                        />
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'about-mission-value' ? (
+                      <div className='space-y-6'>
+                        <input
+                          value={editModal.data.title ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, title: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Value title'
+                        />
+                        <textarea
+                          value={editModal.data.description ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, description: event.target.value },
+                            }))
+                          }
+                          className={textareaClass}
+                          placeholder='Value description'
+                        />
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'about-committee-member' ? (
+                      <div className='space-y-6'>
+                        <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                          <input
+                            value={editModal.data.name ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, name: event.target.value },
                               }))
                             }
                             className={inputClass}
-                          >
-                            {EVENT_CATEGORIES.map((category) => (
-                              <option key={`modal-${category}`} value={category}>
-                                {category}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Event Image
+                            placeholder='Full name'
+                          />
+                          <input
+                            value={editModal.data.role ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, role: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='Role'
+                          />
+                          <input
+                            value={editModal.data.email ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, email: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='Email'
+                          />
+                          <input
+                            value={editModal.data.phone ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, phone: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='Phone'
+                          />
+                          <input
+                            value={editModal.data.initials ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, initials: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='Initials'
+                          />
+                          <input
+                            value={editModal.data.image ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, image: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='Image URL'
+                          />
+                        </div>
+                        <label className='inline-flex h-10 cursor-pointer items-center rounded-[10px] border border-gray-200 bg-gray-50 px-4 text-[13px] font-semibold text-gray-700'>
+                          Upload Member Photo
                           <input
                             type='file'
                             accept='image/*'
+                            className='hidden'
                             onChange={(event) => setModalImageFile(event.target.files?.[0] ?? null)}
-                            className='mt-2 block w-full rounded-[10px] border border-[#e2e7f0] bg-white px-3 py-2 text-[13px] text-[#1a2333] file:mr-3 file:rounded-[8px] file:border-0 file:bg-[#edf2ff] file:px-3 file:py-2 file:text-[12px] file:font-semibold file:text-[#1f3f97] hover:file:bg-[#dfe8ff]'
                           />
-                          <div className='mt-2 flex flex-wrap items-center gap-2'>
-                            <span className='text-[12px] text-[#6a7790]'>
-                              {modalImageFile ? modalImageFile.name : 'No file selected'}
-                            </span>
-                            <span className='text-[12px] font-semibold text-[#1f3f97]'>
-                              File uploads when you click Update Entry
-                            </span>
-                          </div>
                         </label>
-                      </div>
-                      {editModal.data.image ? (
-                        <div className='rounded-[10px] border border-[#dce4f0] bg-white p-3'>
+                        {editModal.data.image ? (
                           <img
                             src={editModal.data.image}
-                            alt='Event preview'
-                            className='h-[180px] w-full rounded-[8px] object-cover'
+                            alt='Member'
+                            className='h-[160px] w-[160px] rounded-[12px] object-cover'
                           />
-                          <button
-                            type='button'
-                            onClick={() =>
-                              setEditModal((prev) => ({
-                                ...prev,
-                                data: { ...prev.data, image: '' },
-                              }))
-                            }
-                            className='mt-3 inline-flex h-9 items-center justify-center rounded-[8px] border border-[#f0caca] px-3 text-[12px] font-semibold text-[#b63b3b] transition hover:bg-[#fff3f3]'
-                          >
-                            Remove Image
-                          </button>
-                        </div>
-                      ) : null}
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Description
-                        <textarea
-                          value={editModal.data.description ?? ''}
-                          onChange={(event) =>
-                            setEditModal((prev) => ({
-                              ...prev,
-                              data: { ...prev.data, description: event.target.value },
-                            }))
-                          }
-                          className={textareaClass}
-                        />
-                      </label>
-                    </div>
-                  ) : null}
-
-                  {editModal.type === 'media-cards' ? (
-                    <div className='mt-4 space-y-4'>
-                      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          ID
-                          <input
-                            value={editModal.data.id ?? ''}
-                            onChange={(event) =>
-                              setEditModal((prev) => ({
-                                ...prev,
-                                data: { ...prev.data, id: event.target.value },
-                              }))
-                            }
-                            className={inputClass}
-                          />
-                        </label>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Title
-                          <input
-                            value={editModal.data.title ?? ''}
-                            onChange={(event) =>
-                              setEditModal((prev) => ({
-                                ...prev,
-                                data: { ...prev.data, title: event.target.value },
-                              }))
-                            }
-                            className={inputClass}
-                          />
-                        </label>
-                        <label className='text-[13px] font-semibold text-[#33415a] md:col-span-2'>
-                          Button Label
-                          <input
-                            value={editModal.data.buttonLabel ?? ''}
-                            onChange={(event) =>
-                              setEditModal((prev) => ({
-                                ...prev,
-                                data: { ...prev.data, buttonLabel: event.target.value },
-                              }))
-                            }
-                            className={inputClass}
-                          />
-                        </label>
+                        ) : null}
                       </div>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Description
-                        <textarea
-                          value={editModal.data.description ?? ''}
-                          onChange={(event) =>
-                            setEditModal((prev) => ({
-                              ...prev,
-                              data: { ...prev.data, description: event.target.value },
-                            }))
-                          }
-                          className={textareaClass}
-                        />
-                      </label>
-                    </div>
-                  ) : null}
+                    ) : null}
 
-                  {editModal.type === 'media-updates' ? (
-                    <div className='mt-4 space-y-4'>
-                      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Title
-                          <input
-                            value={editModal.data.title ?? ''}
-                            onChange={(event) =>
-                              setEditModal((prev) => ({
-                                ...prev,
-                                data: { ...prev.data, title: event.target.value },
-                              }))
-                            }
-                            className={inputClass}
-                          />
-                        </label>
-                        <label className='text-[13px] font-semibold text-[#33415a]'>
-                          Action
-                          <input
-                            value={editModal.data.action ?? ''}
-                            onChange={(event) =>
-                              setEditModal((prev) => ({
-                                ...prev,
-                                data: { ...prev.data, action: event.target.value },
-                              }))
-                            }
-                            className={inputClass}
-                          />
-                        </label>
-                      </div>
-                      <label className='text-[13px] font-semibold text-[#33415a]'>
-                        Description
-                        <textarea
-                          value={editModal.data.description ?? ''}
+                    {editModal.type === 'about-governance-structure' ? (
+                      <div className='space-y-6'>
+                        <input
+                          value={editModal.data.title ?? ''}
                           onChange={(event) =>
                             setEditModal((prev) => ({
                               ...prev,
-                              data: { ...prev.data, description: event.target.value },
+                              data: { ...prev.data, title: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Structure title'
+                        />
+                        <textarea
+                          value={editModal.data.body ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, body: event.target.value },
                             }))
                           }
                           className={textareaClass}
+                          placeholder='Structure body'
                         />
-                      </label>
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'about-governance-document' ? (
+                      <div className='space-y-6'>
+                        <input
+                          value={editModal.data.title ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, title: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Document title'
+                        />
+                        <input
+                          value={editModal.data.size ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, size: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Size'
+                        />
+                        <input
+                          value={editModal.data.accent ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, accent: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Accent'
+                        />
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'about-governance-report' ? (
+                      <div className='space-y-6'>
+                        <input
+                          value={editModal.data.title ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, title: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Report title'
+                        />
+                        <input
+                          value={editModal.data.size ?? ''}
+                          onChange={(event) =>
+                            setEditModal((prev) => ({
+                              ...prev,
+                              data: { ...prev.data, size: event.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                          placeholder='Report size'
+                        />
+                      </div>
+                    ) : null}
                     </div>
-                  ) : null}
-                  </div>
-                  <div className='flex shrink-0 justify-end gap-2 border-t border-[#e3e9f4] bg-white px-5 py-3'>
-                    <button
-                      type='button'
-                      onClick={closeEditModal}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] border border-[#d7deea] px-4 text-[13px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type='button'
-                      onClick={handleModalSave}
-                      className='inline-flex h-10 items-center justify-center rounded-[10px] bg-[#2b4faa] px-4 text-[13px] font-semibold text-white transition hover:bg-[#244599]'
-                    >
-                      Update Entry
-                    </button>
+
+                    <div className='mt-10 pt-8 border-t border-white/5 flex justify-end gap-3'>
+                      <button
+                        type='button'
+                        onClick={closeEditModal}
+                        className={actionButtonClass}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type='button'
+                        onClick={handleModalSave}
+                        disabled={isUploadingModalImage}
+                        className={primaryButtonClass}
+                      >
+                         <Save size={16} className='mr-2' />
+                         Commit Changes
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             ) : null}
 
-            {active !== 'profile' ? (
+            {active !== 'profile' && active !== 'about-us' ? (
               <button
                 type='button'
                 onClick={onSave}
                 disabled={updateMutation.isPending}
-                className='mt-8 inline-flex h-11 items-center justify-center rounded-[10px] bg-[#2b4faa] px-6 text-[14px] font-semibold text-white transition hover:bg-[#244599] disabled:cursor-not-allowed disabled:opacity-70'
+                className='mt-8 inline-flex h-11 items-center justify-center rounded-[10px] bg-black px-6 text-[14px] font-medium text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-70'
               >
                 {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
               </button>

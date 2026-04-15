@@ -1,5 +1,6 @@
 import React from 'react'
 import { Mail, Phone } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useSiteContentQuery } from '@/hooks/useContent'
@@ -46,25 +47,26 @@ const committeeMembers = [
 ]
 
 const CommitteePage = () => {
+  const { t } = useTranslation()
   const { data: content } = useSiteContentQuery()
   const committee = content?.aboutUs?.committee ?? {}
-  const heading = committee.heroTitle ?? 'Management Committee'
-  const subtitle = committee.heroSubtitle ?? 'Meet the dedicated team serving our community'
+  const heading = committee.heroTitle ?? t('about.committee.heading')
+  const subtitle = committee.heroSubtitle ?? t('about.committee.subtitle')
   const intro =
     committee.intro ??
-    'Our Management Committee consists of elected volunteers who dedicate their time and effort to ensure the smooth operation of the Gurudwara and service to the community.'
+    t('about.committee.intro')
   const members =
     Array.isArray(committee.members) && committee.members.length > 0
       ? committee.members
       : committeeMembers
-  const ctaTitle = committee.ctaTitle ?? 'Interested in Serving?'
+  const ctaTitle = committee.ctaTitle ?? t('about.committee.ctaTitle')
   const ctaDescription =
     committee.ctaDescription ??
-    "Committee positions are elected positions. Elections are held annually according to our constitution. If you're interested in serving on the committee, please reach out to us."
-  const ctaButtonLabel = committee.ctaButtonLabel ?? 'Contact Us'
+    t('about.committee.ctaDescription')
+  const ctaButtonLabel = committee.ctaButtonLabel ?? t('about.committee.ctaButton')
 
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
@@ -96,9 +98,18 @@ const CommitteePage = () => {
                 className='overflow-hidden rounded-[18px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
               >
                 <div className='flex h-[190px] items-center justify-center bg-[linear-gradient(135deg,#e6eefb_0%,#f7ead7_100%)]'>
-                  <div className='flex h-[128px] w-[128px] items-center justify-center rounded-full bg-white text-[34px] font-extrabold tracking-[-0.03em] text-[#2d4f9f]'>
-                    {member.initials}
-                  </div>
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className='h-[128px] w-[128px] rounded-full object-cover'
+                      loading='lazy'
+                    />
+                  ) : (
+                    <div className='flex h-[128px] w-[128px] items-center justify-center rounded-full bg-white text-[34px] font-extrabold tracking-[-0.03em] text-[#2d4f9f]'>
+                      {member.initials}
+                    </div>
+                  )}
                 </div>
 
                 <div className='px-5 py-5'>

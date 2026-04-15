@@ -13,6 +13,8 @@ import ProgramsPage from '@/pages/Events/ProgramsPage'
 import MediaCenterPage from '@/pages/Media/MediaCenterPage'
 import VisitorGuidePage from '@/pages/Visitors/VisitorGuidePage'
 import YouthEducationPage from '@/pages/YouthEducation/YouthEducationPage'
+import CremationFundPage from '@/pages/Services/CremationFundPage'
+import LibraryPage from '@/pages/Resources/LibraryPage'
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
@@ -40,8 +42,10 @@ const App = () => {
             <Route path='donate' element={<DonatePage />} />
             <Route path='events/programs' element={<ProgramsPage />} />
             <Route path='media' element={<MediaCenterPage />} />
+            <Route path='resources/library' element={<LibraryPage />} />
             <Route path='visitors/guide' element={<VisitorGuidePage />} />
             <Route path='youth-education' element={<YouthEducationPage />} />
+            <Route path='services/antim-sanskar-fund' element={<CremationFundPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

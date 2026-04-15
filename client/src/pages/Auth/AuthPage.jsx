@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { loginRequest } from '@/services/authApi'
@@ -11,6 +12,7 @@ const initialLoginState = {
 }
 
 const AuthPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const setAuth = useAuthStore((state) => state.setAuth)
   const session = useAuthStore((state) => state.session)
@@ -53,17 +55,17 @@ const AuthPage = () => {
   }
 
   return (
-    <div className='min-h-screen bg-[#f4f7ff] font-["Manrope","Segoe_UI",sans-serif] text-[#121521]'>
+    <div className='min-h-screen bg-[#f4f7ff] font-["Poppins","Segoe_UI",sans-serif] text-[#121521]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#2b4faa] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
           <div className='mx-auto max-w-[1280px]'>
             <div className='max-w-[760px]'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Login
+                {t('auth.heading')}
               </h1>
               <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                Sign in to access the dashboard.
+                {t('auth.subtitle')}
               </p>
             </div>
           </div>
@@ -74,10 +76,10 @@ const AuthPage = () => {
         <div className='mx-auto w-full max-w-[620px]'>
           <article className='rounded-[18px] border border-[#d8dfeb] bg-white p-6 shadow-[0_6px_20px_rgba(18,33,70,0.06)] md:p-8'>
             <h2 className='text-[28px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[32px]'>
-              Welcome back
+              {t('auth.welcome')}
             </h2>
             <p className='mt-2 text-[15px] text-[#5f6c87]'>
-              Enter your credentials to continue.
+              {t('auth.credentials')}
             </p>
 
             {error ? (
@@ -89,7 +91,7 @@ const AuthPage = () => {
             <form className='mt-6 space-y-5' onSubmit={handleLogin}>
               <div>
                 <label className='mb-2 block text-[14px] font-semibold text-[#1a2333]'>
-                  Email
+                  {t('auth.email')}
                 </label>
                 <input
                   required
@@ -97,14 +99,14 @@ const AuthPage = () => {
                   name='email'
                   value={loginForm.email}
                   onChange={onLoginChange}
-                  placeholder='you@example.com'
+                  placeholder={t('auth.emailPlaceholder')}
                   className='h-12 w-full rounded-[10px] border border-[#e2e7f0] bg-[#f8faff] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#9bb0e1]'
                 />
               </div>
 
               <div>
                 <label className='mb-2 block text-[14px] font-semibold text-[#1a2333]'>
-                  Password
+                  {t('auth.password')}
                 </label>
                 <input
                   required
@@ -112,7 +114,7 @@ const AuthPage = () => {
                   name='password'
                   value={loginForm.password}
                   onChange={onLoginChange}
-                  placeholder='Enter your password'
+                  placeholder={t('auth.passwordPlaceholder')}
                   className='h-12 w-full rounded-[10px] border border-[#e2e7f0] bg-[#f8faff] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#9bb0e1]'
                 />
               </div>
@@ -122,7 +124,7 @@ const AuthPage = () => {
                 type='submit'
                 className='inline-flex h-12 w-full items-center justify-center rounded-[12px] bg-[#2b4faa] px-8 text-[15px] font-semibold text-white transition hover:bg-[#244599] disabled:cursor-not-allowed disabled:opacity-70'
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {isLoading ? t('common.actions.signingIn') : t('common.actions.signIn')}
               </button>
             </form>
 
@@ -130,7 +132,7 @@ const AuthPage = () => {
               to='/'
               className='mt-6 inline-flex h-11 items-center justify-center rounded-[10px] border border-[#d7deea] px-5 text-[14px] font-semibold text-[#1f3f97] transition hover:bg-[#f4f7ff]'
             >
-              Back to Home
+              {t('common.actions.backToHome')}
             </Link>
           </article>
         </div>

@@ -10,48 +10,10 @@ import {
   UtensilsCrossed,
 } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
-
-const etiquetteCards = [
-  {
-    title: 'Head Covering',
-    description:
-      "All visitors must cover their heads before entering the prayer hall. Scarves are available at the entrance if you don't have one.",
-    icon: Shirt,
-    accent: 'bg-[#f6ab3c]',
-  },
-  {
-    title: 'Shoes Off',
-    description:
-      'Please remove your shoes before entering the main building. Shoe racks are provided at the entrance.',
-    icon: Info,
-    accent: 'bg-[#2d4f9f]',
-  },
-  {
-    title: 'No Tobacco or Alcohol',
-    description:
-      'Tobacco products and alcohol are strictly prohibited on the Gurudwara premises.',
-    icon: UtensilsCrossed,
-    accent: 'bg-[#f6ab3c]',
-  },
-  {
-    title: 'Modest Dress',
-    description:
-      'Please dress modestly. Legs and shoulders should be covered. Long pants or skirts and shirts with sleeves are appropriate.',
-    icon: Info,
-    accent: 'bg-[#2d4f9f]',
-  },
-]
-
-const additionalGuidelines = [
-  'Sit on the floor in the prayer hall (cushions are provided)',
-  'Keep your feet pointed away from Sri Guru Granth Sahib Ji',
-  'Maintain silence in the prayer hall',
-  'Photography is permitted, but please be respectful during prayers',
-  'All food served is vegetarian',
-]
 
 const dailySchedule = [
   { label: 'Morning Prayer (Asa Di Var)', value: '5:00 AM - 7:00 AM' },
@@ -65,56 +27,10 @@ const langarSchedule = [
   { label: 'Dinner', value: '7:00 PM - 8:00 PM' },
 ]
 
-const faqItems = [
-  {
-    question: 'Do I need to be Sikh to visit?',
-    answer:
-      'No! Everyone is welcome regardless of religion, race, or background. The Gurudwara is open to all.',
-  },
-  {
-    question: 'Is the langar really free?',
-    answer:
-      'Yes, langar (community meal) is completely free for everyone. This is a core principle of Sikhism - sharing food with all without distinction.',
-  },
-  {
-    question: 'What should I wear?',
-    answer:
-      "Dress modestly with covered legs and shoulders. You'll need to cover your head (scarves provided) and remove shoes before entering.",
-  },
-  {
-    question: 'Can I take photos?',
-    answer:
-      'Yes, but please be respectful, especially during prayers. Ask permission before photographing people.',
-  },
-  {
-    question: 'Is there a donation expected?',
-    answer:
-      'Donations are welcome but not required. There is no entrance fee or expectation.',
-  },
-]
-
 const VisitorGuidePage = () => {
+  const { t } = useTranslation()
   const location = useLocation()
   const { data: content } = useSiteContentQuery()
-  const [visitorContent, setVisitorContent] = React.useState({
-    rulesEtiquette: etiquetteCards.map((item) => item.description),
-    openingTimings: {
-      dailySchedule,
-      langarSchedule,
-      sundaySpecial: 'Weekly Kirtan Darbar: 11:00 AM - 1:00 PM followed by Langar',
-    },
-    location: {
-      addressLines: ['Sikh Tempel Berlin', 'Wollankstraße 8', '13187 Berlin', 'Germany'],
-      howToReach: [
-        'U-Bahn: Take U8 to Pankstraße station (5 min walk)',
-        'Tram: M1 or 50 to Wollankstraße/Soldiner Straße',
-      ],
-    },
-    contact: {
-      phone: '+49 30 47375651',
-      email: 'info@ssgberlin.de',
-    },
-  })
 
   useEffect(() => {
     if (!location.hash) {
@@ -136,60 +52,74 @@ const VisitorGuidePage = () => {
     })
   }, [location.hash])
 
-  useEffect(() => {
-    if (!content) {
-      return
-    }
-
-    setVisitorContent((prev) => ({
-      ...prev,
+  const visitorContent = React.useMemo(
+    () => ({
       rulesEtiquette:
         content?.visitors?.rulesEtiquette?.length > 0
           ? content.visitors.rulesEtiquette
-          : prev.rulesEtiquette,
+          : t('visitors.rulesDescriptions', { returnObjects: true }),
       openingTimings: {
         dailySchedule:
           content?.visitors?.openingTimings?.dailySchedule?.length > 0
             ? content.visitors.openingTimings.dailySchedule
-            : prev.openingTimings.dailySchedule,
+            : dailySchedule,
         langarSchedule:
           content?.visitors?.openingTimings?.langarSchedule?.length > 0
             ? content.visitors.openingTimings.langarSchedule
-            : prev.openingTimings.langarSchedule,
+            : langarSchedule,
         sundaySpecial:
           content?.visitors?.openingTimings?.sundaySpecial ??
-          prev.openingTimings.sundaySpecial,
+          'Weekly Kirtan Darbar: 11:00 AM - 1:00 PM followed by Langar',
       },
       location: {
         addressLines:
           content?.visitors?.location?.addressLines?.length > 0
             ? content.visitors.location.addressLines
-            : prev.location.addressLines,
+            : ['Sikh Tempel Berlin', 'Wollankstraße 8', '13187 Berlin', 'Germany'],
         howToReach:
           content?.visitors?.location?.howToReach?.length > 0
             ? content.visitors.location.howToReach
-            : prev.location.howToReach,
+            : [
+                'U-Bahn: Take U8 to Pankstraße station (5 min walk)',
+                'Tram: M1 or 50 to Wollankstraße/Soldiner Straße',
+              ],
       },
       contact: {
-        phone: content?.contact?.phone ?? prev.contact.phone,
-        email: content?.contact?.email ?? prev.contact.email,
+        phone: content?.contact?.phone ?? '+49 30 47375651',
+        email: content?.contact?.email ?? 'info@ssgberlin.de',
       },
-    }))
-  }, [content])
+    }),
+    [content, t],
+  )
+
+  const etiquetteCards = React.useMemo(
+    () => [
+      { title: t('visitors.rulesHeadings.0'), icon: Shirt, accent: 'bg-[#f6ab3c]' },
+      { title: t('visitors.rulesHeadings.1'), icon: Info, accent: 'bg-[#2d4f9f]' },
+      { title: t('visitors.rulesHeadings.2'), icon: UtensilsCrossed, accent: 'bg-[#f6ab3c]' },
+      { title: t('visitors.rulesHeadings.3'), icon: Info, accent: 'bg-[#2d4f9f]' },
+    ],
+    [t],
+  )
+
+  const additionalGuidelines = React.useMemo(
+    () => t('visitors.additionalGuidelines', { returnObjects: true }),
+    [t],
+  )
+  const faqItems = React.useMemo(() => t('visitors.faq', { returnObjects: true }), [t])
 
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
           <div className='mx-auto max-w-[1280px]'>
             <div className='mx-auto max-w-[1040px]'>
               <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                Visitor Information
+                {t('visitors.heading')}
               </h1>
               <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                Welcome! Here&apos;s everything you need to know before your
-                visit
+                {t('visitors.subtitle')}
               </p>
             </div>
           </div>
@@ -199,18 +129,19 @@ const VisitorGuidePage = () => {
       <section id='visitor-guide' className='px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Visitor Guide
-            </h2>
-            <p className='mt-7 text-[16px] leading-[1.6] text-[#1d2431] md:text-[17px]'>
-              Singh Sabha Gurudwara Berlin welcomes visitors of all
-              backgrounds, faiths, and beliefs. A Gurudwara is a place of
-              worship for Sikhs, but our doors are open to everyone who comes
-              with a respectful heart.
-              <br />
-              Whether you&apos;re visiting for worship, to learn about Sikhism,
-              or to enjoy a free meal in our langar hall, you are welcome here.
-            </p>
+              <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+                {t('visitors.guideTitle')}
+              </h2>
+              <p className='mt-7 text-[16px] leading-[1.6] text-[#1d2431] md:text-[17px]'>
+                {t('visitors.guideBody')
+                  .split('\\n')
+                  .map((line, index) => (
+                    <React.Fragment key={`${line}-${index}`}>
+                      {line}
+                      {index === 0 ? <br /> : null}
+                    </React.Fragment>
+                  ))}
+              </p>
           </div>
         </div>
       </section>
@@ -221,9 +152,9 @@ const VisitorGuidePage = () => {
       >
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Rules & Etiquette
-            </h2>
+              <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+                {t('visitors.rulesTitle')}
+              </h2>
 
             <div className='mt-10 grid grid-cols-1 gap-6 md:grid-cols-2'>
               {visitorContent.rulesEtiquette.map((rule, index) => {
@@ -254,7 +185,7 @@ const VisitorGuidePage = () => {
               <div className='flex items-center gap-3'>
                 <BookOpen className='h-5 w-5 text-[#2d4f9f]' />
                 <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                  Additional Guidelines
+                  {t('visitors.additionalGuidelinesTitle')}
                 </h3>
               </div>
               <ul className='mt-5 space-y-3 text-[15px] leading-[1.55] text-[#516075] md:text-[16px]'>
@@ -270,9 +201,9 @@ const VisitorGuidePage = () => {
       <section id='opening-timings' className='px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Opening Timings
-            </h2>
+              <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+                {t('visitors.openingTitle')}
+              </h2>
 
             <div className='mt-8 rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
               <div className='space-y-8'>
@@ -280,7 +211,7 @@ const VisitorGuidePage = () => {
                   <div className='flex items-center gap-4'>
                     <Clock3 className='h-5 w-5 text-[#f39d2f]' />
                     <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                      Daily Schedule
+                      {t('visitors.dailyScheduleTitle')}
                     </h3>
                   </div>
                   <div className='mt-4 space-y-3'>
@@ -302,7 +233,7 @@ const VisitorGuidePage = () => {
                   <div className='flex items-center gap-4'>
                     <Clock3 className='h-5 w-5 text-[#f39d2f]' />
                     <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                      Langar (Free Meal)
+                      {t('visitors.langarTitle')}
                     </h3>
                   </div>
                   <div className='mt-4 space-y-3'>
@@ -324,7 +255,7 @@ const VisitorGuidePage = () => {
                   <div className='flex items-center gap-4'>
                     <Clock3 className='h-5 w-5 text-[#f39d2f]' />
                     <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                      Sunday Special
+                      {t('visitors.sundaySpecialTitle')}
                     </h3>
                   </div>
                   <p className='mt-4 text-[15px] leading-[1.55] text-[#516075] md:text-[16px]'>
@@ -340,16 +271,16 @@ const VisitorGuidePage = () => {
       <section id='location-map' className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Location & How to Reach
-            </h2>
+              <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+              {t('visitors.locationTitle')}
+              </h2>
 
             <div className='mt-8 rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
               <div className='flex items-start gap-4'>
                 <MapPin className='mt-1 h-5 w-5 text-[#f39d2f]' />
                 <div>
                   <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                    Address
+                    {t('visitors.addressTitle')}
                   </h3>
                   <p className='mt-4 text-[15px] leading-[1.55] text-[#516075] md:text-[16px]'>
                     {visitorContent.location.addressLines.map((line) => (
@@ -363,11 +294,11 @@ const VisitorGuidePage = () => {
               </div>
 
               <div className='mt-8 flex h-[300px] items-center justify-center rounded-[14px] bg-[#edf1f7] text-[16px] text-[#7a879b] md:h-[430px]'>
-                Map integration would be here
+                {t('visitors.mapPlaceholder')}
               </div>
 
               <div className='mt-8 text-[15px] leading-[1.65] text-[#516075] md:text-[16px]'>
-                <h3 className='font-bold text-[#111318]'>By Public Transport</h3>
+                <h3 className='font-bold text-[#111318]'>{t('visitors.publicTransport')}</h3>
                 <p className='mt-3'>
                   {visitorContent.location.howToReach[0] ?? ''}
                 </p>
@@ -375,10 +306,9 @@ const VisitorGuidePage = () => {
                   {visitorContent.location.howToReach[1] ?? ''}
                 </p>
 
-                <h3 className='mt-7 font-bold text-[#111318]'>By Car</h3>
+                <h3 className='mt-7 font-bold text-[#111318]'>{t('visitors.byCar')}</h3>
                 <p className='mt-3'>
-                  Limited parking available nearby. Street parking also
-                  available.
+                  {t('visitors.carText')}
                 </p>
               </div>
             </div>
@@ -389,15 +319,15 @@ const VisitorGuidePage = () => {
       <section id='contact-information' className='px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Contact Information
-            </h2>
+              <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+                {t('visitors.contactTitle')}
+              </h2>
 
             <div className='mt-8 grid grid-cols-1 gap-6 md:grid-cols-2'>
               <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
                 <Phone className='h-7 w-7 text-[#f39d2f]' />
                 <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                  Phone
+                  {t('visitors.phone')}
                 </h3>
                 <p className='mt-3 text-[16px] text-[#516075]'>{visitorContent.contact.phone}</p>
               </article>
@@ -405,7 +335,7 @@ const VisitorGuidePage = () => {
               <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
                 <Mail className='h-7 w-7 text-[#f39d2f]' />
                 <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                  Email
+                  {t('visitors.email')}
                 </h3>
                 <p className='mt-3 text-[16px] text-[#516075]'>{visitorContent.contact.email}</p>
               </article>
@@ -417,9 +347,9 @@ const VisitorGuidePage = () => {
       <section id='faq' className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              Frequently Asked Questions
-            </h2>
+              <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+                {t('visitors.faqTitle')}
+              </h2>
 
             <div className='mt-8 space-y-6'>
               {faqItems.map((item) => (

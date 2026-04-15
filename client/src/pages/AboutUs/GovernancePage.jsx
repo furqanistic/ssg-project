@@ -1,5 +1,6 @@
 import React from 'react'
 import { Download, FileText } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useSiteContentQuery } from '@/hooks/useContent'
@@ -38,6 +39,8 @@ const annualReports = [
 ]
 
 const DownloadCard = ({ title, size, accent }) => {
+  const { t } = useTranslation()
+
   return (
     <article className='rounded-[16px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
       <div className='flex items-start gap-4'>
@@ -56,7 +59,7 @@ const DownloadCard = ({ title, size, accent }) => {
             className='mt-4 inline-flex items-center gap-2 text-[15px] font-semibold text-[#f39d2f] transition hover:text-[#ea951e]'
           >
             <Download className='h-4 w-4' />
-            Download
+            {t('common.actions.download')}
           </button>
         </div>
       </div>
@@ -65,52 +68,47 @@ const DownloadCard = ({ title, size, accent }) => {
 }
 
 const GovernancePage = () => {
+  const { t } = useTranslation()
   const { data: content } = useSiteContentQuery()
   const governance = content?.aboutUs?.governance ?? {}
-  const heading = governance.heroTitle ?? 'Governance & Reports'
-  const subtitle = governance.heroSubtitle ?? 'Transparency and accountability in our operations'
-  const structureTitle = governance.structureTitle ?? 'Governance Structure'
+  const heading = governance.heroTitle ?? t('about.governance.heading')
+  const subtitle = governance.heroSubtitle ?? t('about.governance.subtitle')
+  const heroImage = governance.heroImage ?? ''
+  const structureTitle = governance.structureTitle ?? t('about.governance.structureTitle')
   const structureIntro =
     governance.structureIntro ??
-    'Singh Sabha Gurudwara Berlin (e.V.) operates as a registered non-profit association (eingetragener Verein) under German law. Our governance structure ensures democratic decision-making and accountability to our community members.'
+    t('about.governance.structureIntro')
   const structureBlocks =
     Array.isArray(governance.structureBlocks) && governance.structureBlocks.length > 0
       ? governance.structureBlocks
-      : [
-          {
-            title: 'General Assembly',
-            body: 'The highest decision-making body, consisting of all registered members. The General Assembly elects the Management Committee and makes decisions on major organizational matters.',
-          },
-          {
-            title: 'Management Committee',
-            body: 'Elected by the General Assembly, the Management Committee oversees day-to-day operations, implements decisions, and ensures compliance with our constitution and German law.',
-          },
-          {
-            title: 'Advisory Board',
-            body: 'Provides guidance on religious and cultural matters, ensuring that our activities align with Sikh principles and traditions.',
-          },
-        ]
-  const documentsTitle = governance.documentsTitle ?? 'Governance Documents'
+      : t('about.governance.structureBlocks', { returnObjects: true })
+  const documentsTitle = governance.documentsTitle ?? t('about.governance.documentsTitle')
   const documents =
     Array.isArray(governance.documents) && governance.documents.length > 0
       ? governance.documents
-      : governanceDocuments
-  const reportsTitle = governance.reportsTitle ?? 'Annual Reports'
+      : governanceDocuments.map((document, index) => ({
+          ...document,
+          title: t(`about.governance.docs.${index}`),
+        }))
+  const reportsTitle = governance.reportsTitle ?? t('about.governance.reportsTitle')
   const reports =
     Array.isArray(governance.reports) && governance.reports.length > 0
       ? governance.reports
-      : annualReports
-  const financialTitle = governance.financialTitle ?? 'Financial Transparency'
+      : annualReports.map((report, index) => ({
+          ...report,
+          title: t(`about.governance.reports.${index}`),
+        }))
+  const financialTitle = governance.financialTitle ?? t('about.governance.financialTitle')
   const financialDescription =
     governance.financialDescription ??
-    'We are committed to complete transparency in our financial operations. All donations and expenses are recorded and audited annually. Our financial reports are available to all members and published in our annual reports.'
-  const taxTitle = governance.taxTitle ?? 'Tax Deductibility'
+    t('about.governance.financialDescription')
+  const taxTitle = governance.taxTitle ?? t('about.governance.taxTitle')
   const taxDescription =
     governance.taxDescription ??
-    'Singh Sabha Gurudwara Berlin (e.V.) is a registered charitable organization in Germany. Donations are tax-deductible. We provide donation receipts for tax purposes.'
+    t('about.governance.taxDescription')
 
   return (
-    <div className='min-h-screen bg-white font-["Manrope","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
         <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
@@ -130,6 +128,14 @@ const GovernancePage = () => {
       <section className='px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
+            {heroImage ? (
+              <img
+                src={heroImage}
+                alt={heading}
+                className='mb-6 h-[260px] w-full rounded-[16px] object-cover md:h-[360px]'
+                loading='lazy'
+              />
+            ) : null}
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
               {structureTitle}
             </h2>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   Facebook,
   Instagram,
@@ -8,14 +8,15 @@ import {
   Youtube,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
-const quickLinks = [
-  { label: 'About Us', to: '/about-us/history' },
-  { label: 'Visitor Guide', to: '/visitors/guide#visitor-guide' },
-  { label: 'Events & Programs', to: '/events/programs#all' },
-  { label: 'Youth & Education', to: '/youth-education#gurmukhi-class' },
-  { label: 'Media Gallery', to: '/media#photo-gallery' },
-  { label: 'Contact Us', to: '/contact#contact-form' },
+const quickLinkPaths = [
+  '/about-us/history',
+  '/visitors/guide#visitor-guide',
+  '/events/programs#all',
+  '/youth-education#gurmukhi-class',
+  '/media#photo-gallery',
+  '/contact#contact-form',
 ]
 
 const socialLinks = [
@@ -25,6 +26,13 @@ const socialLinks = [
 ]
 
 const SiteFooter = () => {
+  const { t } = useTranslation()
+
+  const quickLinks = useMemo(() => {
+    const labels = t('footer.quickLinksItems', { returnObjects: true })
+    return labels.map((label, index) => ({ label, to: quickLinkPaths[index] }))
+  }, [t])
+
   return (
     <footer className='bg-[#17243b] px-4 pb-8 pt-14 text-white md:px-6 md:pt-16'>
       <div className='mx-auto max-w-[1280px]'>
@@ -36,19 +44,18 @@ const SiteFooter = () => {
               </div>
               <div>
                 <h3 className='text-[18px] font-bold leading-tight'>
-                  Singh Sabha Gurudwara
+                  {t('navbar.brand.name')}
                 </h3>
-                <p className='mt-1 text-[16px] text-white/90'>Berlin (e.V.)</p>
+                <p className='mt-1 text-[16px] text-white/90'>{t('navbar.brand.location')}</p>
               </div>
             </div>
             <p className='mt-7 max-w-[28ch] text-[15px] leading-[1.6] text-white/88 md:text-[16px]'>
-              A spiritual and community center serving the Sikh community in
-              Berlin since establishment. All are welcome.
+              {t('footer.description')}
             </p>
           </div>
 
           <div className='flex flex-col items-center md:items-start'>
-            <h3 className='text-[18px] font-bold'>Quick Links</h3>
+            <h3 className='text-[18px] font-bold'>{t('footer.quickLinks')}</h3>
             <div className='mt-7 space-y-3'>
               {quickLinks.map((link) => (
                 <Link
@@ -63,7 +70,7 @@ const SiteFooter = () => {
           </div>
 
           <div className='flex flex-col items-center md:items-start'>
-            <h3 className='text-[18px] font-bold'>Contact Information</h3>
+            <h3 className='text-[18px] font-bold'>{t('footer.contactInfo')}</h3>
             <div className='mt-7 space-y-5 text-[15px] text-white/88 md:text-[16px]'>
               <div className='flex items-start justify-center gap-3 text-center md:justify-start md:text-left'>
                 <MapPin className='mt-0.5 h-5 w-5 shrink-0 text-[#f6ab3c]' />
@@ -97,7 +104,7 @@ const SiteFooter = () => {
           </div>
 
           <div className='flex flex-col items-center md:items-start'>
-            <h3 className='text-[18px] font-bold'>Connect With Us</h3>
+            <h3 className='text-[18px] font-bold'>{t('footer.connect')}</h3>
             <div className='mt-7 flex justify-center gap-4 md:justify-start'>
               {socialLinks.map(({ icon: Icon, label }) => (
                 <a
@@ -115,20 +122,20 @@ const SiteFooter = () => {
               to='/donate'
               className='mt-8 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
             >
-              Support Our Mission
+              {t('footer.supportMission')}
             </Link>
           </div>
         </div>
 
         <div className='mt-12 border-t border-white/10 pt-7'>
           <div className='flex flex-col items-center gap-4 text-center text-[14px] text-white/88 md:flex-row md:items-center md:justify-between md:text-[15px] md:text-left'>
-            <p>© 2026 Singh Sabha Gurudwara Berlin e.V. All rights reserved.</p>
+            <p>{t('footer.copyright')}</p>
             <div className='flex flex-wrap justify-center gap-6 md:justify-start md:gap-8'>
               <a href='#' className='transition hover:text-white'>
-                Impressum
+                {t('footer.impressum')}
               </a>
               <a href='#' className='transition hover:text-white'>
-                Privacy Policy
+                {t('footer.privacy')}
               </a>
             </div>
           </div>

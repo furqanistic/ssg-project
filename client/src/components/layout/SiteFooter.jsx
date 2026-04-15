@@ -24,6 +24,10 @@ const socialLinks = [
   { icon: Instagram, label: 'Instagram' },
   { icon: Youtube, label: 'Youtube' },
 ]
+const CONTACT_PHONE_DISPLAY = '+49 15567 277478'
+const CONTACT_PHONE_E164 = '+4915567277478'
+const CONTACT_WHATSAPP_URL = 'https://wa.me/4915567277478'
+const CONTACT_ADDRESS = 'Alt Biesdorf 71, 12683, Berlin'
 
 const SiteFooter = () => {
   const { t } = useTranslation()
@@ -34,14 +38,16 @@ const SiteFooter = () => {
   }, [t])
 
   return (
-    <footer className='bg-[#17243b] px-4 pb-8 pt-14 text-white md:px-6 md:pt-16'>
+    <footer className='bg-[#101828] px-4 pb-8 pt-14 text-white md:px-6 md:pt-16'>
       <div className='mx-auto max-w-[1280px]'>
         <div className='grid grid-cols-1 gap-10 text-center md:grid-cols-2 md:text-left xl:grid-cols-4 xl:gap-12'>
           <div className='flex flex-col items-center md:items-start'>
             <div className='flex items-start gap-3'>
-              <div className='flex h-14 w-14 items-center justify-center rounded-[12px] bg-[#f6ab3c] text-[16px] font-extrabold text-white'>
-                SSG
-              </div>
+              <img
+                src='/logo.png'
+                alt={t('navbar.brand.name')}
+                className='h-14 w-14 object-contain'
+              />
               <div>
                 <h3 className='text-[18px] font-bold leading-tight'>
                   {t('navbar.brand.name')}
@@ -75,20 +81,27 @@ const SiteFooter = () => {
               <div className='flex items-start justify-center gap-3 text-center md:justify-start md:text-left'>
                 <MapPin className='mt-0.5 h-5 w-5 shrink-0 text-[#f6ab3c]' />
                 <p className='leading-[1.5]'>
-                  Sikh Tempel Berlin
-                  <br />
-                  WollankstraBe 8
-                  <br />
-                  13187 Berlin
+                  {CONTACT_ADDRESS}
                 </p>
               </div>
               <div className='flex items-center justify-center gap-3 md:justify-start'>
                 <Phone className='h-5 w-5 shrink-0 text-[#f6ab3c]' />
+                <span>{CONTACT_PHONE_DISPLAY}</span>
+              </div>
+              <div className='flex items-center justify-center gap-2 md:justify-start'>
                 <a
-                  href='tel:+493047375651'
-                  className='transition hover:text-white'
+                  href={`tel:${CONTACT_PHONE_E164}`}
+                  className='inline-flex h-8 items-center justify-center rounded-[10px] border border-white/20 px-3 text-[12px] font-semibold text-white transition hover:bg-white/10'
                 >
-                  +49 30 47375651
+                  Call
+                </a>
+                <a
+                  href={CONTACT_WHATSAPP_URL}
+                  target='_blank'
+                  rel='noreferrer'
+                  className='inline-flex h-8 items-center justify-center rounded-[10px] border border-white/20 px-3 text-[12px] font-semibold text-white transition hover:bg-white/10'
+                >
+                  WhatsApp
                 </a>
               </div>
               <div className='flex items-center justify-center gap-3 md:justify-start'>

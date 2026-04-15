@@ -172,6 +172,7 @@
     "history": {
       "heroTitle": "Our History",
       "heroSubtitle": "The journey of Singh Sabha Gurudwara Berlin",
+      "heroImage": "",
       "sections": [
         {
           "title": "Foundation and Early Years",
@@ -194,6 +195,7 @@
     "mission": {
       "heroTitle": "Our Mission",
       "heroDescription": "To provide a welcoming spiritual home where individuals can connect with Waheguru, practice Sikh values, and serve the community with compassion and humility.",
+      "heroImage": "",
       "cards": [
         {
           "title": "Spiritual Growth",
@@ -241,42 +243,48 @@
           "name": "Sardar Gurmeet Singh",
           "role": "President",
           "email": "president@ssgberlin.de",
-          "phone": "+49 30 1234567"
+          "phone": "+49 30 1234567",
+          "image": ""
         },
         {
           "initials": "BJK",
           "name": "Bibi Jaspreet Kaur",
           "role": "Vice President",
           "email": "vicepresident@ssgberlin.de",
-          "phone": ""
+          "phone": "",
+          "image": ""
         },
         {
           "initials": "SHS",
           "name": "Sardar Harjit Singh",
           "role": "Secretary",
           "email": "secretary@ssgberlin.de",
-          "phone": "+49 30 2345678"
+          "phone": "+49 30 2345678",
+          "image": ""
         },
         {
           "initials": "BSK",
           "name": "Bibi Simran Kaur",
           "role": "Treasurer",
           "email": "treasurer@ssgberlin.de",
-          "phone": ""
+          "phone": "",
+          "image": ""
         },
         {
           "initials": "SMS",
           "name": "Sardar Manpreet Singh",
           "role": "Events Coordinator",
           "email": "events@ssgberlin.de",
-          "phone": ""
+          "phone": "",
+          "image": ""
         },
         {
           "initials": "BNK",
           "name": "Bibi Navdeep Kaur",
           "role": "Education Director",
           "email": "education@ssgberlin.de",
-          "phone": ""
+          "phone": "",
+          "image": ""
         }
       ],
       "ctaTitle": "Interested in Serving?",
@@ -286,6 +294,7 @@
     "governance": {
       "heroTitle": "Governance & Reports",
       "heroSubtitle": "Transparency and accountability in our operations",
+      "heroImage": "",
       "structureTitle": "Governance Structure",
       "structureIntro": "Singh Sabha Gurudwara Berlin (e.V.) operates as a registered non-profit association (eingetragener Verein) under German law. Our governance structure ensures democratic decision-making and accountability to our community members.",
       "structureBlocks": [

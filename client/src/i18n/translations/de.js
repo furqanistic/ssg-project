@@ -136,6 +136,7 @@ const de = {
       titleLine2: 'Gurudwara Berlin',
       subtitle:
         'Ein spirituelles Zuhause für alle. Erleben Sie Frieden, Gemeinschaft und Hingabe.',
+      highlights: ['Tägliche Gebete', 'Langar Seva', 'Gemeinschaftsprogramme'],
     },
     hukamnama: {
       title: 'Heutiges Hukamnama',

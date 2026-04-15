@@ -26,6 +26,10 @@ const langarSchedule = [
   { label: 'Lunch', value: '12:00 PM - 2:00 PM' },
   { label: 'Dinner', value: '7:00 PM - 8:00 PM' },
 ]
+const CONTACT_PHONE_DISPLAY = '+49 15567 277478'
+const CONTACT_PHONE_E164 = '+4915567277478'
+const CONTACT_WHATSAPP_URL = 'https://wa.me/4915567277478'
+const CONTACT_ADDRESS = 'Alt Biesdorf 71, 12683, Berlin'
 
 const VisitorGuidePage = () => {
   const { t } = useTranslation()
@@ -72,20 +76,14 @@ const VisitorGuidePage = () => {
           'Weekly Kirtan Darbar: 11:00 AM - 1:00 PM followed by Langar',
       },
       location: {
-        addressLines:
-          content?.visitors?.location?.addressLines?.length > 0
-            ? content.visitors.location.addressLines
-            : ['Sikh Tempel Berlin', 'Wollankstraße 8', '13187 Berlin', 'Germany'],
-        howToReach:
-          content?.visitors?.location?.howToReach?.length > 0
-            ? content.visitors.location.howToReach
-            : [
-                'U-Bahn: Take U8 to Pankstraße station (5 min walk)',
-                'Tram: M1 or 50 to Wollankstraße/Soldiner Straße',
-              ],
+        addressLines: [CONTACT_ADDRESS],
+        howToReach: [
+          'U-Bahn: Take U5 to Biesdorf-Süd, then a short walk or bus ride.',
+          'Use map directions to reach Alt Biesdorf 71, 12683 Berlin.',
+        ],
       },
       contact: {
-        phone: content?.contact?.phone ?? '+49 30 47375651',
+        phone: CONTACT_PHONE_DISPLAY,
         email: content?.contact?.email ?? 'info@ssgberlin.de',
       },
     }),
@@ -330,6 +328,22 @@ const VisitorGuidePage = () => {
                   {t('visitors.phone')}
                 </h3>
                 <p className='mt-3 text-[16px] text-[#516075]'>{visitorContent.contact.phone}</p>
+                <div className='mt-4 flex items-center gap-2'>
+                  <a
+                    href={`tel:${CONTACT_PHONE_E164}`}
+                    className='inline-flex h-9 items-center justify-center rounded-[10px] border border-[#dbe1ea] px-3 text-[13px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'
+                  >
+                    Call
+                  </a>
+                  <a
+                    href={CONTACT_WHATSAPP_URL}
+                    target='_blank'
+                    rel='noreferrer'
+                    className='inline-flex h-9 items-center justify-center rounded-[10px] border border-[#dbe1ea] px-3 text-[13px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'
+                  >
+                    WhatsApp
+                  </a>
+                </div>
               </article>
 
               <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>

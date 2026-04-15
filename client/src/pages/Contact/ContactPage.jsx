@@ -7,18 +7,19 @@ import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
 const scrollTargets = ['volunteer', 'contact-form']
+const CONTACT_PHONE_DISPLAY = '+49 15567 277478'
+const CONTACT_PHONE_E164 = '+4915567277478'
+const CONTACT_WHATSAPP_URL = 'https://wa.me/4915567277478'
+const CONTACT_ADDRESS = 'Alt Biesdorf 71, 12683, Berlin'
 
 const ContactPage = () => {
   const location = useLocation()
   const { t } = useTranslation()
   const { data: content } = useSiteContentQuery()
   const contact = {
-    ...{
-      phone: '+49 30 47375651',
-      email: 'info@ssgberlin.de',
-      addressLines: ['Wollankstraße 8', '13187 Berlin'],
-    },
     ...(content?.contact ?? {}),
+    phone: CONTACT_PHONE_DISPLAY,
+    addressLines: [CONTACT_ADDRESS],
   }
 
   const opportunities = t('contact.opportunities', { returnObjects: true })
@@ -73,6 +74,22 @@ const ContactPage = () => {
                 {t('contact.phone')}
               </h2>
               <p className='mt-3 text-[16px] text-[#516075]'>{contact.phone}</p>
+              <div className='mt-4 flex items-center justify-center gap-2'>
+                <a
+                  href={`tel:${CONTACT_PHONE_E164}`}
+                  className='inline-flex h-9 items-center justify-center rounded-[10px] border border-[#dbe1ea] px-3 text-[13px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'
+                >
+                  Call
+                </a>
+                <a
+                  href={CONTACT_WHATSAPP_URL}
+                  target='_blank'
+                  rel='noreferrer'
+                  className='inline-flex h-9 items-center justify-center rounded-[10px] border border-[#dbe1ea] px-3 text-[13px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'
+                >
+                  WhatsApp
+                </a>
+              </div>
             </article>
 
             <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-7 text-center shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
@@ -218,8 +235,8 @@ const ContactPage = () => {
                         Pankstraße
                       </p>
                       <p>
-                        <span className='font-semibold'>{t('contact.tram')}:</span> M1, 50 to
-                        Wollankstraße
+                        <span className='font-semibold'>{t('contact.tram')}:</span> Use map
+                        directions for Alt Biesdorf 71
                       </p>
                     </div>
                   </div>

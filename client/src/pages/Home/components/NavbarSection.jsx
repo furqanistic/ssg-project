@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { ChevronDown, Menu, X } from 'lucide-react'
+import { ChevronDown, MapPin, Menu, PhoneCall, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/authStore'
@@ -164,18 +164,73 @@ const NavbarSection = () => {
   const [openItem, setOpenItem] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mobileOpenItem, setMobileOpenItem] = useState(null)
+  const [isContactPopupOpen, setIsContactPopupOpen] = useState(false)
   const { i18n, t } = useTranslation()
   const isLoggedIn = useAuthStore((state) => Boolean(state.session?.accessToken))
 
   const navItems = useMemo(() => getNavItems(t), [t])
+  const WhatsAppIcon = ({ className = '' }) => (
+    <svg viewBox='0 0 24 24' fill='currentColor' className={className} aria-hidden='true'>
+      <path d='M12.04 2C6.62 2 2.2 6.34 2.2 11.68c0 1.88.55 3.7 1.58 5.27L2 22l5.25-1.72a9.97 9.97 0 0 0 4.79 1.22h.01c5.42 0 9.84-4.34 9.84-9.68C21.89 6.34 17.47 2 12.04 2Zm0 17.73h-.01a8.2 8.2 0 0 1-4.17-1.14l-.3-.18-3.11 1.02 1.01-3.02-.2-.31a8 8 0 0 1-1.26-4.28c0-4.35 3.6-7.9 8.03-7.9 4.43 0 8.03 3.55 8.03 7.9 0 4.36-3.6 7.91-8.02 7.91Zm4.4-5.9c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.23-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.95-1.17-.72-.62-1.21-1.38-1.35-1.61-.14-.24-.01-.36.1-.47.1-.1.24-.27.36-.4.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.27-.74-1.74-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.57 4.11 3.61.57.24 1.02.39 1.37.5.58.18 1.11.15 1.53.09.47-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z' />
+    </svg>
+  )
 
   return (
     <header
-      className='absolute inset-x-0 top-0 z-50 border-b border-white/5 bg-white/[0.01] backdrop-blur-md'
-      onMouseLeave={() => setOpenItem(null)}
+      className='fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-[#1e3a8a] backdrop-blur-md'
+      onMouseLeave={() => {
+        setOpenItem(null)
+        setIsContactPopupOpen(false)
+      }}
     >
-      <div className='mx-auto flex h-20 w-full max-w-[1280px] items-center justify-between px-6 lg:px-8'>
-        <div className='flex items-center gap-3 md:gap-4'>
+      <div className='bg-[#1e3a8a]'>
+        <div className='mx-auto flex w-full flex-col items-center justify-center gap-1.5 px-4 py-1.5 text-center text-[11px] font-medium tracking-wide text-white/90 md:h-10 md:flex-row md:justify-end md:gap-4 md:py-0 md:text-[12px] lg:px-8'>
+          <div className='relative'>
+            <button
+              type='button'
+              onClick={() => setIsContactPopupOpen((prev) => !prev)}
+              className='inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1 font-semibold text-white transition hover:bg-white/15'
+            >
+              <PhoneCall className='h-3.5 w-3.5' />
+              <span>+49 15567 277478</span>
+              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isContactPopupOpen ? 'rotate-180' : ''}`} />
+            </button>
+            <div
+              className={`absolute left-1/2 top-[calc(100%+6px)] z-40 w-[170px] -translate-x-1/2 rounded-[12px] border border-white/20 bg-[#1e3a8a] p-2 shadow-[0_12px_28px_rgba(0,0,0,0.35)] transition-all md:left-0 md:translate-x-0 ${
+                isContactPopupOpen ? 'visible scale-100 opacity-100' : 'invisible scale-95 opacity-0'
+              }`}
+            >
+              <a
+                href='tel:+4915567277478'
+                className='flex items-center gap-2 rounded-[8px] px-2.5 py-2 text-left text-[12px] font-semibold text-white transition hover:bg-white/10'
+              >
+                <PhoneCall className='h-3.5 w-3.5 text-white/90' />
+                Call
+              </a>
+              <a
+                href='https://wa.me/4915567277478'
+                target='_blank'
+                rel='noreferrer'
+                className='mt-1 flex items-center gap-2 rounded-[8px] px-2.5 py-2 text-left text-[12px] font-semibold text-white transition hover:bg-white/10'
+              >
+                <WhatsAppIcon className='h-3.5 w-3.5 text-white/90' />
+                WhatsApp
+              </a>
+            </div>
+          </div>
+          <a
+            href='https://maps.google.com/?q=Alt+Biesdorf+71,+12683+Berlin'
+            target='_blank'
+            rel='noreferrer'
+            className='inline-flex items-center gap-1.5 text-white/95 transition hover:text-white'
+          >
+            <MapPin className='h-3.5 w-3.5 text-white/90' />
+            <span>Alt Biesdorf 71, 12683, Berlin</span>
+          </a>
+        </div>
+      </div>
+      <div className='mx-auto flex h-16 w-full items-center justify-between px-6 lg:px-8'>
+        <Link to='/' className='flex items-center gap-3 md:gap-4'>
           <img
             src='/logo.png'
             alt={t('navbar.brand.name')}
@@ -189,7 +244,7 @@ const NavbarSection = () => {
               {t('navbar.brand.location')}
             </span>
           </div>
-        </div>
+        </Link>
 
         <button
           type='button'
@@ -212,18 +267,14 @@ const NavbarSection = () => {
                 onMouseEnter={() => setOpenItem(item.label)}
               >
                 <button
-                  className={`flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-medium transition-all duration-200 ${
-                    isOpen
-                      ? 'bg-white/10 text-white'
-                      : 'text-white/60 hover:bg-white/5 hover:text-white'
-                  }`}
+                  className='flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-medium text-white transition-colors duration-200'
                   type='button'
                   onClick={() => setOpenItem(isOpen ? null : item.label)}
                 >
                   {item.label}
                   <ChevronDown
                     className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-white' : 'text-white/40'
+                      isOpen ? 'rotate-180 text-white' : 'text-white'
                     }`}
                   />
                 </button>
@@ -234,16 +285,16 @@ const NavbarSection = () => {
         </nav>
 
         <div className='hidden items-center gap-4 lg:flex'>
-          <div className='flex items-center rounded-full border border-white/5 bg-white/[0.03] p-1'>
+          <div className='flex items-center rounded-full border border-white/50 bg-white/15 p-1.5 shadow-[0_4px_14px_rgba(0,0,0,0.2)]'>
             {['en', 'de'].map((lang) => (
               <button
                 key={lang}
                 type='button'
                 onClick={() => i18n.changeLanguage(lang)}
-                className={`flex h-7 items-center justify-center rounded-full px-3 text-[11px] font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`flex h-8 items-center justify-center rounded-full px-4 text-[12px] font-extrabold uppercase tracking-wider transition-all duration-200 ${
                   i18n.language === lang
-                    ? 'bg-white/10 text-white shadow-sm'
-                    : 'text-white/40 hover:text-white/80'
+                    ? 'bg-white text-[#1e3a8a] shadow-sm'
+                    : 'text-white/90 hover:bg-white/20'
                 }`}
                 aria-label={t(`common.language.${lang === 'en' ? 'english' : 'german'}`)}
               >
@@ -314,7 +365,7 @@ const NavbarSection = () => {
                                   setIsMobileMenuOpen(false)
                                   setMobileOpenItem(null)
                                 }}
-                                className='text-[14px] font-medium text-white/80 transition-colors hover:text-white'
+                                className='text-[14px] font-medium text-white transition-colors'
                               >
                                 {link.label}
                               </Component>
@@ -331,16 +382,16 @@ const NavbarSection = () => {
         </nav>
 
         <div className='mt-4 flex items-center justify-between gap-3'>
-          <div className='flex items-center rounded-full border border-white/10 bg-white/[0.03] p-1'>
+          <div className='flex items-center rounded-full border border-white/50 bg-white/15 p-1.5 shadow-[0_4px_14px_rgba(0,0,0,0.2)]'>
             {['en', 'de'].map((lang) => (
               <button
                 key={`mobile-lang-${lang}`}
                 type='button'
                 onClick={() => i18n.changeLanguage(lang)}
-                className={`flex h-7 items-center justify-center rounded-full px-3 text-[11px] font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`flex h-8 items-center justify-center rounded-full px-4 text-[12px] font-extrabold uppercase tracking-wider transition-all duration-200 ${
                   i18n.language === lang
-                    ? 'bg-white/10 text-white shadow-sm'
-                    : 'text-white/50 hover:text-white/90'
+                    ? 'bg-white text-[#1e3a8a] shadow-sm'
+                    : 'text-white/90 hover:bg-white/20'
                 }`}
                 aria-label={t(`common.language.${lang === 'en' ? 'english' : 'german'}`)}
               >

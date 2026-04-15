@@ -1,26 +1,60 @@
-import { promises as fs } from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import { supabase } from '../../config/supabaseClient.js'
+import { ApiError } from '../../utils/ApiError.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const contentFilePath = path.resolve(__dirname, '../../data/content.json')
+const CONTENT_TABLE = 'site_content'
+const CONTENT_ROW_ID = 'primary'
 
-const readContent = async () => {
-  const raw = await fs.readFile(contentFilePath, 'utf8')
-  return JSON.parse(raw)
-}
+const upsertContent = async (content) => {
+  const { data, error } = await supabase
+    .from(CONTENT_TABLE)
+    .upsert(
+      {
+        id: CONTENT_ROW_ID,
+        data: content,
+      },
+      { onConflict: 'id' },
+    )
+    .select('data')
+    .single()
 
-const writeContent = async (content) => {
-  await fs.writeFile(contentFilePath, JSON.stringify(content, null, 2), 'utf8')
+  if (error) {
+    throw new ApiError(
+      500,
+      `Failed to persist content in Supabase table "${CONTENT_TABLE}". ${error.message}`,
+    )
+  }
+
+  return data?.data ?? content
 }
 
 export const getContent = async () => {
-  return readContent()
+  const { data, error } = await supabase
+    .from(CONTENT_TABLE)
+    .select('id, data')
+    .eq('id', CONTENT_ROW_ID)
+    .maybeSingle()
+
+  if (error) {
+    throw new ApiError(
+      500,
+      `Failed to read content from Supabase table "${CONTENT_TABLE}". ${error.message}`,
+    )
+  }
+
+  if (data?.data && typeof data.data === 'object') {
+    return data.data
+  }
+
+  // DB-only mode: initialize empty row in Supabase if it does not exist yet.
+  return upsertContent({})
 }
 
 export const updateContentSection = async (section, value) => {
-  const content = await readContent()
-  content[section] = value
-  await writeContent(content)
-  return content
+  const content = await getContent()
+  const nextContent = {
+    ...content,
+    [section]: value,
+  }
+
+  return upsertContent(nextContent)
 }

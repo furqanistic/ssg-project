@@ -304,6 +304,7 @@ const DashboardPage = () => {
   const [modalImageFile, setModalImageFile] = useState(null)
   const [isUploadingModalImage, setIsUploadingModalImage] = useState(false)
   const [isUploadingAboutImage, setIsUploadingAboutImage] = useState(false)
+  const [aboutUsSavingSection, setAboutUsSavingSection] = useState('')
   const [editFocusId, setEditFocusId] = useState('')
   const [editFocusMessage, setEditFocusMessage] = useState('')
   const [isProfileSaving, setIsProfileSaving] = useState(false)
@@ -809,16 +810,6 @@ const DashboardPage = () => {
     }))
   }
 
-  const addAboutUsArrayItem = (section, listKey, emptyItem) => {
-    setAboutUsForm((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [listKey]: [...prev[section][listKey], emptyItem],
-      },
-    }))
-  }
-
   const removeAboutUsArrayItem = (section, listKey, index, emptyItem) => {
     setAboutUsForm((prev) => {
       const nextList = prev[section][listKey].filter((_, itemIndex) => itemIndex !== index)
@@ -1122,9 +1113,10 @@ const DashboardPage = () => {
           ...prev,
           history: {
             ...prev.history,
-            sections: prev.history.sections.map((row, i) =>
-              i === index ? { ...row, ...nextData } : row,
-            ),
+            sections:
+              index < 0
+                ? [...prev.history.sections, { title: '', body: '', ...nextData }]
+                : prev.history.sections.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
           },
         }))
       }
@@ -1134,7 +1126,10 @@ const DashboardPage = () => {
           ...prev,
           mission: {
             ...prev.mission,
-            cards: prev.mission.cards.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
+            cards:
+              index < 0
+                ? [...prev.mission.cards, { title: '', description: '', accent: '', ...nextData }]
+                : prev.mission.cards.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
           },
         }))
       }
@@ -1144,9 +1139,10 @@ const DashboardPage = () => {
           ...prev,
           mission: {
             ...prev.mission,
-            coreValues: prev.mission.coreValues.map((row, i) =>
-              i === index ? { ...row, ...nextData } : row,
-            ),
+            coreValues:
+              index < 0
+                ? [...prev.mission.coreValues, { title: '', description: '', ...nextData }]
+                : prev.mission.coreValues.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
           },
         }))
       }
@@ -1156,9 +1152,21 @@ const DashboardPage = () => {
           ...prev,
           committee: {
             ...prev.committee,
-            members: prev.committee.members.map((row, i) =>
-              i === index ? { ...row, ...nextData } : row,
-            ),
+            members:
+              index < 0
+                ? [
+                    ...prev.committee.members,
+                    {
+                      initials: '',
+                      name: '',
+                      role: '',
+                      email: '',
+                      phone: '',
+                      image: '',
+                      ...nextData,
+                    },
+                  ]
+                : prev.committee.members.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
           },
         }))
       }
@@ -1168,9 +1176,10 @@ const DashboardPage = () => {
           ...prev,
           governance: {
             ...prev.governance,
-            structureBlocks: prev.governance.structureBlocks.map((row, i) =>
-              i === index ? { ...row, ...nextData } : row,
-            ),
+            structureBlocks:
+              index < 0
+                ? [...prev.governance.structureBlocks, { title: '', body: '', ...nextData }]
+                : prev.governance.structureBlocks.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
           },
         }))
       }
@@ -1180,9 +1189,10 @@ const DashboardPage = () => {
           ...prev,
           governance: {
             ...prev.governance,
-            documents: prev.governance.documents.map((row, i) =>
-              i === index ? { ...row, ...nextData } : row,
-            ),
+            documents:
+              index < 0
+                ? [...prev.governance.documents, { title: '', size: '', accent: '', ...nextData }]
+                : prev.governance.documents.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
           },
         }))
       }
@@ -1192,9 +1202,10 @@ const DashboardPage = () => {
           ...prev,
           governance: {
             ...prev.governance,
-            reports: prev.governance.reports.map((row, i) =>
-              i === index ? { ...row, ...nextData } : row,
-            ),
+            reports:
+              index < 0
+                ? [...prev.governance.reports, { title: '', size: '', ...nextData }]
+                : prev.governance.reports.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
           },
         }))
       }
@@ -1465,9 +1476,10 @@ const DashboardPage = () => {
     },
   })
 
-  const saveAboutUsSection = async (sectionLabel = 'About Us section') => {
+  const saveAboutUsSection = async (sectionKey, sectionLabel = 'About Us section') => {
     setError('')
     setSuccess('')
+    setAboutUsSavingSection(sectionKey)
     try {
       await updateMutation.mutateAsync({
         section: 'aboutUs',
@@ -1476,6 +1488,8 @@ const DashboardPage = () => {
       setSuccess(`${sectionLabel} saved and published.`)
     } catch (requestError) {
       setError(requestError.message)
+    } finally {
+      setAboutUsSavingSection('')
     }
   }
 
@@ -1496,7 +1510,7 @@ const DashboardPage = () => {
     <div className='min-h-screen bg-[#f8faff] font-["Poppins","Segoe_UI",sans-serif] text-gray-900 selection:bg-[#001da5]/10 selection:text-[#001da5]'>
       <div className='mx-auto w-full max-w-[1600px] lg:flex'>
         {/* Sidebar */}
-        <aside className='hidden min-h-screen w-[280px] shrink-0 border-r border-gray-100 bg-white p-8 lg:block sticky top-0'>
+        <aside className='sticky top-0 hidden h-screen w-[280px] shrink-0 overflow-y-auto border-r border-gray-100 bg-white p-8 lg:flex lg:flex-col lg:self-start'>
           <div className='mb-10 flex items-center gap-3 px-2'>
             <div className='flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
               <LayoutDashboard size={22} strokeWidth={2.5} />
@@ -1909,7 +1923,7 @@ const DashboardPage = () => {
                               setVisitorDrafts((prev) => ({ ...prev, address: event.target.value }))
                             }
                             className={inputClass}
-                            placeholder='e.g. Wollankstraße 1'
+                            placeholder='e.g. Alt Biesdorf 71'
                           />
                         </label>
                         <div className='mt-4 flex gap-2 justify-end'>
@@ -2462,7 +2476,7 @@ const DashboardPage = () => {
                         value={contactAddressDraft}
                         onChange={(event) => setContactAddressDraft(event.target.value)}
                         className={inputClass}
-                        placeholder='13187 Berlin'
+                        placeholder='12683 Berlin'
                       />
                     </label>
                     <div className='mt-6 flex gap-3 justify-end'>
@@ -2544,12 +2558,12 @@ const DashboardPage = () => {
                   <div className='mt-4 flex justify-end'>
                     <button
                       type='button'
-                      onClick={() => void saveAboutUsSection('About page headings')}
+                      onClick={() => void saveAboutUsSection('about-headings', 'About page headings')}
                       disabled={updateMutation.isPending}
                       className={primaryButtonClass}
                     >
                       <Save size={14} className='mr-1.5' />
-                      {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                      {updateMutation.isPending && aboutUsSavingSection === 'about-headings' ? 'Saving...' : 'Save & Publish'}
                     </button>
                   </div>
                 </div>
@@ -2625,12 +2639,12 @@ const DashboardPage = () => {
                   <div className='mt-4 flex justify-end'>
                     <button
                       type='button'
-                      onClick={() => void saveAboutUsSection('About page images')}
+                      onClick={() => void saveAboutUsSection('about-images', 'About page images')}
                       disabled={updateMutation.isPending}
                       className={primaryButtonClass}
                     >
                       <Save size={14} className='mr-1.5' />
-                      {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                      {updateMutation.isPending && aboutUsSavingSection === 'about-images' ? 'Saving...' : 'Save & Publish'}
                     </button>
                   </div>
                 </div>
@@ -2650,7 +2664,7 @@ const DashboardPage = () => {
                 />
                 <button
                   type='button'
-                  onClick={() => addAboutUsArrayItem('history', 'sections', { title: '', body: '' })}
+                  onClick={() => startEdit('about-history-section', -1, { title: '', body: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add History Section
@@ -2658,12 +2672,12 @@ const DashboardPage = () => {
                 <div className='flex justify-end'>
                   <button
                     type='button'
-                    onClick={() => void saveAboutUsSection('History sections')}
+                    onClick={() => void saveAboutUsSection('history-sections', 'History sections')}
                     disabled={updateMutation.isPending}
                     className={primaryButtonClass}
                   >
                     <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                    {updateMutation.isPending && aboutUsSavingSection === 'history-sections' ? 'Saving...' : 'Save & Publish'}
                   </button>
                 </div>
 
@@ -2683,7 +2697,7 @@ const DashboardPage = () => {
                 />
                 <button
                   type='button'
-                  onClick={() => addAboutUsArrayItem('mission', 'cards', { title: '', description: '', accent: '' })}
+                  onClick={() => startEdit('about-mission-card', -1, { title: '', description: '', accent: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Mission Card
@@ -2691,12 +2705,12 @@ const DashboardPage = () => {
                 <div className='flex justify-end'>
                   <button
                     type='button'
-                    onClick={() => void saveAboutUsSection('Mission cards')}
+                    onClick={() => void saveAboutUsSection('mission-cards', 'Mission cards')}
                     disabled={updateMutation.isPending}
                     className={primaryButtonClass}
                   >
                     <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                    {updateMutation.isPending && aboutUsSavingSection === 'mission-cards' ? 'Saving...' : 'Save & Publish'}
                   </button>
                 </div>
 
@@ -2715,7 +2729,7 @@ const DashboardPage = () => {
                 />
                 <button
                   type='button'
-                  onClick={() => addAboutUsArrayItem('mission', 'coreValues', { title: '', description: '' })}
+                  onClick={() => startEdit('about-mission-value', -1, { title: '', description: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Core Value
@@ -2723,12 +2737,12 @@ const DashboardPage = () => {
                 <div className='flex justify-end'>
                   <button
                     type='button'
-                    onClick={() => void saveAboutUsSection('Mission core values')}
+                    onClick={() => void saveAboutUsSection('mission-core-values', 'Mission core values')}
                     disabled={updateMutation.isPending}
                     className={primaryButtonClass}
                   >
                     <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                    {updateMutation.isPending && aboutUsSavingSection === 'mission-core-values' ? 'Saving...' : 'Save & Publish'}
                   </button>
                 </div>
 
@@ -2758,7 +2772,7 @@ const DashboardPage = () => {
                 <button
                   type='button'
                   onClick={() =>
-                    addAboutUsArrayItem('committee', 'members', {
+                    startEdit('about-committee-member', -1, {
                       initials: '',
                       name: '',
                       role: '',
@@ -2774,12 +2788,12 @@ const DashboardPage = () => {
                 <div className='flex justify-end'>
                   <button
                     type='button'
-                    onClick={() => void saveAboutUsSection('Committee members')}
+                    onClick={() => void saveAboutUsSection('committee-members', 'Committee members')}
                     disabled={updateMutation.isPending}
                     className={primaryButtonClass}
                   >
                     <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                    {updateMutation.isPending && aboutUsSavingSection === 'committee-members' ? 'Saving...' : 'Save & Publish'}
                   </button>
                 </div>
 
@@ -2800,7 +2814,7 @@ const DashboardPage = () => {
                 />
                 <button
                   type='button'
-                  onClick={() => addAboutUsArrayItem('governance', 'structureBlocks', { title: '', body: '' })}
+                  onClick={() => startEdit('about-governance-structure', -1, { title: '', body: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Structure Block
@@ -2808,12 +2822,12 @@ const DashboardPage = () => {
                 <div className='flex justify-end'>
                   <button
                     type='button'
-                    onClick={() => void saveAboutUsSection('Governance structure')}
+                    onClick={() => void saveAboutUsSection('governance-structure', 'Governance structure')}
                     disabled={updateMutation.isPending}
                     className={primaryButtonClass}
                   >
                     <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                    {updateMutation.isPending && aboutUsSavingSection === 'governance-structure' ? 'Saving...' : 'Save & Publish'}
                   </button>
                 </div>
 
@@ -2835,7 +2849,7 @@ const DashboardPage = () => {
                 />
                 <button
                   type='button'
-                  onClick={() => addAboutUsArrayItem('governance', 'documents', { title: '', size: '', accent: '' })}
+                  onClick={() => startEdit('about-governance-document', -1, { title: '', size: '', accent: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Document
@@ -2843,12 +2857,12 @@ const DashboardPage = () => {
                 <div className='flex justify-end'>
                   <button
                     type='button'
-                    onClick={() => void saveAboutUsSection('Governance documents')}
+                    onClick={() => void saveAboutUsSection('governance-documents', 'Governance documents')}
                     disabled={updateMutation.isPending}
                     className={primaryButtonClass}
                   >
                     <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                    {updateMutation.isPending && aboutUsSavingSection === 'governance-documents' ? 'Saving...' : 'Save & Publish'}
                   </button>
                 </div>
 
@@ -2867,7 +2881,7 @@ const DashboardPage = () => {
                 />
                 <button
                   type='button'
-                  onClick={() => addAboutUsArrayItem('governance', 'reports', { title: '', size: '' })}
+                  onClick={() => startEdit('about-governance-report', -1, { title: '', size: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Report
@@ -2875,12 +2889,12 @@ const DashboardPage = () => {
                 <div className='flex justify-end'>
                   <button
                     type='button'
-                    onClick={() => void saveAboutUsSection('Governance reports')}
+                    onClick={() => void saveAboutUsSection('governance-reports', 'Governance reports')}
                     disabled={updateMutation.isPending}
                     className={primaryButtonClass}
                   >
                     <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save & Publish'}
+                    {updateMutation.isPending && aboutUsSavingSection === 'governance-reports' ? 'Saving...' : 'Save & Publish'}
                   </button>
                 </div>
               </div>

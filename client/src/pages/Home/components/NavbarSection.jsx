@@ -4,25 +4,27 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/authStore'
 
+const getDefaultAboutSections = (t) => [
+  {
+    heading: t('navbar.items.about.s1h'),
+    links: [
+      { label: t('navbar.items.about.history'), to: '/about-us/history' },
+      { label: t('navbar.items.about.mission'), to: '/about-us/mission' },
+    ],
+  },
+  {
+    heading: t('navbar.items.about.s2h'),
+    links: [
+      { label: t('navbar.items.about.committee'), to: '/about-us/committee' },
+      { label: t('navbar.items.about.governance'), to: '/about-us/governance' },
+    ],
+  },
+]
+
 const getNavItems = (t) => [
   {
     label: t('navbar.items.about.label'),
-    sections: [
-      {
-        heading: t('navbar.items.about.s1h'),
-        links: [
-          { label: t('navbar.items.about.history'), to: '/about-us/history' },
-          { label: t('navbar.items.about.mission'), to: '/about-us/mission' },
-        ],
-      },
-      {
-        heading: t('navbar.items.about.s2h'),
-        links: [
-          { label: t('navbar.items.about.committee'), to: '/about-us/committee' },
-          { label: t('navbar.items.about.governance'), to: '/about-us/governance' },
-        ],
-      },
-    ],
+    sections: getDefaultAboutSections(t),
     panelClassName: 'w-[560px] grid-cols-2',
   },
   {

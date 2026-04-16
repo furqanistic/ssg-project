@@ -39,3 +39,40 @@ export const uploadContentImage = async (file, section = 'events') => {
 
   return parseResponse(response)
 }
+
+export const uploadContentFile = async (file, section = 'aboutUs/files', onProgress) => {
+  return new Promise((resolve, reject) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('section', section)
+
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', `${API_BASE_URL}/admin/content/upload-file`)
+    xhr.upload.onprogress = (event) => {
+      if (!event.lengthComputable || typeof onProgress !== 'function') {
+        return
+      }
+      const percent = Math.round((event.loaded / event.total) * 100)
+      onProgress(percent)
+    }
+
+    xhr.onload = () => {
+      try {
+        const payload = JSON.parse(xhr.responseText || '{}')
+        if (xhr.status < 200 || xhr.status >= 300 || payload.success === false) {
+          reject(new Error(payload.message || 'File upload failed'))
+          return
+        }
+        resolve(payload.data)
+      } catch {
+        reject(new Error('Invalid upload response'))
+      }
+    }
+
+    xhr.onerror = () => {
+      reject(new Error('Network error while uploading file'))
+    }
+
+    xhr.send(formData)
+  })
+}

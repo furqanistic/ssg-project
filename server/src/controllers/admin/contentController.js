@@ -4,7 +4,7 @@ import {
   getContent,
   updateContentSection,
 } from '../../services/admin/contentService.js'
-import { uploadImageToStorage } from '../../services/admin/storageService.js'
+import { uploadFileToStorage, uploadImageToStorage } from '../../services/admin/storageService.js'
 
 const editableSections = new Set(['visitors', 'events', 'media', 'contact', 'aboutUs'])
 
@@ -52,6 +52,21 @@ export const uploadImage = async (req, res, next) => {
     const result = await uploadImageToStorage({ file: req.file, section })
 
     return sendSuccess(res, 'Image uploaded successfully.', result)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export const uploadFile = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw new ApiError(400, 'File is required.')
+    }
+
+    const section = (req.body?.section || 'aboutUs/files').trim()
+    const result = await uploadFileToStorage({ file: req.file, section })
+
+    return sendSuccess(res, 'File uploaded successfully.', result)
   } catch (error) {
     return next(error)
   }

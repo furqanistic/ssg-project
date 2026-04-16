@@ -1,7 +1,7 @@
-import React from 'react'
 import { MapPin, MessageCircle, PhoneCall } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 const HeroSection = () => {
   const { t } = useTranslation()
@@ -50,7 +50,7 @@ const HeroSection = () => {
         <div className='mt-8 flex flex-wrap items-center justify-center gap-3 md:gap-4'>
           <Link
             to='/events/programs#all'
-            className='inline-flex h-[50px] min-w-[186px] items-center justify-center rounded-[10px] bg-[#f6ab3c] px-7 text-[16px] font-bold text-white transition hover:bg-[#f1a52e] md:h-[56px] md:min-w-[202px] md:text-[17px]'
+            className='inline-flex h-[50px] min-w-[186px] items-center justify-center rounded-[10px] bg-[#f09816] px-7 text-[16px] font-bold text-white transition hover:bg-[#f1a52e] md:h-[56px] md:min-w-[202px] md:text-[17px]'
           >
             {t('common.actions.viewPrograms')}
           </Link>

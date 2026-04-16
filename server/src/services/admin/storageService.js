@@ -73,3 +73,61 @@ export const uploadImageToStorage = async ({ file, section = 'events' }) => {
     path: objectPath,
   }
 }
+
+const formatFileSize = (bytes = 0) => {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return ''
+  }
+
+  const units = ['B', 'KB', 'MB', 'GB']
+  let size = bytes
+  let unitIndex = 0
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024
+    unitIndex += 1
+  }
+
+  const precision = size >= 10 || unitIndex === 0 ? 0 : 1
+  return `${size.toFixed(precision)} ${units[unitIndex]}`
+}
+
+export const uploadFileToStorage = async ({ file, section = 'aboutUs/files' }) => {
+  const bucket = env.SUPABASE_STORAGE_BUCKET
+
+  if (!bucket) {
+    throw new ApiError(500, 'SUPABASE_STORAGE_BUCKET is not configured.')
+  }
+
+  await ensureBucketExists(bucket)
+
+  const safeName = sanitizeFileName(file.originalname || 'file')
+  const ext = safeName.includes('.') ? safeName.split('.').pop() : 'bin'
+  const baseName = safeName.replace(new RegExp(`\\.${ext}$`), '')
+  const objectPath = `${section}/${Date.now()}-${crypto.randomUUID()}-${baseName}.${ext}`
+
+  const { error: uploadError } = await supabase.storage.from(bucket).upload(objectPath, file.buffer, {
+    cacheControl: '3600',
+    contentType: file.mimetype || 'application/octet-stream',
+    upsert: false,
+  })
+
+  if (uploadError) {
+    throw new ApiError(500, uploadError.message || 'Failed to upload file to Supabase Storage.')
+  }
+
+  const { data } = supabase.storage.from(bucket).getPublicUrl(objectPath)
+
+  if (!data?.publicUrl) {
+    throw new ApiError(500, 'File uploaded but public URL could not be generated.')
+  }
+
+  return {
+    url: data.publicUrl,
+    bucket,
+    path: objectPath,
+    name: file.originalname || safeName,
+    size: formatFileSize(file.size),
+    mimeType: file.mimetype || 'application/octet-stream',
+  }
+}

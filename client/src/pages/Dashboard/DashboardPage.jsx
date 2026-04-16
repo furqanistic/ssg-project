@@ -4,13 +4,14 @@ import {
   useSiteContentQuery,
   useUpdateContentSectionMutation,
 } from '@/hooks/useContent'
-import { uploadContentImage } from '@/services/contentApi'
+import { uploadContentFile, uploadContentImage } from '@/services/contentApi'
 import {
   createUserRequest,
   listUsersRequest,
   updateProfileRequest,
 } from '@/services/authApi'
 import { useAuthStore } from '@/store/authStore'
+import { useToast } from '@/components/ui/toast-system'
 import { 
   Users, 
   Calendar, 
@@ -29,7 +30,6 @@ import {
   X,
   PlusCircle,
   FileText,
-  ShieldCheck,
   LayoutDashboard,
   Search
 } from 'lucide-react'
@@ -62,6 +62,13 @@ const cleanPairRows = (rows = []) =>
   rows
     .map((row) => ({ label: row.label.trim(), value: row.value.trim() }))
     .filter((row) => row.label || row.value)
+const normalizeColorValue = (value, fallback = '#2d4f9f') => {
+  const input = typeof value === 'string' ? value.trim() : ''
+  if (!input) return fallback
+  if (input.startsWith('#')) return input
+  const match = input.match(/#(?:[0-9a-fA-F]{3,8})/)
+  return match ? match[0] : fallback
+}
 
 const emptyEvent = {
   title: '',
@@ -104,7 +111,8 @@ const defaultAboutUsForm = {
     heroTitle: '',
     heroDescription: '',
     heroImage: '',
-    cards: [{ title: '', description: '', accent: '' }],
+    coreValuesTitle: '',
+    cards: [{ title: '', description: '', accent: '#2d4f9f' }],
     coreValues: [{ title: '', description: '' }],
   },
   committee: {
@@ -124,15 +132,135 @@ const defaultAboutUsForm = {
     structureIntro: '',
     structureBlocks: [{ title: '', body: '' }],
     documentsTitle: '',
-    documents: [{ title: '', size: '', accent: '' }],
+    documents: [{ title: '', size: '', accent: '#f6ab3c', fileUrl: '' }],
     reportsTitle: '',
-    reports: [{ title: '', size: '' }],
+    reports: [{ title: '', size: '', fileUrl: '' }],
+    downloadCtaLabel: '',
     financialTitle: '',
     financialDescription: '',
     taxTitle: '',
     taxDescription: '',
   },
+  navbar: {
+    label: '',
+    sections: [
+      {
+        heading: '',
+        links: [
+          { label: '', to: '/about-us/history' },
+          { label: '', to: '/about-us/mission' },
+        ],
+      },
+      {
+        heading: '',
+        links: [
+          { label: '', to: '/about-us/committee' },
+          { label: '', to: '/about-us/governance' },
+        ],
+      },
+    ],
+  },
 }
+
+const createAboutUsPayload = (sourceForm) => ({
+  history: {
+    heroTitle: sourceForm.history.heroTitle.trim(),
+    heroSubtitle: sourceForm.history.heroSubtitle.trim(),
+    heroImage: sourceForm.history.heroImage.trim(),
+    sections: sourceForm.history.sections
+      .map((item) => ({
+        title: item.title.trim(),
+        body: item.body.trim(),
+      }))
+      .filter((item) => item.title || item.body),
+  },
+  mission: {
+    heroTitle: sourceForm.mission.heroTitle.trim(),
+    heroDescription: sourceForm.mission.heroDescription.trim(),
+    heroImage: sourceForm.mission.heroImage.trim(),
+    coreValuesTitle: sourceForm.mission.coreValuesTitle.trim(),
+    cards: sourceForm.mission.cards
+      .map((item) => ({
+        title: item.title.trim(),
+        description: item.description.trim(),
+        accent: normalizeColorValue(item.accent, '#2d4f9f'),
+      }))
+      .filter((item) => item.title || item.description || item.accent),
+    coreValues: sourceForm.mission.coreValues
+      .map((item) => ({
+        title: item.title.trim(),
+        description: item.description.trim(),
+      }))
+      .filter((item) => item.title || item.description),
+  },
+  committee: {
+    heroTitle: sourceForm.committee.heroTitle.trim(),
+    heroSubtitle: sourceForm.committee.heroSubtitle.trim(),
+    intro: sourceForm.committee.intro.trim(),
+    members: sourceForm.committee.members
+      .map((item) => ({
+        initials: item.initials.trim(),
+        name: item.name.trim(),
+        role: item.role.trim(),
+        email: item.email.trim(),
+        phone: item.phone.trim(),
+        image: item.image.trim(),
+      }))
+      .filter((item) => item.initials || item.name || item.role || item.email || item.phone || item.image),
+    ctaTitle: sourceForm.committee.ctaTitle.trim(),
+    ctaDescription: sourceForm.committee.ctaDescription.trim(),
+    ctaButtonLabel: sourceForm.committee.ctaButtonLabel.trim(),
+  },
+  governance: {
+    heroTitle: sourceForm.governance.heroTitle.trim(),
+    heroSubtitle: sourceForm.governance.heroSubtitle.trim(),
+    heroImage: sourceForm.governance.heroImage.trim(),
+    structureTitle: sourceForm.governance.structureTitle.trim(),
+    structureIntro: sourceForm.governance.structureIntro.trim(),
+    structureBlocks: sourceForm.governance.structureBlocks
+      .map((item) => ({
+        title: item.title.trim(),
+        body: item.body.trim(),
+      }))
+      .filter((item) => item.title || item.body),
+    documentsTitle: sourceForm.governance.documentsTitle.trim(),
+    documents: sourceForm.governance.documents
+      .map((item) => ({
+        title: item.title.trim(),
+        size: item.size.trim(),
+        accent: normalizeColorValue(item.accent, '#f6ab3c'),
+        fileUrl: (item.fileUrl ?? '').trim(),
+      }))
+      .filter((item) => item.title || item.size || item.accent || item.fileUrl),
+    reportsTitle: sourceForm.governance.reportsTitle.trim(),
+    reports: sourceForm.governance.reports
+      .map((item) => ({
+        title: item.title.trim(),
+        size: item.size.trim(),
+        fileUrl: (item.fileUrl ?? '').trim(),
+      }))
+      .filter((item) => item.title || item.size || item.fileUrl),
+    downloadCtaLabel: sourceForm.governance.downloadCtaLabel.trim(),
+    financialTitle: sourceForm.governance.financialTitle.trim(),
+    financialDescription: sourceForm.governance.financialDescription.trim(),
+    taxTitle: sourceForm.governance.taxTitle.trim(),
+    taxDescription: sourceForm.governance.taxDescription.trim(),
+  },
+  navbar: {
+    label: sourceForm.navbar.label.trim(),
+    sections: sourceForm.navbar.sections
+      .map((section) => ({
+        heading: section.heading.trim(),
+        links: (Array.isArray(section.links) ? section.links : [])
+          .map((link) => ({
+            label: (link.label ?? '').trim(),
+            to: (link.to ?? '').trim(),
+          }))
+          .filter((link) => link.label || link.to),
+      }))
+      .filter((section) => section.heading || section.links.length > 0),
+  },
+})
 
 const DataTable = ({
   title,
@@ -229,6 +357,7 @@ const DashboardPage = () => {
   const session = useAuthStore((state) => state.session)
   const setAuth = useAuthStore((state) => state.setAuth)
   const logout = useAuthStore((state) => state.logout)
+  const toast = useToast()
 
   const initialTab = location.pathname.split('/')[2]
   const [active, setActive] = useState(
@@ -255,6 +384,8 @@ const DashboardPage = () => {
     address: [],
   })
   const [aboutUsForm, setAboutUsForm] = useState(defaultAboutUsForm)
+  const [aboutUsSavedSnapshot, setAboutUsSavedSnapshot] = useState('')
+  const [aboutUsLastSavedAt, setAboutUsLastSavedAt] = useState(null)
 
   const [eventDraft, setEventDraft] = useState(emptyEvent)
   const [editingEventIndex, setEditingEventIndex] = useState(null)
@@ -303,8 +434,8 @@ const DashboardPage = () => {
   })
   const [modalImageFile, setModalImageFile] = useState(null)
   const [isUploadingModalImage, setIsUploadingModalImage] = useState(false)
+  const [modalUploadProgress, setModalUploadProgress] = useState(0)
   const [isUploadingAboutImage, setIsUploadingAboutImage] = useState(false)
-  const [aboutUsSavingSection, setAboutUsSavingSection] = useState('')
   const [editFocusId, setEditFocusId] = useState('')
   const [editFocusMessage, setEditFocusMessage] = useState('')
   const [isProfileSaving, setIsProfileSaving] = useState(false)
@@ -352,6 +483,7 @@ const DashboardPage = () => {
       data: {},
     })
     setModalImageFile(null)
+    setModalUploadProgress(0)
   }
 
   const { data: content, isLoading } = useSiteContentQuery()
@@ -406,7 +538,7 @@ const DashboardPage = () => {
       address: toTextRows(content.contact?.addressLines),
     })
     const aboutUs = content.aboutUs ?? {}
-    setAboutUsForm({
+    const nextAboutUsForm = {
       history: {
         heroTitle: aboutUs.history?.heroTitle ?? '',
         heroSubtitle: aboutUs.history?.heroSubtitle ?? '',
@@ -423,14 +555,15 @@ const DashboardPage = () => {
         heroTitle: aboutUs.mission?.heroTitle ?? '',
         heroDescription: aboutUs.mission?.heroDescription ?? '',
         heroImage: aboutUs.mission?.heroImage ?? '',
+        coreValuesTitle: aboutUs.mission?.coreValuesTitle ?? '',
         cards:
           Array.isArray(aboutUs.mission?.cards) && aboutUs.mission.cards.length > 0
             ? aboutUs.mission.cards.map((item) => ({
                 title: item?.title ?? '',
                 description: item?.description ?? '',
-                accent: item?.accent ?? '',
+                accent: normalizeColorValue(item?.accent, '#2d4f9f'),
               }))
-            : [{ title: '', description: '', accent: '' }],
+            : [{ title: '', description: '', accent: '#2d4f9f' }],
         coreValues:
           Array.isArray(aboutUs.mission?.coreValues) && aboutUs.mission.coreValues.length > 0
             ? aboutUs.mission.coreValues.map((item) => ({
@@ -478,23 +611,68 @@ const DashboardPage = () => {
             ? aboutUs.governance.documents.map((item) => ({
                 title: item?.title ?? '',
                 size: item?.size ?? '',
-                accent: item?.accent ?? '',
+                accent: normalizeColorValue(item?.accent, '#f6ab3c'),
+                fileUrl: item?.fileUrl ?? '',
               }))
-            : [{ title: '', size: '', accent: '' }],
+            : [{ title: '', size: '', accent: '#f6ab3c', fileUrl: '' }],
         reportsTitle: aboutUs.governance?.reportsTitle ?? '',
         reports:
           Array.isArray(aboutUs.governance?.reports) && aboutUs.governance.reports.length > 0
             ? aboutUs.governance.reports.map((item) => ({
                 title: item?.title ?? '',
                 size: item?.size ?? '',
+                fileUrl: item?.fileUrl ?? '',
               }))
-            : [{ title: '', size: '' }],
+            : [{ title: '', size: '', fileUrl: '' }],
+        downloadCtaLabel: aboutUs.governance?.downloadCtaLabel ?? '',
         financialTitle: aboutUs.governance?.financialTitle ?? '',
         financialDescription: aboutUs.governance?.financialDescription ?? '',
         taxTitle: aboutUs.governance?.taxTitle ?? '',
         taxDescription: aboutUs.governance?.taxDescription ?? '',
       },
-    })
+      navbar: {
+        label: aboutUs.navbar?.label ?? '',
+        sections:
+          Array.isArray(aboutUs.navbar?.sections) && aboutUs.navbar.sections.length > 0
+            ? aboutUs.navbar.sections.map((section, sectionIndex) => {
+                const defaultPathsBySection = [
+                  ['/about-us/history', '/about-us/mission'],
+                  ['/about-us/committee', '/about-us/governance'],
+                ]
+                const defaultPaths = defaultPathsBySection[sectionIndex] ?? []
+                const existingLinks = Array.isArray(section?.links) ? section.links : []
+                const requiredLength = Math.max(existingLinks.length, defaultPaths.length)
+                const mappedLinks = Array.from({ length: requiredLength }).map((_, linkIndex) => ({
+                  label: existingLinks[linkIndex]?.label ?? '',
+                  to: existingLinks[linkIndex]?.to ?? defaultPaths[linkIndex] ?? '',
+                }))
+
+                return {
+                  heading: section?.heading ?? '',
+                  links: mappedLinks,
+                }
+              })
+            : [
+                {
+                  heading: '',
+                  links: [
+                    { label: '', to: '/about-us/history' },
+                    { label: '', to: '/about-us/mission' },
+                  ],
+                },
+                {
+                  heading: '',
+                  links: [
+                    { label: '', to: '/about-us/committee' },
+                    { label: '', to: '/about-us/governance' },
+                  ],
+                },
+              ],
+      },
+    }
+    setAboutUsForm(nextAboutUsForm)
+    setAboutUsSavedSnapshot(JSON.stringify(createAboutUsPayload(nextAboutUsForm)))
+    setAboutUsLastSavedAt(new Date())
 
     setEventDraft(emptyEvent)
     setEditingEventIndex(null)
@@ -536,6 +714,18 @@ const DashboardPage = () => {
     () => menu.find((item) => item.key === active)?.label ?? 'Content',
     [active],
   )
+  const aboutUsDirty = useMemo(() => {
+    if (active !== 'about-us') {
+      return false
+    }
+    return JSON.stringify(createAboutUsPayload(aboutUsForm)) !== aboutUsSavedSnapshot
+  }, [aboutUsForm, aboutUsSavedSnapshot, active])
+  const aboutUsLastSavedLabel = useMemo(() => {
+    if (!aboutUsLastSavedAt) {
+      return 'Not saved yet'
+    }
+    return `Last saved at ${aboutUsLastSavedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+  }, [aboutUsLastSavedAt])
 
   useEffect(() => {
     const tab = location.pathname.split('/')[2]
@@ -609,6 +799,24 @@ const DashboardPage = () => {
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (!error) {
+      return
+    }
+
+    toast.error(error)
+    setError('')
+  }, [error, toast])
+
+  useEffect(() => {
+    if (!success) {
+      return
+    }
+
+    toast.success(success)
+    setSuccess('')
+  }, [success, toast])
 
   useEffect(() => {
     setProfileForm((prev) => ({
@@ -952,6 +1160,7 @@ const DashboardPage = () => {
       return
     }
 
+    setModalUploadProgress(0)
     let nextData = { ...data }
 
     if ((type === 'events' || type === 'about-committee-member') && modalImageFile) {
@@ -964,6 +1173,29 @@ const DashboardPage = () => {
         nextData.image = uploaded.url || ''
       } catch (uploadError) {
         setError(uploadError.message || 'Failed to upload image.')
+        setIsUploadingModalImage(false)
+        return
+      } finally {
+        setIsUploadingModalImage(false)
+      }
+    }
+
+    if ((type === 'about-governance-document' || type === 'about-governance-report') && modalImageFile) {
+      try {
+        setIsUploadingModalImage(true)
+        const uploaded = await uploadContentFile(
+          modalImageFile,
+          type === 'about-governance-document'
+            ? 'aboutUs/governance-documents'
+            : 'aboutUs/governance-reports',
+          (percent) => setModalUploadProgress(percent),
+        )
+        setModalUploadProgress(100)
+        nextData.fileUrl = uploaded.url || ''
+        nextData.size = nextData.size || uploaded.size || ''
+        nextData.title = nextData.title || uploaded.name || ''
+      } catch (uploadError) {
+        setError(uploadError.message || 'Failed to upload file.')
         setIsUploadingModalImage(false)
         return
       } finally {
@@ -1108,110 +1340,85 @@ const DashboardPage = () => {
         })
       }
 
-      if (type === 'about-history-section') {
-        setAboutUsForm((prev) => ({
-          ...prev,
-          history: {
-            ...prev.history,
-            sections:
-              index < 0
-                ? [...prev.history.sections, { title: '', body: '', ...nextData }]
-                : prev.history.sections.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
-          },
-        }))
-      }
+      const isAboutModalType = type.startsWith('about-')
+      if (isAboutModalType) {
+        const nextAboutUsForm = structuredClone(aboutUsForm)
 
-      if (type === 'about-mission-card') {
-        setAboutUsForm((prev) => ({
-          ...prev,
-          mission: {
-            ...prev.mission,
-            cards:
-              index < 0
-                ? [...prev.mission.cards, { title: '', description: '', accent: '', ...nextData }]
-                : prev.mission.cards.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
-          },
-        }))
-      }
+        if (type === 'about-history-section') {
+          nextAboutUsForm.history.sections =
+            index < 0
+              ? [...nextAboutUsForm.history.sections, { title: '', body: '', ...nextData }]
+              : nextAboutUsForm.history.sections.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+        }
 
-      if (type === 'about-mission-value') {
-        setAboutUsForm((prev) => ({
-          ...prev,
-          mission: {
-            ...prev.mission,
-            coreValues:
-              index < 0
-                ? [...prev.mission.coreValues, { title: '', description: '', ...nextData }]
-                : prev.mission.coreValues.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
-          },
-        }))
-      }
+        if (type === 'about-mission-card') {
+          nextAboutUsForm.mission.cards =
+            index < 0
+              ? [...nextAboutUsForm.mission.cards, { title: '', description: '', accent: '#2d4f9f', ...nextData }]
+              : nextAboutUsForm.mission.cards.map((row, i) =>
+                  i === index ? { ...row, ...nextData, accent: normalizeColorValue(nextData.accent, '#2d4f9f') } : row,
+                )
+        }
 
-      if (type === 'about-committee-member') {
-        setAboutUsForm((prev) => ({
-          ...prev,
-          committee: {
-            ...prev.committee,
-            members:
-              index < 0
-                ? [
-                    ...prev.committee.members,
-                    {
-                      initials: '',
-                      name: '',
-                      role: '',
-                      email: '',
-                      phone: '',
-                      image: '',
-                      ...nextData,
-                    },
-                  ]
-                : prev.committee.members.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
-          },
-        }))
-      }
+        if (type === 'about-mission-value') {
+          nextAboutUsForm.mission.coreValues =
+            index < 0
+              ? [...nextAboutUsForm.mission.coreValues, { title: '', description: '', ...nextData }]
+              : nextAboutUsForm.mission.coreValues.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+        }
 
-      if (type === 'about-governance-structure') {
-        setAboutUsForm((prev) => ({
-          ...prev,
-          governance: {
-            ...prev.governance,
-            structureBlocks:
-              index < 0
-                ? [...prev.governance.structureBlocks, { title: '', body: '', ...nextData }]
-                : prev.governance.structureBlocks.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
-          },
-        }))
-      }
+        if (type === 'about-committee-member') {
+          nextAboutUsForm.committee.members =
+            index < 0
+              ? [
+                  ...nextAboutUsForm.committee.members,
+                  {
+                    initials: '',
+                    name: '',
+                    role: '',
+                    email: '',
+                    phone: '',
+                    image: '',
+                    ...nextData,
+                  },
+                ]
+              : nextAboutUsForm.committee.members.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+        }
 
-      if (type === 'about-governance-document') {
-        setAboutUsForm((prev) => ({
-          ...prev,
-          governance: {
-            ...prev.governance,
-            documents:
-              index < 0
-                ? [...prev.governance.documents, { title: '', size: '', accent: '', ...nextData }]
-                : prev.governance.documents.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
-          },
-        }))
-      }
+        if (type === 'about-governance-structure') {
+          nextAboutUsForm.governance.structureBlocks =
+            index < 0
+              ? [...nextAboutUsForm.governance.structureBlocks, { title: '', body: '', ...nextData }]
+              : nextAboutUsForm.governance.structureBlocks.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+        }
 
-      if (type === 'about-governance-report') {
-        setAboutUsForm((prev) => ({
-          ...prev,
-          governance: {
-            ...prev.governance,
-            reports:
-              index < 0
-                ? [...prev.governance.reports, { title: '', size: '', ...nextData }]
-                : prev.governance.reports.map((row, i) => (i === index ? { ...row, ...nextData } : row)),
-          },
-        }))
+        if (type === 'about-governance-document') {
+          nextAboutUsForm.governance.documents =
+            index < 0
+              ? [...nextAboutUsForm.governance.documents, { title: '', size: '', accent: '#f6ab3c', fileUrl: '', ...nextData }]
+              : nextAboutUsForm.governance.documents.map((row, i) =>
+                  i === index ? { ...row, ...nextData, accent: normalizeColorValue(nextData.accent, '#f6ab3c') } : row,
+                )
+        }
+
+        if (type === 'about-governance-report') {
+          nextAboutUsForm.governance.reports =
+            index < 0
+              ? [...nextAboutUsForm.governance.reports, { title: '', size: '', fileUrl: '', ...nextData }]
+              : nextAboutUsForm.governance.reports.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+        }
+
+        setAboutUsForm(nextAboutUsForm)
+        await updateMutation.mutateAsync({
+          section: 'aboutUs',
+          data: buildAboutUsPayload(nextAboutUsForm),
+        })
+        setAboutUsSavedSnapshot(JSON.stringify(buildAboutUsPayload(nextAboutUsForm)))
+        setAboutUsLastSavedAt(new Date())
       }
 
       closeEditModal()
-      setSuccess('Entry updated and saved.')
+      setSuccess('Changes saved successfully.')
     } catch (requestError) {
       setError(requestError.message)
     }
@@ -1304,88 +1511,10 @@ const DashboardPage = () => {
       if (active === 'about-us') {
         await updateMutation.mutateAsync({
           section: 'aboutUs',
-          data: {
-            history: {
-              heroTitle: aboutUsForm.history.heroTitle.trim(),
-              heroSubtitle: aboutUsForm.history.heroSubtitle.trim(),
-              heroImage: aboutUsForm.history.heroImage.trim(),
-              sections: aboutUsForm.history.sections
-                .map((item) => ({
-                  title: item.title.trim(),
-                  body: item.body.trim(),
-                }))
-                .filter((item) => item.title || item.body),
-            },
-            mission: {
-              heroTitle: aboutUsForm.mission.heroTitle.trim(),
-              heroDescription: aboutUsForm.mission.heroDescription.trim(),
-              heroImage: aboutUsForm.mission.heroImage.trim(),
-              cards: aboutUsForm.mission.cards
-                .map((item) => ({
-                  title: item.title.trim(),
-                  description: item.description.trim(),
-                  accent: item.accent.trim(),
-                }))
-                .filter((item) => item.title || item.description || item.accent),
-              coreValues: aboutUsForm.mission.coreValues
-                .map((item) => ({
-                  title: item.title.trim(),
-                  description: item.description.trim(),
-                }))
-                .filter((item) => item.title || item.description),
-            },
-            committee: {
-              heroTitle: aboutUsForm.committee.heroTitle.trim(),
-              heroSubtitle: aboutUsForm.committee.heroSubtitle.trim(),
-              intro: aboutUsForm.committee.intro.trim(),
-              members: aboutUsForm.committee.members
-                .map((item) => ({
-                  initials: item.initials.trim(),
-                  name: item.name.trim(),
-                  role: item.role.trim(),
-                  email: item.email.trim(),
-                  phone: item.phone.trim(),
-                  image: item.image.trim(),
-                }))
-                .filter((item) => item.initials || item.name || item.role || item.email || item.phone || item.image),
-              ctaTitle: aboutUsForm.committee.ctaTitle.trim(),
-              ctaDescription: aboutUsForm.committee.ctaDescription.trim(),
-              ctaButtonLabel: aboutUsForm.committee.ctaButtonLabel.trim(),
-            },
-            governance: {
-              heroTitle: aboutUsForm.governance.heroTitle.trim(),
-              heroSubtitle: aboutUsForm.governance.heroSubtitle.trim(),
-              heroImage: aboutUsForm.governance.heroImage.trim(),
-              structureTitle: aboutUsForm.governance.structureTitle.trim(),
-              structureIntro: aboutUsForm.governance.structureIntro.trim(),
-              structureBlocks: aboutUsForm.governance.structureBlocks
-                .map((item) => ({
-                  title: item.title.trim(),
-                  body: item.body.trim(),
-                }))
-                .filter((item) => item.title || item.body),
-              documentsTitle: aboutUsForm.governance.documentsTitle.trim(),
-              documents: aboutUsForm.governance.documents
-                .map((item) => ({
-                  title: item.title.trim(),
-                  size: item.size.trim(),
-                  accent: item.accent.trim(),
-                }))
-                .filter((item) => item.title || item.size || item.accent),
-              reportsTitle: aboutUsForm.governance.reportsTitle.trim(),
-              reports: aboutUsForm.governance.reports
-                .map((item) => ({
-                  title: item.title.trim(),
-                  size: item.size.trim(),
-                }))
-                .filter((item) => item.title || item.size),
-              financialTitle: aboutUsForm.governance.financialTitle.trim(),
-              financialDescription: aboutUsForm.governance.financialDescription.trim(),
-              taxTitle: aboutUsForm.governance.taxTitle.trim(),
-              taxDescription: aboutUsForm.governance.taxDescription.trim(),
-            },
-          },
+          data: buildAboutUsPayload(),
         })
+        setAboutUsSavedSnapshot(JSON.stringify(buildAboutUsPayload()))
+        setAboutUsLastSavedAt(new Date())
       }
 
       setSuccess(`${sectionLabel} content saved successfully.`)
@@ -1394,102 +1523,22 @@ const DashboardPage = () => {
     }
   }
 
-  const buildAboutUsPayload = () => ({
-    history: {
-      heroTitle: aboutUsForm.history.heroTitle.trim(),
-      heroSubtitle: aboutUsForm.history.heroSubtitle.trim(),
-      heroImage: aboutUsForm.history.heroImage.trim(),
-      sections: aboutUsForm.history.sections
-        .map((item) => ({
-          title: item.title.trim(),
-          body: item.body.trim(),
-        }))
-        .filter((item) => item.title || item.body),
-    },
-    mission: {
-      heroTitle: aboutUsForm.mission.heroTitle.trim(),
-      heroDescription: aboutUsForm.mission.heroDescription.trim(),
-      heroImage: aboutUsForm.mission.heroImage.trim(),
-      cards: aboutUsForm.mission.cards
-        .map((item) => ({
-          title: item.title.trim(),
-          description: item.description.trim(),
-          accent: item.accent.trim(),
-        }))
-        .filter((item) => item.title || item.description || item.accent),
-      coreValues: aboutUsForm.mission.coreValues
-        .map((item) => ({
-          title: item.title.trim(),
-          description: item.description.trim(),
-        }))
-        .filter((item) => item.title || item.description),
-    },
-    committee: {
-      heroTitle: aboutUsForm.committee.heroTitle.trim(),
-      heroSubtitle: aboutUsForm.committee.heroSubtitle.trim(),
-      intro: aboutUsForm.committee.intro.trim(),
-      members: aboutUsForm.committee.members
-        .map((item) => ({
-          initials: item.initials.trim(),
-          name: item.name.trim(),
-          role: item.role.trim(),
-          email: item.email.trim(),
-          phone: item.phone.trim(),
-          image: item.image.trim(),
-        }))
-        .filter((item) => item.initials || item.name || item.role || item.email || item.phone || item.image),
-      ctaTitle: aboutUsForm.committee.ctaTitle.trim(),
-      ctaDescription: aboutUsForm.committee.ctaDescription.trim(),
-      ctaButtonLabel: aboutUsForm.committee.ctaButtonLabel.trim(),
-    },
-    governance: {
-      heroTitle: aboutUsForm.governance.heroTitle.trim(),
-      heroSubtitle: aboutUsForm.governance.heroSubtitle.trim(),
-      heroImage: aboutUsForm.governance.heroImage.trim(),
-      structureTitle: aboutUsForm.governance.structureTitle.trim(),
-      structureIntro: aboutUsForm.governance.structureIntro.trim(),
-      structureBlocks: aboutUsForm.governance.structureBlocks
-        .map((item) => ({
-          title: item.title.trim(),
-          body: item.body.trim(),
-        }))
-        .filter((item) => item.title || item.body),
-      documentsTitle: aboutUsForm.governance.documentsTitle.trim(),
-      documents: aboutUsForm.governance.documents
-        .map((item) => ({
-          title: item.title.trim(),
-          size: item.size.trim(),
-          accent: item.accent.trim(),
-        }))
-        .filter((item) => item.title || item.size || item.accent),
-      reportsTitle: aboutUsForm.governance.reportsTitle.trim(),
-      reports: aboutUsForm.governance.reports
-        .map((item) => ({
-          title: item.title.trim(),
-          size: item.size.trim(),
-        }))
-        .filter((item) => item.title || item.size),
-      financialTitle: aboutUsForm.governance.financialTitle.trim(),
-      financialDescription: aboutUsForm.governance.financialDescription.trim(),
-      taxTitle: aboutUsForm.governance.taxTitle.trim(),
-      taxDescription: aboutUsForm.governance.taxDescription.trim(),
-    },
-  })
+  const buildAboutUsPayload = (sourceForm = aboutUsForm) => createAboutUsPayload(sourceForm)
 
-  const saveAboutUsSection = async (sectionKey, sectionLabel = 'About Us section') => {
+  const saveAboutUsNonPopupSection = async (sectionLabel = 'About section') => {
     setError('')
     setSuccess('')
-    setAboutUsSavingSection(sectionKey)
+
     try {
       await updateMutation.mutateAsync({
         section: 'aboutUs',
         data: buildAboutUsPayload(),
       })
-      setSuccess(`${sectionLabel} saved and published.`)
+      setAboutUsSavedSnapshot(JSON.stringify(buildAboutUsPayload()))
+      setAboutUsLastSavedAt(new Date())
+      setSuccess(`${sectionLabel} saved successfully.`)
     } catch (requestError) {
       setError(requestError.message)
-    } finally {
-      setAboutUsSavingSection('')
     }
   }
 
@@ -1643,24 +1692,6 @@ const DashboardPage = () => {
                 </div>
               ) : null}
             </div>
-
-            {error ? (
-              <div className='mb-8 flex items-center gap-3 rounded-[16px] border border-red-500/20 bg-red-500/5 px-5 py-4 text-[14px] font-bold text-red-400'>
-                <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/10'>
-                  <X size={14} />
-                </div>
-                {error}
-              </div>
-            ) : null}
-
-            {success ? (
-              <div className='mb-8 flex items-center gap-3 rounded-[16px] border border-green-500/20 bg-green-500/5 px-5 py-4 text-[14px] font-bold text-green-400'>
-                <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500/10'>
-                  <ShieldCheck size={14} />
-                </div>
-                {success}
-              </div>
-            ) : null}
 
             {editFocusMessage ? (
               <div className='mb-8 flex items-center gap-3 rounded-[16px] border border-blue-500/20 bg-blue-500/5 px-5 py-4 text-[14px] font-bold text-blue-400'>
@@ -2514,6 +2545,20 @@ const DashboardPage = () => {
 
             {active === 'about-us' ? (
               <div className='mt-10 space-y-8'>
+                <div className='flex items-center justify-between rounded-[14px] border border-gray-200 bg-white px-4 py-3'>
+                  <div className='flex items-center gap-2'>
+                    <span
+                      className={`inline-flex h-2.5 w-2.5 rounded-full ${
+                        aboutUsDirty ? 'bg-amber-500' : 'bg-emerald-500'
+                      }`}
+                    />
+                    <p className='text-[13px] font-semibold text-gray-700'>
+                      {aboutUsDirty ? 'Unsaved changes in text sections' : 'All changes saved'}
+                    </p>
+                  </div>
+                  <p className='text-[12px] font-medium text-gray-500'>{aboutUsLastSavedLabel}</p>
+                </div>
+
                 <div className={panelClass}>
                   <h3 className='text-[18px] font-bold text-gray-900 tracking-tight'>About Pages Overview</h3>
                   <p className='mt-1 text-[12px] text-gray-500'>Update core headings and media. Use tables below for item-level edits.</p>
@@ -2536,11 +2581,35 @@ const DashboardPage = () => {
                       className={inputClass}
                       placeholder='Mission hero title'
                     />
+                    <textarea
+                      value={aboutUsForm.mission.heroDescription}
+                      onChange={(event) => updateAboutUsText('mission', 'heroDescription', event.target.value)}
+                      className={textareaClass}
+                      placeholder='Mission hero description'
+                    />
+                    <input
+                      value={aboutUsForm.mission.coreValuesTitle}
+                      onChange={(event) => updateAboutUsText('mission', 'coreValuesTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Mission core values section title'
+                    />
                     <input
                       value={aboutUsForm.committee.heroTitle}
                       onChange={(event) => updateAboutUsText('committee', 'heroTitle', event.target.value)}
                       className={inputClass}
                       placeholder='Committee hero title'
+                    />
+                    <input
+                      value={aboutUsForm.committee.heroSubtitle}
+                      onChange={(event) => updateAboutUsText('committee', 'heroSubtitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Committee hero subtitle'
+                    />
+                    <textarea
+                      value={aboutUsForm.committee.intro}
+                      onChange={(event) => updateAboutUsText('committee', 'intro', event.target.value)}
+                      className={textareaClass}
+                      placeholder='Committee intro'
                     />
                     <input
                       value={aboutUsForm.governance.heroTitle}
@@ -2554,16 +2623,70 @@ const DashboardPage = () => {
                       className={inputClass}
                       placeholder='Governance hero subtitle'
                     />
+                    <input
+                      value={aboutUsForm.governance.structureTitle}
+                      onChange={(event) => updateAboutUsText('governance', 'structureTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Governance structure section title'
+                    />
+                    <textarea
+                      value={aboutUsForm.governance.structureIntro}
+                      onChange={(event) => updateAboutUsText('governance', 'structureIntro', event.target.value)}
+                      className={textareaClass}
+                      placeholder='Governance structure intro'
+                    />
+                    <input
+                      value={aboutUsForm.governance.documentsTitle}
+                      onChange={(event) => updateAboutUsText('governance', 'documentsTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Governance documents title'
+                    />
+                    <input
+                      value={aboutUsForm.governance.reportsTitle}
+                      onChange={(event) => updateAboutUsText('governance', 'reportsTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Governance reports title'
+                    />
+                    <input
+                      value={aboutUsForm.governance.downloadCtaLabel}
+                      onChange={(event) => updateAboutUsText('governance', 'downloadCtaLabel', event.target.value)}
+                      className={inputClass}
+                      placeholder='Download button label'
+                    />
+                    <input
+                      value={aboutUsForm.governance.financialTitle}
+                      onChange={(event) => updateAboutUsText('governance', 'financialTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Financial transparency section title'
+                    />
+                    <textarea
+                      value={aboutUsForm.governance.financialDescription}
+                      onChange={(event) => updateAboutUsText('governance', 'financialDescription', event.target.value)}
+                      className={textareaClass}
+                      placeholder='Financial transparency description'
+                    />
+                    <input
+                      value={aboutUsForm.governance.taxTitle}
+                      onChange={(event) => updateAboutUsText('governance', 'taxTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='Tax section title'
+                    />
+                    <textarea
+                      value={aboutUsForm.governance.taxDescription}
+                      onChange={(event) => updateAboutUsText('governance', 'taxDescription', event.target.value)}
+                      className={textareaClass}
+                      placeholder='Tax section description'
+                    />
                   </div>
                   <div className='mt-4 flex justify-end'>
                     <button
                       type='button'
-                      onClick={() => void saveAboutUsSection('about-headings', 'About page headings')}
+                      onClick={() => void saveAboutUsNonPopupSection('About headings')}
                       disabled={updateMutation.isPending}
                       className={primaryButtonClass}
                     >
                       <Save size={14} className='mr-1.5' />
-                      {updateMutation.isPending && aboutUsSavingSection === 'about-headings' ? 'Saving...' : 'Save & Publish'}
+                      {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 </div>
@@ -2639,12 +2762,196 @@ const DashboardPage = () => {
                   <div className='mt-4 flex justify-end'>
                     <button
                       type='button'
-                      onClick={() => void saveAboutUsSection('about-images', 'About page images')}
+                      onClick={() => void saveAboutUsNonPopupSection('About images')}
                       disabled={updateMutation.isPending}
                       className={primaryButtonClass}
                     >
                       <Save size={14} className='mr-1.5' />
-                      {updateMutation.isPending && aboutUsSavingSection === 'about-images' ? 'Saving...' : 'Save & Publish'}
+                      {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className={panelClass}>
+                  <h3 className='text-[16px] font-bold text-gray-900 tracking-tight'>Committee CTA</h3>
+                  <p className='mt-1 text-[12px] text-gray-500'>Content shown in the call-to-action area at the bottom of Committee page.</p>
+                  <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <input
+                      value={aboutUsForm.committee.ctaTitle}
+                      onChange={(event) => updateAboutUsText('committee', 'ctaTitle', event.target.value)}
+                      className={inputClass}
+                      placeholder='CTA title'
+                    />
+                    <input
+                      value={aboutUsForm.committee.ctaButtonLabel}
+                      onChange={(event) => updateAboutUsText('committee', 'ctaButtonLabel', event.target.value)}
+                      className={inputClass}
+                      placeholder='CTA button label'
+                    />
+                    <textarea
+                      value={aboutUsForm.committee.ctaDescription}
+                      onChange={(event) => updateAboutUsText('committee', 'ctaDescription', event.target.value)}
+                      className={textareaClass}
+                      placeholder='CTA description'
+                    />
+                  </div>
+                  <div className='mt-4 flex justify-end'>
+                    <button
+                      type='button'
+                      onClick={() => void saveAboutUsNonPopupSection('Committee CTA')}
+                      disabled={updateMutation.isPending}
+                      className={primaryButtonClass}
+                    >
+                      <Save size={14} className='mr-1.5' />
+                      {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className={panelClass}>
+                  <h3 className='text-[16px] font-bold text-gray-900 tracking-tight'>About Navbar Menu</h3>
+                  <p className='mt-1 text-[12px] text-gray-500'>Manage About Us dropdown label, headings, and listed page names shown in the top navigation.</p>
+                  <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <input
+                      value={aboutUsForm.navbar.label}
+                      onChange={(event) => updateAboutUsText('navbar', 'label', event.target.value)}
+                      className={inputClass}
+                      placeholder='Main menu label (e.g. About Us)'
+                    />
+                    <input
+                      value={aboutUsForm.navbar.sections[0]?.heading ?? ''}
+                      onChange={(event) =>
+                        setAboutUsForm((prev) => ({
+                          ...prev,
+                          navbar: {
+                            ...prev.navbar,
+                            sections: prev.navbar.sections.map((section, idx) =>
+                              idx === 0 ? { ...section, heading: event.target.value } : section,
+                            ),
+                          },
+                        }))
+                      }
+                      className={inputClass}
+                      placeholder='First heading (e.g. Our Story)'
+                    />
+                    <input
+                      value={aboutUsForm.navbar.sections[0]?.links?.[0]?.label ?? ''}
+                      onChange={(event) =>
+                        setAboutUsForm((prev) => ({
+                          ...prev,
+                          navbar: {
+                            ...prev.navbar,
+                            sections: prev.navbar.sections.map((section, idx) =>
+                              idx === 0
+                                ? {
+                                    ...section,
+                                    links: (Array.isArray(section.links) ? section.links : []).map((link, linkIdx) =>
+                                      linkIdx === 0 ? { ...link, label: event.target.value } : link,
+                                    ),
+                                  }
+                                : section,
+                            ),
+                          },
+                        }))
+                      }
+                      className={inputClass}
+                      placeholder='First page label (History)'
+                    />
+                    <input
+                      value={aboutUsForm.navbar.sections[0]?.links?.[1]?.label ?? ''}
+                      onChange={(event) =>
+                        setAboutUsForm((prev) => ({
+                          ...prev,
+                          navbar: {
+                            ...prev.navbar,
+                            sections: prev.navbar.sections.map((section, idx) =>
+                              idx === 0
+                                ? {
+                                    ...section,
+                                    links: (Array.isArray(section.links) ? section.links : []).map((link, linkIdx) =>
+                                      linkIdx === 1 ? { ...link, label: event.target.value } : link,
+                                    ),
+                                  }
+                                : section,
+                            ),
+                          },
+                        }))
+                      }
+                      className={inputClass}
+                      placeholder='Second page label (Mission)'
+                    />
+                    <input
+                      value={aboutUsForm.navbar.sections[1]?.heading ?? ''}
+                      onChange={(event) =>
+                        setAboutUsForm((prev) => ({
+                          ...prev,
+                          navbar: {
+                            ...prev.navbar,
+                            sections: prev.navbar.sections.map((section, idx) =>
+                              idx === 1 ? { ...section, heading: event.target.value } : section,
+                            ),
+                          },
+                        }))
+                      }
+                      className={inputClass}
+                      placeholder='Second heading (e.g. Organization)'
+                    />
+                    <input
+                      value={aboutUsForm.navbar.sections[1]?.links?.[0]?.label ?? ''}
+                      onChange={(event) =>
+                        setAboutUsForm((prev) => ({
+                          ...prev,
+                          navbar: {
+                            ...prev.navbar,
+                            sections: prev.navbar.sections.map((section, idx) =>
+                              idx === 1
+                                ? {
+                                    ...section,
+                                    links: (Array.isArray(section.links) ? section.links : []).map((link, linkIdx) =>
+                                      linkIdx === 0 ? { ...link, label: event.target.value } : link,
+                                    ),
+                                  }
+                                : section,
+                            ),
+                          },
+                        }))
+                      }
+                      className={inputClass}
+                      placeholder='Third page label (Committee)'
+                    />
+                    <input
+                      value={aboutUsForm.navbar.sections[1]?.links?.[1]?.label ?? ''}
+                      onChange={(event) =>
+                        setAboutUsForm((prev) => ({
+                          ...prev,
+                          navbar: {
+                            ...prev.navbar,
+                            sections: prev.navbar.sections.map((section, idx) =>
+                              idx === 1
+                                ? {
+                                    ...section,
+                                    links: (Array.isArray(section.links) ? section.links : []).map((link, linkIdx) =>
+                                      linkIdx === 1 ? { ...link, label: event.target.value } : link,
+                                    ),
+                                  }
+                                : section,
+                            ),
+                          },
+                        }))
+                      }
+                      className={inputClass}
+                      placeholder='Fourth page label (Governance)'
+                    />
+                  </div>
+                  <div className='mt-4 flex justify-end'>
+                    <button
+                      type='button'
+                      onClick={() => void saveAboutUsNonPopupSection('About navbar')}
+                      disabled={updateMutation.isPending}
+                      className={primaryButtonClass}
+                    >
+                      <Save size={14} className='mr-1.5' />
+                      {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 </div>
@@ -2669,17 +2976,6 @@ const DashboardPage = () => {
                 >
                   <Plus size={14} className='mr-1.5' /> Add History Section
                 </button>
-                <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={() => void saveAboutUsSection('history-sections', 'History sections')}
-                    disabled={updateMutation.isPending}
-                    className={primaryButtonClass}
-                  >
-                    <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending && aboutUsSavingSection === 'history-sections' ? 'Saving...' : 'Save & Publish'}
-                  </button>
-                </div>
 
                 <DataTable
                   title='Mission Cards'
@@ -2687,32 +2983,33 @@ const DashboardPage = () => {
                   columns={[
                     { key: 'title', label: 'Title' },
                     { key: 'description', label: 'Description' },
-                    { key: 'accent', label: 'Accent' },
+                    {
+                      key: 'accent',
+                      label: 'Accent',
+                      render: (row) => (
+                        <span className='inline-flex items-center gap-2'>
+                          <span
+                            className='h-4 w-4 rounded-full border border-gray-200'
+                            style={{ backgroundColor: normalizeColorValue(row.accent, '#2d4f9f') }}
+                          />
+                          {normalizeColorValue(row.accent, '#2d4f9f')}
+                        </span>
+                      ),
+                    },
                   ]}
                   emptyMessage='No mission cards yet.'
                   onEdit={(index) => startEdit('about-mission-card', index, aboutUsForm.mission.cards[index])}
                   onDelete={(index) =>
-                    removeAboutUsArrayItem('mission', 'cards', index, { title: '', description: '', accent: '' })
+                    removeAboutUsArrayItem('mission', 'cards', index, { title: '', description: '', accent: '#2d4f9f' })
                   }
                 />
                 <button
                   type='button'
-                  onClick={() => startEdit('about-mission-card', -1, { title: '', description: '', accent: '' })}
+                  onClick={() => startEdit('about-mission-card', -1, { title: '', description: '', accent: '#2d4f9f' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Mission Card
                 </button>
-                <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={() => void saveAboutUsSection('mission-cards', 'Mission cards')}
-                    disabled={updateMutation.isPending}
-                    className={primaryButtonClass}
-                  >
-                    <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending && aboutUsSavingSection === 'mission-cards' ? 'Saving...' : 'Save & Publish'}
-                  </button>
-                </div>
 
                 <DataTable
                   title='Mission Core Values'
@@ -2734,17 +3031,6 @@ const DashboardPage = () => {
                 >
                   <Plus size={14} className='mr-1.5' /> Add Core Value
                 </button>
-                <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={() => void saveAboutUsSection('mission-core-values', 'Mission core values')}
-                    disabled={updateMutation.isPending}
-                    className={primaryButtonClass}
-                  >
-                    <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending && aboutUsSavingSection === 'mission-core-values' ? 'Saving...' : 'Save & Publish'}
-                  </button>
-                </div>
 
                 <DataTable
                   title='Committee Members'
@@ -2785,17 +3071,6 @@ const DashboardPage = () => {
                 >
                   <Plus size={14} className='mr-1.5' /> Add Member
                 </button>
-                <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={() => void saveAboutUsSection('committee-members', 'Committee members')}
-                    disabled={updateMutation.isPending}
-                    className={primaryButtonClass}
-                  >
-                    <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending && aboutUsSavingSection === 'committee-members' ? 'Saving...' : 'Save & Publish'}
-                  </button>
-                </div>
 
                 <DataTable
                   title='Governance Structure Blocks'
@@ -2819,17 +3094,6 @@ const DashboardPage = () => {
                 >
                   <Plus size={14} className='mr-1.5' /> Add Structure Block
                 </button>
-                <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={() => void saveAboutUsSection('governance-structure', 'Governance structure')}
-                    disabled={updateMutation.isPending}
-                    className={primaryButtonClass}
-                  >
-                    <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending && aboutUsSavingSection === 'governance-structure' ? 'Saving...' : 'Save & Publish'}
-                  </button>
-                </div>
 
                 <DataTable
                   title='Governance Documents'
@@ -2837,34 +3101,52 @@ const DashboardPage = () => {
                   columns={[
                     { key: 'title', label: 'Title' },
                     { key: 'size', label: 'Size' },
-                    { key: 'accent', label: 'Accent' },
+                    {
+                      key: 'accent',
+                      label: 'Accent',
+                      render: (row) => (
+                        <span className='inline-flex items-center gap-2'>
+                          <span
+                            className='h-4 w-4 rounded-full border border-gray-200'
+                            style={{ backgroundColor: normalizeColorValue(row.accent, '#f6ab3c') }}
+                          />
+                          {normalizeColorValue(row.accent, '#f6ab3c')}
+                        </span>
+                      ),
+                    },
+                    {
+                      key: 'fileUrl',
+                      label: 'File',
+                      render: (row) =>
+                        row.fileUrl ? (
+                          <a
+                            href={row.fileUrl}
+                            target='_blank'
+                            rel='noreferrer'
+                            className='text-[#001da5] underline'
+                          >
+                            Open file
+                          </a>
+                        ) : (
+                          '-'
+                        ),
+                    },
                   ]}
                   emptyMessage='No documents yet.'
                   onEdit={(index) =>
                     startEdit('about-governance-document', index, aboutUsForm.governance.documents[index])
                   }
                   onDelete={(index) =>
-                    removeAboutUsArrayItem('governance', 'documents', index, { title: '', size: '', accent: '' })
+                    removeAboutUsArrayItem('governance', 'documents', index, { title: '', size: '', accent: '#f6ab3c', fileUrl: '' })
                   }
                 />
                 <button
                   type='button'
-                  onClick={() => startEdit('about-governance-document', -1, { title: '', size: '', accent: '' })}
+                  onClick={() => startEdit('about-governance-document', -1, { title: '', size: '', accent: '#f6ab3c', fileUrl: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Document
                 </button>
-                <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={() => void saveAboutUsSection('governance-documents', 'Governance documents')}
-                    disabled={updateMutation.isPending}
-                    className={primaryButtonClass}
-                  >
-                    <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending && aboutUsSavingSection === 'governance-documents' ? 'Saving...' : 'Save & Publish'}
-                  </button>
-                </div>
 
                 <DataTable
                   title='Governance Reports'
@@ -2872,31 +3154,37 @@ const DashboardPage = () => {
                   columns={[
                     { key: 'title', label: 'Title' },
                     { key: 'size', label: 'Size' },
+                    {
+                      key: 'fileUrl',
+                      label: 'File',
+                      render: (row) =>
+                        row.fileUrl ? (
+                          <a
+                            href={row.fileUrl}
+                            target='_blank'
+                            rel='noreferrer'
+                            className='text-[#001da5] underline'
+                          >
+                            Open file
+                          </a>
+                        ) : (
+                          '-'
+                        ),
+                    },
                   ]}
                   emptyMessage='No reports yet.'
                   onEdit={(index) => startEdit('about-governance-report', index, aboutUsForm.governance.reports[index])}
                   onDelete={(index) =>
-                    removeAboutUsArrayItem('governance', 'reports', index, { title: '', size: '' })
+                    removeAboutUsArrayItem('governance', 'reports', index, { title: '', size: '', fileUrl: '' })
                   }
                 />
                 <button
                   type='button'
-                  onClick={() => startEdit('about-governance-report', -1, { title: '', size: '' })}
+                  onClick={() => startEdit('about-governance-report', -1, { title: '', size: '', fileUrl: '' })}
                   className={actionButtonClass}
                 >
                   <Plus size={14} className='mr-1.5' /> Add Report
                 </button>
-                <div className='flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={() => void saveAboutUsSection('governance-reports', 'Governance reports')}
-                    disabled={updateMutation.isPending}
-                    className={primaryButtonClass}
-                  >
-                    <Save size={14} className='mr-1.5' />
-                    {updateMutation.isPending && aboutUsSavingSection === 'governance-reports' ? 'Saving...' : 'Save & Publish'}
-                  </button>
-                </div>
               </div>
             ) : null}
             {active === 'profile' ? (
@@ -3390,17 +3678,31 @@ const DashboardPage = () => {
                           className={inputClass}
                           placeholder='Card title'
                         />
-                        <input
-                          value={editModal.data.accent ?? ''}
-                          onChange={(event) =>
-                            setEditModal((prev) => ({
-                              ...prev,
-                              data: { ...prev.data, accent: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                          placeholder='Accent'
-                        />
+                        <div className='flex items-center gap-3'>
+                          <input
+                            type='color'
+                            value={normalizeColorValue(editModal.data.accent, '#2d4f9f')}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, accent: event.target.value },
+                              }))
+                            }
+                            className='h-11 w-16 cursor-pointer rounded-[10px] border border-gray-200 bg-gray-50'
+                            aria-label='Accent color'
+                          />
+                          <input
+                            value={normalizeColorValue(editModal.data.accent, '#2d4f9f')}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, accent: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='#2d4f9f'
+                          />
+                        </div>
                         <textarea
                           value={editModal.data.description ?? ''}
                           onChange={(event) =>
@@ -3560,6 +3862,9 @@ const DashboardPage = () => {
 
                     {editModal.type === 'about-governance-document' ? (
                       <div className='space-y-6'>
+                        <p className='rounded-[10px] border border-blue-100 bg-blue-50 px-3 py-2 text-[12px] font-medium text-blue-700'>
+                          Select file, then click Save Changes. The file uploads to Supabase and the URL is saved automatically.
+                        </p>
                         <input
                           value={editModal.data.title ?? ''}
                           onChange={(event) =>
@@ -3573,31 +3878,75 @@ const DashboardPage = () => {
                         />
                         <input
                           value={editModal.data.size ?? ''}
-                          onChange={(event) =>
-                            setEditModal((prev) => ({
-                              ...prev,
-                              data: { ...prev.data, size: event.target.value },
-                            }))
-                          }
-                          className={inputClass}
-                          placeholder='Size'
+                          readOnly
+                          className={`${inputClass} cursor-not-allowed bg-gray-100`}
+                          placeholder='Auto-filled from upload'
                         />
+                        <div className='flex items-center gap-3'>
+                          <input
+                            type='color'
+                            value={normalizeColorValue(editModal.data.accent, '#f6ab3c')}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, accent: event.target.value },
+                              }))
+                            }
+                            className='h-11 w-16 cursor-pointer rounded-[10px] border border-gray-200 bg-gray-50'
+                            aria-label='Document accent color'
+                          />
+                          <input
+                            value={normalizeColorValue(editModal.data.accent, '#f6ab3c')}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, accent: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='#f6ab3c'
+                          />
+                        </div>
                         <input
-                          value={editModal.data.accent ?? ''}
+                          value={editModal.data.fileUrl ?? ''}
                           onChange={(event) =>
                             setEditModal((prev) => ({
                               ...prev,
-                              data: { ...prev.data, accent: event.target.value },
+                              data: { ...prev.data, fileUrl: event.target.value },
                             }))
                           }
                           className={inputClass}
-                          placeholder='Accent'
+                          placeholder='Document file URL'
                         />
+                        <label className='inline-flex h-10 cursor-pointer items-center rounded-[10px] border border-gray-200 bg-gray-50 px-4 text-[13px] font-semibold text-gray-700'>
+                          Upload Document File
+                          <input
+                            type='file'
+                            className='hidden'
+                            onChange={(event) => setModalImageFile(event.target.files?.[0] ?? null)}
+                          />
+                        </label>
+                        {modalImageFile ? (
+                          <p className='text-[12px] text-gray-600'>Selected file: {modalImageFile.name}</p>
+                        ) : null}
+                        {editModal.data.fileUrl ? (
+                          <a
+                            href={editModal.data.fileUrl}
+                            target='_blank'
+                            rel='noreferrer'
+                            className='inline-flex text-[12px] font-semibold text-[#001da5] underline'
+                          >
+                            Open currently saved file
+                          </a>
+                        ) : null}
                       </div>
                     ) : null}
 
                     {editModal.type === 'about-governance-report' ? (
                       <div className='space-y-6'>
+                        <p className='rounded-[10px] border border-blue-100 bg-blue-50 px-3 py-2 text-[12px] font-medium text-blue-700'>
+                          Select file, then click Save Changes. The file uploads to Supabase and the URL is saved automatically.
+                        </p>
                         <input
                           value={editModal.data.title ?? ''}
                           onChange={(event) =>
@@ -3611,18 +3960,60 @@ const DashboardPage = () => {
                         />
                         <input
                           value={editModal.data.size ?? ''}
+                          readOnly
+                          className={`${inputClass} cursor-not-allowed bg-gray-100`}
+                          placeholder='Auto-filled from upload'
+                        />
+                        <input
+                          value={editModal.data.fileUrl ?? ''}
                           onChange={(event) =>
                             setEditModal((prev) => ({
                               ...prev,
-                              data: { ...prev.data, size: event.target.value },
+                              data: { ...prev.data, fileUrl: event.target.value },
                             }))
                           }
                           className={inputClass}
-                          placeholder='Report size'
+                          placeholder='Report file URL'
                         />
+                        <label className='inline-flex h-10 cursor-pointer items-center rounded-[10px] border border-gray-200 bg-gray-50 px-4 text-[13px] font-semibold text-gray-700'>
+                          Upload Report File
+                          <input
+                            type='file'
+                            className='hidden'
+                            onChange={(event) => setModalImageFile(event.target.files?.[0] ?? null)}
+                          />
+                        </label>
+                        {modalImageFile ? (
+                          <p className='text-[12px] text-gray-600'>Selected file: {modalImageFile.name}</p>
+                        ) : null}
+                        {editModal.data.fileUrl ? (
+                          <a
+                            href={editModal.data.fileUrl}
+                            target='_blank'
+                            rel='noreferrer'
+                            className='inline-flex text-[12px] font-semibold text-[#001da5] underline'
+                          >
+                            Open currently saved file
+                          </a>
+                        ) : null}
                       </div>
                     ) : null}
                     </div>
+
+                    {isUploadingModalImage ? (
+                      <div className='mt-6'>
+                        <div className='mb-2 flex items-center justify-between text-[12px] font-semibold text-gray-600'>
+                          <span>Uploading file...</span>
+                          <span>{modalUploadProgress}%</span>
+                        </div>
+                        <div className='h-2 w-full overflow-hidden rounded-full bg-gray-100'>
+                          <div
+                            className='h-full rounded-full bg-[#001da5] transition-all duration-200'
+                            style={{ width: `${Math.max(5, modalUploadProgress)}%` }}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
 
                     <div className='mt-10 pt-8 border-t border-white/5 flex justify-end gap-3'>
                       <button
@@ -3639,7 +4030,7 @@ const DashboardPage = () => {
                         className={primaryButtonClass}
                       >
                          <Save size={16} className='mr-2' />
-                         Commit Changes
+                         {isUploadingModalImage ? `Uploading ${modalUploadProgress}%` : 'Save Changes'}
                       </button>
                     </div>
                   </div>

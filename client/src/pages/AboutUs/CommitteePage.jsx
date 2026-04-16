@@ -1,98 +1,31 @@
 import React from 'react'
 import { Mail, Phone } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
-import { useSiteContentQuery } from '@/hooks/useContent'
-
-const committeeMembers = [
-  {
-    initials: 'SGS',
-    name: 'Sardar Gurmeet Singh',
-    role: 'President',
-    email: 'president@ssgberlin.de',
-    phone: '+49 30 1234567',
-  },
-  {
-    initials: 'BJK',
-    name: 'Bibi Jaspreet Kaur',
-    role: 'Vice President',
-    email: 'vicepresident@ssgberlin.de',
-  },
-  {
-    initials: 'SHS',
-    name: 'Sardar Harjit Singh',
-    role: 'Secretary',
-    email: 'secretary@ssgberlin.de',
-    phone: '+49 30 2345678',
-  },
-  {
-    initials: 'BSK',
-    name: 'Bibi Simran Kaur',
-    role: 'Treasurer',
-    email: 'treasurer@ssgberlin.de',
-  },
-  {
-    initials: 'SMS',
-    name: 'Sardar Manpreet Singh',
-    role: 'Events Coordinator',
-    email: 'events@ssgberlin.de',
-  },
-  {
-    initials: 'BNK',
-    name: 'Bibi Navdeep Kaur',
-    role: 'Education Director',
-    email: 'education@ssgberlin.de',
-  },
-]
+import AboutPageHero from '@/components/about/AboutPageHero'
+import { useAboutUsContentQuery } from '@/hooks/useAboutUsContent'
 
 const CommitteePage = () => {
-  const { t } = useTranslation()
-  const { data: content } = useSiteContentQuery()
-  const committee = content?.aboutUs?.committee ?? {}
-  const heading = committee.heroTitle ?? t('about.committee.heading')
-  const subtitle = committee.heroSubtitle ?? t('about.committee.subtitle')
-  const intro =
-    committee.intro ??
-    t('about.committee.intro')
-  const members =
-    Array.isArray(committee.members) && committee.members.length > 0
-      ? committee.members
-      : committeeMembers
-  const ctaTitle = committee.ctaTitle ?? t('about.committee.ctaTitle')
-  const ctaDescription =
-    committee.ctaDescription ??
-    t('about.committee.ctaDescription')
-  const ctaButtonLabel = committee.ctaButtonLabel ?? t('about.committee.ctaButton')
+  const { aboutUs } = useAboutUsContentQuery()
+  const committee = aboutUs.committee
 
   return (
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
-        <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
-          <div className='mx-auto max-w-[1280px]'>
-            <div className='mx-auto max-w-[1040px]'>
-              <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                {heading}
-              </h1>
-              <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                {subtitle}
-              </p>
-            </div>
-          </div>
-        </section>
+        <AboutPageHero title={committee.heroTitle} subtitle={committee.heroSubtitle} />
       </div>
 
       <section className='px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[880px] text-center'>
             <p className='text-[17px] leading-[1.6] text-[#5a677a] md:text-[18px]'>
-              {intro}
+              {committee.intro}
             </p>
           </div>
 
           <div className='mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-            {members.map((member, index) => (
+            {committee.members.map((member, index) => (
               <article
                 key={`${member?.email ?? member?.name ?? 'member'}-${index}`}
                 className='overflow-hidden rounded-[18px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
@@ -143,16 +76,16 @@ const CommitteePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[920px] text-center'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {ctaTitle}
+              {committee.ctaTitle}
             </h2>
             <p className='mx-auto mt-5 max-w-[900px] text-[17px] leading-[1.6] text-[#5a677a] md:text-[18px]'>
-              {ctaDescription}
+              {committee.ctaDescription}
             </p>
             <button
               type='button'
               className='mt-9 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
             >
-              {ctaButtonLabel}
+              {committee.ctaButtonLabel}
             </button>
           </div>
         </div>

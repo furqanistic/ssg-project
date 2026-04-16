@@ -1,51 +1,25 @@
 import React from 'react'
 import { Download, FileText } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
-import { useSiteContentQuery } from '@/hooks/useContent'
+import AboutPageHero from '@/components/about/AboutPageHero'
+import { useAboutUsContentQuery } from '@/hooks/useAboutUsContent'
 
-const governanceDocuments = [
-  {
-    title: 'Constitution & Bylaws',
-    size: '1.2 MB',
-    accent: 'bg-[#f6ab3c]',
-  },
-  {
-    title: 'Financial Transparency Guidelines',
-    size: '850 KB',
-    accent: 'bg-[#f6ab3c]',
-  },
-  {
-    title: 'Code of Conduct',
-    size: '650 KB',
-    accent: 'bg-[#f6ab3c]',
-  },
-]
+const normalizeColor = (value, fallback = '#f6ab3c') => {
+  if (typeof value !== 'string' || !value.trim()) return fallback
+  const color = value.trim()
+  if (color.startsWith('#')) return color
+  const match = color.match(/#(?:[0-9a-fA-F]{3,8})/)
+  return match ? match[0] : fallback
+}
 
-const annualReports = [
-  {
-    title: 'Annual Report 2025',
-    size: '2.4 MB',
-  },
-  {
-    title: 'Annual Report 2024',
-    size: '2.1 MB',
-  },
-  {
-    title: 'Annual Report 2023',
-    size: '1.8 MB',
-  },
-]
-
-const DownloadCard = ({ title, size, accent }) => {
-  const { t } = useTranslation()
-
+const DownloadCard = ({ title, size, accent, fileUrl, ctaLabel }) => {
   return (
     <article className='rounded-[16px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
       <div className='flex items-start gap-4'>
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] text-white ${accent}`}
+          className='flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] text-white'
+          style={{ backgroundColor: normalizeColor(accent) }}
         >
           <FileText className='h-5 w-5 stroke-[2]' />
         </div>
@@ -54,13 +28,23 @@ const DownloadCard = ({ title, size, accent }) => {
             {title}
           </h3>
           <p className='mt-1 text-[15px] text-[#7a879b]'>{size}</p>
-          <button
-            type='button'
-            className='mt-4 inline-flex items-center gap-2 text-[15px] font-semibold text-[#f39d2f] transition hover:text-[#ea951e]'
-          >
-            <Download className='h-4 w-4' />
-            {t('common.actions.download')}
-          </button>
+          {fileUrl ? (
+            <a
+              href={fileUrl}
+              target='_blank'
+              rel='noreferrer'
+              download
+              className='mt-4 inline-flex items-center gap-2 text-[15px] font-semibold text-[#f39d2f] transition hover:text-[#ea951e]'
+            >
+              <Download className='h-4 w-4' />
+              {ctaLabel}
+            </a>
+          ) : (
+            <span className='mt-4 inline-flex items-center gap-2 text-[15px] font-semibold text-[#d0a96c]'>
+              <Download className='h-4 w-4' />
+              {ctaLabel}
+            </span>
+          )}
         </div>
       </div>
     </article>
@@ -68,80 +52,34 @@ const DownloadCard = ({ title, size, accent }) => {
 }
 
 const GovernancePage = () => {
-  const { t } = useTranslation()
-  const { data: content } = useSiteContentQuery()
-  const governance = content?.aboutUs?.governance ?? {}
-  const heading = governance.heroTitle ?? t('about.governance.heading')
-  const subtitle = governance.heroSubtitle ?? t('about.governance.subtitle')
-  const heroImage = governance.heroImage ?? ''
-  const structureTitle = governance.structureTitle ?? t('about.governance.structureTitle')
-  const structureIntro =
-    governance.structureIntro ??
-    t('about.governance.structureIntro')
-  const structureBlocks =
-    Array.isArray(governance.structureBlocks) && governance.structureBlocks.length > 0
-      ? governance.structureBlocks
-      : t('about.governance.structureBlocks', { returnObjects: true })
-  const documentsTitle = governance.documentsTitle ?? t('about.governance.documentsTitle')
-  const documents =
-    Array.isArray(governance.documents) && governance.documents.length > 0
-      ? governance.documents
-      : governanceDocuments.map((document, index) => ({
-          ...document,
-          title: t(`about.governance.docs.${index}`),
-        }))
-  const reportsTitle = governance.reportsTitle ?? t('about.governance.reportsTitle')
-  const reports =
-    Array.isArray(governance.reports) && governance.reports.length > 0
-      ? governance.reports
-      : annualReports.map((report, index) => ({
-          ...report,
-          title: t(`about.governance.reports.${index}`),
-        }))
-  const financialTitle = governance.financialTitle ?? t('about.governance.financialTitle')
-  const financialDescription =
-    governance.financialDescription ??
-    t('about.governance.financialDescription')
-  const taxTitle = governance.taxTitle ?? t('about.governance.taxTitle')
-  const taxDescription =
-    governance.taxDescription ??
-    t('about.governance.taxDescription')
+  const { aboutUs } = useAboutUsContentQuery()
+  const governance = aboutUs.governance
+  const downloadLabel = governance.downloadCtaLabel || 'Download'
 
   return (
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
-        <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
-          <div className='mx-auto max-w-[1280px]'>
-            <div className='mx-auto max-w-[1040px]'>
-              <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
-                {heading}
-              </h1>
-              <p className='mt-3 text-[17px] text-white/90 md:text-[18px]'>
-                {subtitle}
-              </p>
-            </div>
-          </div>
-        </section>
+        <AboutPageHero title={governance.heroTitle} subtitle={governance.heroSubtitle} />
       </div>
 
       <section className='px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-            {heroImage ? (
+            {governance.heroImage ? (
               <img
-                src={heroImage}
-                alt={heading}
+                src={governance.heroImage}
+                alt={governance.heroTitle}
                 className='mb-6 h-[260px] w-full rounded-[16px] object-cover md:h-[360px]'
                 loading='lazy'
               />
             ) : null}
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {structureTitle}
+              {governance.structureTitle}
             </h2>
             <div className='mt-6 space-y-3 text-[16px] leading-[1.55] text-[#1d2431] md:text-[17px]'>
-              <p>{structureIntro}</p>
-              {structureBlocks.map((block, index) => (
+              <p>{governance.structureIntro}</p>
+              {governance.structureBlocks.map((block, index) => (
                 <div key={`${block?.title ?? 'block'}-${index}`}>
                   <h3 className='font-bold text-[#111318]'>{block?.title ?? ''}</h3>
                   <p>{block?.body ?? ''}</p>
@@ -156,15 +94,17 @@ const GovernancePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {documentsTitle}
+              {governance.documentsTitle}
             </h2>
             <div className='mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              {documents.map((document, index) => (
+              {governance.documents.map((document, index) => (
                 <DownloadCard
                   key={`${document?.title ?? 'document'}-${index}`}
                   title={document.title}
                   size={document.size}
                   accent={document.accent}
+                  fileUrl={document.fileUrl}
+                  ctaLabel={downloadLabel}
                 />
               ))}
             </div>
@@ -172,15 +112,17 @@ const GovernancePage = () => {
 
           <div className='mt-14'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {reportsTitle}
+              {governance.reportsTitle}
             </h2>
             <div className='mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              {reports.map((report, index) => (
+              {governance.reports.map((report, index) => (
                 <DownloadCard
                   key={`${report?.title ?? 'report'}-${index}`}
                   title={report.title}
                   size={report.size}
-                  accent='bg-[#2d4f9f]'
+                  accent='#2d4f9f'
+                  fileUrl={report.fileUrl}
+                  ctaLabel={downloadLabel}
                 />
               ))}
             </div>
@@ -192,18 +134,18 @@ const GovernancePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {financialTitle}
+              {governance.financialTitle}
             </h2>
             <p className='mt-6 text-[16px] leading-[1.6] text-[#516075] md:text-[17px]'>
-              {financialDescription}
+              {governance.financialDescription}
             </p>
 
             <div className='mt-8 rounded-[14px] border border-[#cfe0ff] bg-[#ebf3ff] px-6 py-6'>
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                {taxTitle}
+                {governance.taxTitle}
               </h3>
               <p className='mt-4 text-[16px] leading-[1.6] text-[#516075] md:text-[17px]'>
-                {taxDescription}
+                {governance.taxDescription}
               </p>
             </div>
           </div>

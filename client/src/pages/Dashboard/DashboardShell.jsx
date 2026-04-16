@@ -59,6 +59,7 @@ const menu = [
 ]
 
 const EVENT_CATEGORIES = ['all', 'daily', 'weekly', 'monthly', 'yearly']
+const EVENT_EDITOR_CATEGORIES = EVENT_CATEGORIES.filter((category) => category !== 'all')
 
 const toTextRows = (items = []) => items.map((text) => ({ text }))
 const toPairRows = (items = []) =>
@@ -81,7 +82,7 @@ const emptyEvent = {
   date: '',
   time: '',
   location: '',
-  category: 'all',
+  category: 'yearly',
   image: '',
   description: '',
 }
@@ -442,8 +443,6 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [isUploadingModalImage, setIsUploadingModalImage] = useState(false)
   const [modalUploadProgress, setModalUploadProgress] = useState(0)
   const [isUploadingAboutImage, setIsUploadingAboutImage] = useState(false)
-  const [editFocusId, setEditFocusId] = useState('')
-  const [editFocusMessage, setEditFocusMessage] = useState('')
   const [isProfileSaving, setIsProfileSaving] = useState(false)
   const [isCreatingUser, setIsCreatingUser] = useState(false)
   const [usersLoading, setUsersLoading] = useState(false)
@@ -460,7 +459,6 @@ const DashboardShell = ({ sectionKey = null }) => {
     role: 'user',
   })
 
-  const editHighlightTimerRef = useRef(null)
   const visitorRuleFormRef = useRef(null)
   const visitorDailyFormRef = useRef(null)
   const visitorLangarFormRef = useRef(null)
@@ -791,36 +789,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     setSuccess('')
   }
 
-  const getPanelClass = (id) =>
-    `${panelClass} ${
-      editFocusId === id ? 'ring-2 ring-black ring-offset-2 ring-offset-white' : ''
-    }`
-
-  const focusEditForm = (id, ref, message) => {
-    setEditFocusId(id)
-    setEditFocusMessage(message)
-
-    if (editHighlightTimerRef.current) {
-      clearTimeout(editHighlightTimerRef.current)
-    }
-
-    editHighlightTimerRef.current = setTimeout(() => {
-      setEditFocusId('')
-      setEditFocusMessage('')
-    }, 3000)
-
-    if (ref?.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
-
-  useEffect(() => {
-    return () => {
-      if (editHighlightTimerRef.current) {
-        clearTimeout(editHighlightTimerRef.current)
-      }
-    }
-  }, [])
+  const getPanelClass = () => panelClass
 
   useEffect(() => {
     if (!error) {
@@ -1024,18 +993,6 @@ const DashboardShell = ({ sectionKey = null }) => {
       [section]: {
         ...prev[section],
         [field]: value,
-      },
-    }))
-  }
-
-  const updateAboutUsArrayItem = (section, listKey, index, field, value) => {
-    setAboutUsForm((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [listKey]: prev[section][listKey].map((item, itemIndex) =>
-          itemIndex === index ? { ...item, [field]: value } : item,
-        ),
       },
     }))
   }
@@ -1715,15 +1672,6 @@ const DashboardShell = ({ sectionKey = null }) => {
               ) : null}
             </div>
 
-            {editFocusMessage ? (
-              <div className='mb-8 flex items-center gap-3 rounded-[16px] border border-blue-500/20 bg-blue-500/5 px-5 py-4 text-[14px] font-bold text-blue-400'>
-                <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/10'>
-                  <Info size={14} />
-                </div>
-                {editFocusMessage}
-              </div>
-            ) : null}
-
             {active === 'visitors' ? (
               <DashboardVisitorsSection
                 FileText={FileText}
@@ -2021,7 +1969,11 @@ const DashboardShell = ({ sectionKey = null }) => {
                           <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
                             Category
                             <select
-                              value={editModal.data.category ?? 'all'}
+                              value={
+                                EVENT_EDITOR_CATEGORIES.includes(editModal.data.category ?? '')
+                                  ? editModal.data.category
+                                  : 'yearly'
+                              }
                               onChange={(event) =>
                                 setEditModal((prev) => ({
                                   ...prev,
@@ -2030,7 +1982,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                               }
                               className={inputClass}
                             >
-                              {EVENT_CATEGORIES.map((category) => (
+                              {EVENT_EDITOR_CATEGORIES.map((category) => (
                                 <option key={category} value={category} className='bg-[#0a0a0b]'>
                                   {category}
                                 </option>

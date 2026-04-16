@@ -2,102 +2,15 @@ import React, { useEffect } from 'react'
 import { CalendarDays, Clock3, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useSiteContentQuery } from '@/hooks/useContent'
+import { useEventsContentQuery } from '@/hooks/useEventsContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
 const tabs = ['all', 'daily', 'weekly', 'monthly', 'yearly']
 
-const defaultEvents = [
-  {
-    title: 'Vaisakhi Celebration 2026',
-    date: 'April 14, 2026',
-    time: '9:00 AM - 6:00 PM',
-    location: 'Singh Sabha Gurudwara Berlin',
-    description:
-      'Join us for the grand celebration of Vaisakhi, commemorating the formation of the Khalsa.',
-    image:
-      'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80',
-    category: 'yearly',
-  },
-  {
-    title: 'Gurpurab - Guru Nanak Dev Ji',
-    date: 'November 15, 2026',
-    time: '6:00 AM - 10:00 PM',
-    location: 'Singh Sabha Gurudwara Berlin',
-    description:
-      'Celebrate the birth anniversary of Guru Nanak Dev Ji with kirtan, prayers, and langar.',
-    image:
-      'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1200&q=80',
-    category: 'yearly',
-  },
-  {
-    title: 'Weekly Kirtan Darbar',
-    date: 'Every Sunday',
-    time: '11:00 AM - 1:00 PM',
-    location: 'Main Hall',
-    description:
-      'Weekly congregational singing of hymns from Sri Guru Granth Sahib Ji followed by langar.',
-    image:
-      'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1200&q=80',
-    category: 'weekly',
-  },
-  {
-    title: 'Asa Di Var - Morning Prayer',
-    date: 'Daily',
-    time: '5:00 AM - 7:00 AM',
-    location: 'Main Hall',
-    description: 'Daily morning prayers with recitation of Asa Di Var.',
-    image: null,
-    category: 'daily',
-  },
-  {
-    title: 'Rehras Sahib - Evening Prayer',
-    date: 'Daily',
-    time: '6:00 PM - 7:00 PM',
-    location: 'Main Hall',
-    description: 'Daily evening prayers with Rehras Sahib.',
-    image: null,
-    category: 'daily',
-  },
-  {
-    title: 'Gurmukhi Learning Session',
-    date: 'Every Saturday',
-    time: '3:00 PM - 5:00 PM',
-    location: 'Education Room',
-    description:
-      'Learn to read and write Gurmukhi script. All ages welcome.',
-    image:
-      'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',
-    category: 'weekly',
-  },
-  {
-    title: 'Monthly Sangat Gathering',
-    date: 'First Saturday of Every Month',
-    time: '4:00 PM - 7:00 PM',
-    location: 'Community Hall',
-    description:
-      'Monthly congregation gathering for prayer, discussion, and fellowship.',
-    image:
-      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80',
-    category: 'monthly',
-  },
-  {
-    title: 'Diwali Celebration',
-    date: 'October 20, 2026',
-    time: '5:00 PM - 9:00 PM',
-    location: 'Singh Sabha Gurudwara Berlin',
-    description:
-      'Join the community for prayers, kirtan, and celebration on Diwali.',
-    image:
-      'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80',
-    category: 'yearly',
-  },
-]
-
-const EventMetaRow = ({ icon: Icon, text }) => (
+const EventMetaRow = ({ icon, text }) => (
   <div className='flex items-center gap-2 text-[15px] text-[#5a677a]'>
-    <Icon className='h-4 w-4 text-[#f39d2f]' />
+    {React.createElement(icon, { className: 'h-4 w-4 text-[#f39d2f]' })}
     <span>{text}</span>
   </div>
 )
@@ -106,11 +19,7 @@ const ProgramsPage = () => {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
-  const { data: content } = useSiteContentQuery()
-  const events =
-    Array.isArray(content?.events?.items) && content.events.items.length > 0
-      ? content.events.items
-      : defaultEvents
+  const { events } = useEventsContentQuery()
 
   const currentTab = tabs.includes(location.hash.slice(1))
     ? location.hash.slice(1)
@@ -184,41 +93,47 @@ const ProgramsPage = () => {
           </div>
 
           <div className='mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-            {filteredEvents.map((event) => (
-              <article
-                key={`${event.title}-${event.date}`}
-                className='overflow-hidden rounded-[16px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
-              >
-                {event.image ? (
-                  <div className='h-[220px] w-full bg-[#d8dde6]'>
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className='h-full w-full object-cover'
-                      loading='lazy'
-                    />
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((event) => (
+                <article
+                  key={event.id}
+                  className='overflow-hidden rounded-[16px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
+                >
+                  {event.image ? (
+                    <div className='h-[220px] w-full bg-[#d8dde6]'>
+                      <img
+                        src={event.image}
+                        alt={event.title}
+                        className='h-full w-full object-cover'
+                        loading='lazy'
+                      />
+                    </div>
+                  ) : (
+                    <div className='h-[220px] w-full bg-white' />
+                  )}
+
+                  <div className='px-5 py-5'>
+                    <h2 className='text-[20px] font-bold tracking-[-0.02em] text-[#111318]'>
+                      {event.title}
+                    </h2>
+
+                    <div className='mt-4 space-y-2.5'>
+                      <EventMetaRow icon={CalendarDays} text={event.date} />
+                      <EventMetaRow icon={Clock3} text={event.time} />
+                      <EventMetaRow icon={MapPin} text={event.location} />
+                    </div>
+
+                    <p className='mt-4 text-[15px] leading-[1.6] text-[#5a677a] md:text-[16px]'>
+                      {event.description}
+                    </p>
                   </div>
-                ) : (
-                  <div className='h-[220px] w-full bg-white' />
-                )}
-
-                <div className='px-5 py-5'>
-                  <h2 className='text-[20px] font-bold tracking-[-0.02em] text-[#111318]'>
-                    {event.title}
-                  </h2>
-
-                  <div className='mt-4 space-y-2.5'>
-                    <EventMetaRow icon={CalendarDays} text={event.date} />
-                    <EventMetaRow icon={Clock3} text={event.time} />
-                    <EventMetaRow icon={MapPin} text={event.location} />
-                  </div>
-
-                  <p className='mt-4 text-[15px] leading-[1.6] text-[#5a677a] md:text-[16px]'>
-                    {event.description}
-                  </p>
-                </div>
-              </article>
-            ))}
+                </article>
+              ))
+            ) : (
+              <div className='rounded-[16px] border border-dashed border-[#dbe1ea] bg-[#fafbfc] px-6 py-10 text-center text-[#5a677a] md:col-span-2 xl:col-span-3'>
+                No events have been published yet. Add them from the dashboard and they will appear here automatically.
+              </div>
+            )}
           </div>
         </div>
       </section>

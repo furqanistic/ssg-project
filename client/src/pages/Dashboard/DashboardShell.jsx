@@ -839,7 +839,34 @@ const DashboardShell = ({ sectionKey = null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, session?.accessToken])
 
-  const upsertEvent = () => {
+  const saveEventsSection = async (rows, successMessage = 'Events saved successfully.') => {
+    const cleanedRows = rows
+      .map((row) => ({
+        title: row.title.trim(),
+        date: row.date.trim(),
+        time: row.time.trim(),
+        location: row.location.trim(),
+        category: row.category.trim() || 'yearly',
+        image: row.image.trim() || null,
+        description: row.description.trim(),
+      }))
+      .filter(
+        (row) =>
+          row.title || row.date || row.time || row.location || row.description || row.image,
+      )
+
+    await updateMutation.mutateAsync({
+      section: 'events',
+      data: {
+        items: cleanedRows,
+      },
+    })
+
+    setEventsRows(cleanedRows)
+    setSuccess(successMessage)
+  }
+
+  const upsertEvent = async () => {
     resetStatus()
 
     if (!eventDraft.title.trim()) {
@@ -852,15 +879,24 @@ const DashboardShell = ({ sectionKey = null }) => {
       date: eventDraft.date.trim(),
       time: eventDraft.time.trim(),
       location: eventDraft.location.trim(),
-      category: eventDraft.category.trim() || 'all',
+      category: eventDraft.category.trim() || 'yearly',
       image: eventDraft.image.trim(),
       description: eventDraft.description.trim(),
     }
 
-    setEventsRows((prev) => replaceOrAppend(prev, editingEventIndex, nextEvent))
-    setEventDraft(emptyEvent)
-    setEditingEventIndex(null)
-    setEventImageFile(null)
+    try {
+      const nextRows = replaceOrAppend(eventsRows, editingEventIndex, nextEvent)
+      await saveEventsSection(
+        nextRows,
+        editingEventIndex === null ? 'Event added successfully.' : 'Event updated successfully.',
+      )
+      setEventDraft(emptyEvent)
+      setEditingEventIndex(null)
+      setEventImageFile(null)
+      setOpenForms((prev) => ({ ...prev, events: false }))
+    } catch (requestError) {
+      setError(requestError.message)
+    }
   }
 
   const uploadEventImage = async () => {
@@ -1726,6 +1762,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                 isUploadingEventImage={isUploadingEventImage}
                 textareaClass={textareaClass}
                 hideForm={hideForm}
+                saveEventsSection={saveEventsSection}
                 editingEventIndex={editingEventIndex}
                 setEditingEventIndex={setEditingEventIndex}
                 emptyEvent={emptyEvent}
@@ -1733,7 +1770,6 @@ const DashboardShell = ({ sectionKey = null }) => {
                 primaryButtonClass={primaryButtonClass}
                 eventsRows={eventsRows}
                 startEdit={startEdit}
-                setEventsRows={setEventsRows}
               />
             ) : null}
 

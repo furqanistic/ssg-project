@@ -44,6 +44,7 @@ const DashboardEventsSection = ({
   isUploadingEventImage,
   textareaClass,
   hideForm,
+  saveEventsSection,
   editingEventIndex,
   setEditingEventIndex,
   emptyEvent,
@@ -51,7 +52,6 @@ const DashboardEventsSection = ({
   primaryButtonClass,
   eventsRows,
   startEdit,
-  setEventsRows,
 }) => {
   const eventEditorCategories = EVENT_CATEGORIES.filter((category) => category !== 'all')
 
@@ -60,6 +60,11 @@ const DashboardEventsSection = ({
     setEventImageFile(null)
     setEventDraft({ ...emptyEvent, category })
     showForm('events')
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        eventFormRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    })
   }
 
   const getCategoryRows = (category) =>
@@ -314,7 +319,8 @@ const DashboardEventsSection = ({
               onEdit: (index) => startEdit('events', groupedRows[index].index, groupedRows[index].row),
               onDelete: (index) => {
                 const targetIndex = groupedRows[index].index
-                setEventsRows((prev) => prev.filter((_, itemIndex) => itemIndex !== targetIndex))
+                const nextRows = eventsRows.filter((_, itemIndex) => itemIndex !== targetIndex)
+                void saveEventsSection(nextRows, `${group.title} updated successfully.`)
                 if (editingEventIndex === targetIndex) {
                   setEditingEventIndex(null)
                   setEventDraft(emptyEvent)
@@ -349,7 +355,8 @@ const DashboardEventsSection = ({
               startEdit('events', uncategorizedRows[index].index, uncategorizedRows[index].row),
             onDelete: (index) => {
               const targetIndex = uncategorizedRows[index].index
-              setEventsRows((prev) => prev.filter((_, itemIndex) => itemIndex !== targetIndex))
+              const nextRows = eventsRows.filter((_, itemIndex) => itemIndex !== targetIndex)
+              void saveEventsSection(nextRows, 'Events updated successfully.')
               if (editingEventIndex === targetIndex) {
                 setEditingEventIndex(null)
                 setEventDraft(emptyEvent)

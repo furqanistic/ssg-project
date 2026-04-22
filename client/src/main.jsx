@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
 import './i18n'
 import App from './App.jsx'
-import { ToastProvider } from '@/components/ui/toast-system'
+import { ToastProvider } from './components/ui/toast-system.jsx'
 
 const queryClient = new QueryClient()
 

@@ -11,7 +11,7 @@ import {
   updateProfileRequest,
 } from '@/services/authApi'
 import { useAuthStore } from '@/store/authStore'
-import { useToast } from '@/components/ui/toast-system'
+import { useToast } from '../../components/ui/toast-system.jsx'
 import DashboardAboutSection from '@/pages/Dashboard/sections/DashboardAboutSection'
 import DashboardContactSection from '@/pages/Dashboard/sections/DashboardContactSection'
 import DashboardEventsSection from '@/pages/Dashboard/sections/DashboardEventsSection'

@@ -37,7 +37,8 @@ import {
   PlusCircle,
   FileText,
   LayoutDashboard,
-  Search
+  Search,
+  CircleDollarSign
 } from 'lucide-react'
 
 const ICON_MAP = {
@@ -45,6 +46,7 @@ const ICON_MAP = {
   Calendar: Calendar,
   ImageIcon: ImageIcon,
   Mail: Mail,
+  CircleDollarSign: CircleDollarSign,
   Info: Info,
   User: User,
 }
@@ -54,6 +56,7 @@ const menu = [
   { key: 'events', label: 'Events', icon: 'Calendar' },
   { key: 'media', label: 'Media', icon: 'ImageIcon' },
   { key: 'contact', label: 'Contact', icon: 'Mail' },
+  { key: 'donate', label: 'Donate', icon: 'CircleDollarSign' },
   { key: 'about-us', label: 'About Us', icon: 'Info' },
   { key: 'profile', label: 'Profile', icon: 'User' },
 ]
@@ -75,6 +78,22 @@ const normalizeColorValue = (value, fallback = '#2d4f9f') => {
   if (input.startsWith('#')) return input
   const match = input.match(/#(?:[0-9a-fA-F]{3,8})/)
   return match ? match[0] : fallback
+}
+
+const getEmailFromAccessToken = (token) => {
+  if (!token || typeof token !== 'string') return ''
+
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return ''
+
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')
+    const decoded = JSON.parse(atob(padded))
+    return decoded?.email ?? ''
+  } catch {
+    return ''
+  }
 }
 
 const emptyEvent = {
@@ -101,6 +120,14 @@ const emptyMediaUpdate = {
 }
 
 const emptyPair = { label: '', value: '' }
+const defaultDonateForm = {
+  bankName: '',
+  accountHolder: '',
+  iban: '',
+  bic: '',
+  officeHours: '',
+  inPersonDescription: '',
+}
 
 const panelClass = 'rounded-[24px] border border-gray-100 bg-white p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden transition-all duration-300'
 const inputClass = 'mt-2 h-11 w-full rounded-[14px] border border-gray-200 bg-gray-50 px-4 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:bg-gray-100/50 focus:border-[#001da5] focus:bg-white focus:ring-4 focus:ring-[#001da5]/5'
@@ -390,6 +417,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     email: '',
     address: [],
   })
+  const [donateForm, setDonateForm] = useState(defaultDonateForm)
   const [aboutUsForm, setAboutUsForm] = useState(defaultAboutUsForm)
   const [aboutUsSavedSnapshot, setAboutUsSavedSnapshot] = useState('')
   const [aboutUsLastSavedAt, setAboutUsLastSavedAt] = useState(null)
@@ -458,6 +486,16 @@ const DashboardShell = ({ sectionKey = null }) => {
     password: '',
     role: 'user',
   })
+
+  const currentUserEmail = useMemo(() => {
+    const storeEmail = typeof user?.email === 'string' ? user.email.trim() : ''
+    if (storeEmail) return storeEmail
+
+    const tokenEmail = getEmailFromAccessToken(session?.accessToken).trim()
+    if (tokenEmail) return tokenEmail
+
+    return ''
+  }, [session?.accessToken, user?.email])
 
   const visitorRuleFormRef = useRef(null)
   const visitorDailyFormRef = useRef(null)
@@ -540,6 +578,14 @@ const DashboardShell = ({ sectionKey = null }) => {
       phone: content.contact?.phone ?? '',
       email: content.contact?.email ?? '',
       address: toTextRows(content.contact?.addressLines),
+    })
+    setDonateForm({
+      bankName: content.donate?.bankName ?? '',
+      accountHolder: content.donate?.accountHolder ?? '',
+      iban: content.donate?.iban ?? '',
+      bic: content.donate?.bic ?? '',
+      officeHours: content.donate?.officeHours ?? '',
+      inPersonDescription: content.donate?.inPersonDescription ?? '',
     })
     const aboutUs = content.aboutUs ?? {}
     const nextAboutUsForm = {
@@ -1523,6 +1569,20 @@ const DashboardShell = ({ sectionKey = null }) => {
         })
       }
 
+      if (active === 'donate') {
+        await updateMutation.mutateAsync({
+          section: 'donate',
+          data: {
+            bankName: donateForm.bankName.trim(),
+            accountHolder: donateForm.accountHolder.trim(),
+            iban: donateForm.iban.trim(),
+            bic: donateForm.bic.trim(),
+            officeHours: donateForm.officeHours.trim(),
+            inPersonDescription: donateForm.inPersonDescription.trim(),
+          },
+        })
+      }
+
       if (active === 'about-us') {
         await updateMutation.mutateAsync({
           section: 'aboutUs',
@@ -1576,9 +1636,11 @@ const DashboardShell = ({ sectionKey = null }) => {
         {/* Sidebar */}
         <aside className='sticky top-0 hidden h-screen w-[280px] shrink-0 overflow-y-auto border-r border-gray-100 bg-white p-8 lg:flex lg:flex-col lg:self-start'>
           <div className='mb-10 flex items-center gap-3 px-2'>
-            <div className='flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
-              <LayoutDashboard size={22} strokeWidth={2.5} />
-            </div>
+            <img
+              src='/logo.png'
+              alt='SSG Logo'
+              className='h-10 w-10 object-contain'
+            />
             <div>
               <h2 className='text-[15px] font-bold tracking-tight text-gray-900'>SSG Admin</h2>
               <p className='text-[10px] font-bold text-gray-400 uppercase tracking-widest'>Control Center</p>
@@ -1618,8 +1680,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                 <User size={16} className='text-gray-400' />
               </div>
               <div className='flex-1 overflow-hidden'>
-                <p className='text-[13px] font-bold text-gray-900 truncate'>{user?.email?.split('@')[0] ?? 'Admin'}</p>
-                <p className='text-[11px] text-gray-400 truncate'>{user?.email ?? 'admin@example.com'}</p>
+                <p className='text-[13px] font-bold text-gray-900 truncate'>{currentUserEmail ? currentUserEmail.split('@')[0] : 'Admin'}</p>
+                <p className='text-[11px] text-gray-400 truncate'>{currentUserEmail || 'admin@example.com'}</p>
               </div>
             </div>
 
@@ -1829,6 +1891,99 @@ const DashboardShell = ({ sectionKey = null }) => {
                 editingContactAddressIndex={editingContactAddressIndex}
                 startEdit={startEdit}
               />
+            ) : null}
+
+            {active === 'donate' ? (
+              <section className='space-y-6'>
+                <article className={panelClass}>
+                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Bank Transfer Details</h3>
+                  <p className='mt-1 text-[13px] text-gray-500'>
+                    These values are shown on the public Donate page and can be copied by visitors.
+                  </p>
+                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Bank Name</label>
+                      <input
+                        type='text'
+                        value={donateForm.bankName}
+                        onChange={(event) =>
+                          setDonateForm((prev) => ({ ...prev, bankName: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='Commerzbank'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Account Holder</label>
+                      <input
+                        type='text'
+                        value={donateForm.accountHolder}
+                        onChange={(event) =>
+                          setDonateForm((prev) => ({ ...prev, accountHolder: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='Singh Sabha Gurudwara Berlin e.V.'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>IBAN</label>
+                      <input
+                        type='text'
+                        value={donateForm.iban}
+                        onChange={(event) =>
+                          setDonateForm((prev) => ({ ...prev, iban: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='DE89 3704 0044 0532 0130 00'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>BIC</label>
+                      <input
+                        type='text'
+                        value={donateForm.bic}
+                        onChange={(event) =>
+                          setDonateForm((prev) => ({ ...prev, bic: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='COBADEFFXXX'
+                      />
+                    </div>
+                  </div>
+                </article>
+
+                <article className={panelClass}>
+                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>In-Person Donation Details</h3>
+                  <div className='mt-6 space-y-4'>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Office Hours</label>
+                      <input
+                        type='text'
+                        value={donateForm.officeHours}
+                        onChange={(event) =>
+                          setDonateForm((prev) => ({ ...prev, officeHours: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='Mon - Sun, 9:00 AM - 7:00 PM'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Description</label>
+                      <textarea
+                        value={donateForm.inPersonDescription}
+                        onChange={(event) =>
+                          setDonateForm((prev) => ({
+                            ...prev,
+                            inPersonDescription: event.target.value,
+                          }))
+                        }
+                        className={textareaClass}
+                        placeholder='Share where and how visitors can donate in person.'
+                      />
+                    </div>
+                  </div>
+                </article>
+              </section>
             ) : null}
 
             {active === 'about-us' ? (

@@ -2,6 +2,7 @@
 import React from 'react'
 import HeroSection from './components/HeroSection'
 import HukamnamaSection from './components/HukamnamaSection'
+import YoutubeShowcaseSection from './components/YoutubeShowcaseSection'
 import MediaFooterSection from './components/MediaFooterSection'
 import NavbarSection from './components/NavbarSection'
 import UpcomingEventsSection from './components/UpcomingEventsSection'
@@ -14,6 +15,7 @@ const HomePage = () => {
         <NavbarSection />
         <HeroSection />
       </div>
+      <YoutubeShowcaseSection />
       <HukamnamaSection />
       <UpcomingEventsSection />
       <YouthEducationSection />

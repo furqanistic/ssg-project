@@ -1,18 +1,22 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import {
+  AlertCircle,
   Building2,
   CheckCircle2,
-  CircleDollarSign,
+  Copy,
   HandHeart,
   Heart,
   Users,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
+import { useSiteContentQuery } from '@/hooks/useContent'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
 const DonatePage = () => {
   const { t } = useTranslation()
+  const { data: content } = useSiteContentQuery()
+  const [copiedField, setCopiedField] = useState('')
 
   const impactItems = t('donate.impactItems', { returnObjects: true }).map(
     (item, index) => ({
@@ -22,7 +26,43 @@ const DonatePage = () => {
     }),
   )
 
-  const donationOptions = t('donate.donationOptions', { returnObjects: true })
+  const donateDetails = useMemo(() => {
+    const donate = content?.donate ?? {}
+    return {
+      bankName: donate.bankName || 'Commerzbank',
+      accountHolder: donate.accountHolder || 'Singh Sabha Gurudwara Berlin e.V.',
+      iban: donate.iban || 'DE89 3704 0044 0532 0130 00',
+      bic: donate.bic || 'COBADEFFXXX',
+      officeHours: donate.officeHours || t('donate.officeHours'),
+      inPersonDescription: donate.inPersonDescription || t('donate.inPersonDesc'),
+    }
+  }, [content?.donate, t])
+  const donationsOpen = useMemo(() => {
+    const donate = content?.donate ?? {}
+
+    if (typeof donate.isOpen === 'boolean') {
+      return donate.isOpen
+    }
+
+    return Boolean(
+      donate.bankName?.trim() &&
+      donate.accountHolder?.trim() &&
+      donate.iban?.trim() &&
+      donate.bic?.trim(),
+    )
+  }, [content?.donate])
+
+  const handleCopy = async (value, key) => {
+    if (!value) return
+
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopiedField(key)
+      window.setTimeout(() => setCopiedField(''), 1600)
+    } catch {
+      // No-op if clipboard access is blocked by the browser.
+    }
+  }
 
   return (
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
@@ -42,180 +82,106 @@ const DonatePage = () => {
         </section>
       </div>
 
-      <section className='bg-white px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[1280px]'>
-          <div className='text-center'>
-            <h2 className='text-[36px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
-              {t('donate.impactTitle')}
-            </h2>
-          </div>
-
-          <div className='mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4'>
-            {impactItems.map(({ title, description, icon: Icon, iconBg }) => (
-              <article
-                key={title}
-                className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-8 text-center shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
-              >
-                <div
-                  className='mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white'
-                  style={{ backgroundColor: iconBg }}
-                >
-                  <Icon className='h-7 w-7 stroke-[2]' />
-                </div>
-                <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                  {title}
-                </h3>
-                <p className='mt-4 text-[16px] leading-[1.45] text-[#516075]'>
-                  {description}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className='bg-[#f7f8fb] px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[740px] rounded-[22px] border border-[#dbe1ea] bg-white px-6 py-8 shadow-[0_1px_2px_rgba(13,23,45,0.02)] md:px-8 md:py-10'>
-          <h2 className='text-center text-[36px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
-            {t('donate.makeDonation')}
-          </h2>
-
-          <div className='mt-10'>
-            <h3 className='text-[18px] font-semibold text-[#111318] md:text-[19px]'>
-              {t('donate.donationType')}
-            </h3>
-            <div className='mt-5 space-y-6'>
-              {donationOptions.map(([label, description], index) => (
-                <label
-                  key={label}
-                  className='flex cursor-pointer items-center gap-4 rounded-[14px] border border-[#dbe1ea] px-4 py-4 text-[#111318]'
-                >
-                  <input
-                    type='radio'
-                    name='donationType'
-                    defaultChecked={index === 0}
-                    className='h-4 w-4 accent-[#111318]'
-                  />
-                  <span className='text-[17px] font-semibold'>{label}</span>
-                  <span className='text-[16px] text-[#647184]'>{description}</span>
-                </label>
-              ))}
-            </div>
+        <div className='mx-auto max-w-[1100px]'>
+          <div className='text-center'>
+            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
+              {t('donate.makeDonation')}
+            </h2>
+            <p className='mx-auto mt-3 max-w-[760px] text-[16px] text-[#5a6880] md:text-[17px]'>
+              {donationsOpen
+                ? 'Use the details below for direct transfer or in-person contribution.'
+                : 'Donations are currently closed. Details will be available soon.'}
+            </p>
           </div>
 
-          <div className='mt-10'>
-            <h3 className='text-[18px] font-semibold text-[#111318] md:text-[19px]'>
-              {t('donate.donationAmount')}
-            </h3>
-            <div className='mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3'>
-              {['€25', '€50', '€100'].map((amount) => (
-                <button
-                  key={amount}
-                  type='button'
-                  className='inline-flex h-[62px] items-center justify-center rounded-[14px] border border-[#dbe1ea] bg-white text-[18px] font-semibold text-[#111318] transition hover:border-[#c3cedd]'
-                >
-                  {amount}
-                </button>
-              ))}
-            </div>
-
-            <div className='mt-4 flex items-center rounded-[14px] bg-[#f4f6fb] px-4'>
-              <span className='mr-3 text-[22px] font-semibold text-[#93a0b5]'>
-                €
-              </span>
-              <input
-                type='number'
-                placeholder={t('donate.customAmountPlaceholder')}
-                className='h-[56px] w-full bg-transparent text-[16px] text-[#111318] outline-none placeholder:text-[#7f8ba0]'
-              />
-            </div>
-          </div>
-
-          <div className='mt-10'>
-            <h3 className='text-[18px] font-semibold text-[#111318] md:text-[19px]'>
-              {t('donate.donationFrequency')}
-            </h3>
-            <div className='mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              {[
-                [t('donate.oneTime'), true],
-                [t('donate.monthly'), false],
-              ].map(([label, checked]) => (
-                <label
-                  key={label}
-                  className='flex cursor-pointer items-center gap-4 rounded-[14px] border border-[#dbe1ea] px-4 py-4 text-[#111318]'
-                >
-                  <input
-                    type='radio'
-                    name='donationFrequency'
-                    defaultChecked={checked}
-                    className='h-4 w-4 accent-[#111318]'
-                  />
-                  <span className='text-[17px] font-semibold'>{label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className='mt-10'>
-            <h3 className='text-[18px] font-semibold text-[#111318] md:text-[19px]'>
-              {t('donate.yourInformation')}
-            </h3>
-
-            <form className='mt-5 space-y-5'>
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          {!donationsOpen ? (
+            <article className='mx-auto mt-10 max-w-[900px] rounded-[20px] border border-[#f3c77c] bg-[#fff8ec] p-6 md:p-8'>
+              <div className='flex items-start gap-3'>
+                <AlertCircle className='mt-0.5 h-6 w-6 shrink-0 text-[#b97100]' />
                 <div>
-                  <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                    {t('donate.firstName')}
-                  </label>
-                  <input
-                    type='text'
-                    className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                  />
-                </div>
-                <div>
-                  <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                    {t('donate.lastName')}
-                  </label>
-                  <input
-                    type='text'
-                    className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                  />
+                  <h3 className='text-[22px] font-bold text-[#7a4c00]'>Donations Temporarily Closed</h3>
+                  <p className='mt-2 text-[16px] leading-[1.6] text-[#8a5a0a]'>
+                    We are updating our donation process. Bank transfer and in-person donation details will be available soon.
+                  </p>
                 </div>
               </div>
+            </article>
+          ) : null}
 
-              <div>
-                <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                  {t('donate.email')}
-                </label>
-                <input
-                  type='email'
-                  className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                />
-              </div>
+          {donationsOpen ? (
+            <div className='mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2'>
+              <article className='rounded-[20px] border border-[#dbe1ea] bg-white p-6 shadow-[0_2px_8px_rgba(13,23,45,0.04)] md:p-7'>
+              <h3 className='text-[22px] font-bold text-[#111318]'>{t('donate.bankTransfer')}</h3>
+              <p className='mt-2 text-[14px] text-[#65748b]'>Fastest way to support the Gurudwara directly.</p>
 
-              <div>
-                <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                  {t('donate.phone')}
-                </label>
-                <input
-                  type='text'
-                  className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                />
+              <div className='mt-6 space-y-3'>
+                {[
+                  { label: t('donate.bank'), value: donateDetails.bankName, key: 'bank' },
+                  { label: t('donate.accountHolder'), value: donateDetails.accountHolder, key: 'holder' },
+                  { label: t('donate.iban'), value: donateDetails.iban, key: 'iban' },
+                  { label: t('donate.bic'), value: donateDetails.bic, key: 'bic' },
+                ].map((row) => (
+                  <div
+                    key={row.key}
+                    className='flex items-center justify-between gap-3 rounded-[12px] border border-[#e4e9f1] bg-[#f9fbff] px-4 py-3'
+                  >
+                    <div className='min-w-0'>
+                      <p className='text-[11px] font-bold uppercase tracking-wide text-[#64748b]'>{row.label}</p>
+                      <p className='truncate text-[14px] font-semibold text-[#1f2937]'>{row.value}</p>
+                    </div>
+                    <button
+                      type='button'
+                      onClick={() => handleCopy(row.value, row.key)}
+                      className='inline-flex h-8 items-center gap-1.5 rounded-[9px] border border-[#cfd8e6] bg-white px-3 text-[12px] font-semibold text-[#2a4f9f] transition hover:bg-[#f2f6ff]'
+                    >
+                      <Copy className='h-3.5 w-3.5' />
+                      {copiedField === row.key ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+                ))}
               </div>
 
               <button
                 type='button'
-                className='inline-flex h-12 w-full items-center justify-center gap-3 rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
+                onClick={() =>
+                  handleCopy(
+                    `Bank: ${donateDetails.bankName}\nAccount Holder: ${donateDetails.accountHolder}\nIBAN: ${donateDetails.iban}\nBIC: ${donateDetails.bic}`,
+                    'all-bank',
+                  )
+                }
+                className='mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-[10px] bg-[#2d4f9f] px-5 text-[13px] font-semibold text-white transition hover:bg-[#24438d]'
               >
-                <CircleDollarSign className='h-5 w-5' />
-                {t('common.actions.completeDonation')}
+                <Copy className='h-4 w-4' />
+                {copiedField === 'all-bank' ? 'All Details Copied' : 'Copy All Bank Details'}
               </button>
-            </form>
-          </div>
+              </article>
 
-          <p className='mt-9 text-center text-[15px] text-[#66758a] md:text-[16px]'>
-            {t('donate.secureText')}
-          </p>
+              <article className='rounded-[20px] border border-[#dbe1ea] bg-white p-6 shadow-[0_2px_8px_rgba(13,23,45,0.04)] md:p-7'>
+                <h3 className='text-[22px] font-bold text-[#111318]'>{t('donate.inPerson')}</h3>
+                <p className='mt-2 text-[14px] text-[#65748b]'>
+                  {donateDetails.inPersonDescription}
+                </p>
+                <div className='mt-6 rounded-[14px] border border-[#d9e3f3] bg-[#eff5ff] p-4'>
+                  <p className='text-[11px] font-bold uppercase tracking-wide text-[#476197]'>Office Hours</p>
+                  <p className='mt-1 text-[15px] font-semibold text-[#183464]'>{donateDetails.officeHours}</p>
+                </div>
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleCopy(
+                      `${donateDetails.inPersonDescription}\nOffice Hours: ${donateDetails.officeHours}`,
+                      'in-person',
+                    )
+                  }
+                  className='mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-[10px] border border-[#cfd8e6] bg-white px-5 text-[13px] font-semibold text-[#2a4f9f] transition hover:bg-[#f2f6ff]'
+                >
+                  <Copy className='h-4 w-4' />
+                  {copiedField === 'in-person' ? 'Copied' : 'Copy In-Person Details'}
+                </button>
+              </article>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -244,7 +210,8 @@ const DonatePage = () => {
             </h2>
           </div>
 
-          <div className='mx-auto mt-10 grid max-w-[1120px] grid-cols-1 gap-6 lg:grid-cols-3'>
+          {donationsOpen ? (
+            <div className='mx-auto mt-10 grid max-w-[1120px] grid-cols-1 gap-6 lg:grid-cols-3'>
             <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-7 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
                 {t('donate.bankTransfer')}
@@ -252,21 +219,21 @@ const DonatePage = () => {
               <div className='mt-5 space-y-3 text-[16px] leading-[1.55] text-[#516075]'>
                 <p>
                   <span className='font-semibold text-[#425168]'>{t('donate.bank')}:</span>{' '}
-                  Example Bank
+                  {donateDetails.bankName}
                 </p>
                 <p>
                   <span className='font-semibold text-[#425168]'>
                     {t('donate.accountHolder')}:
                   </span>{' '}
-                  Singh Sabha Gurudwara Berlin e.V.
+                  {donateDetails.accountHolder}
                 </p>
                 <p>
                   <span className='font-semibold text-[#425168]'>{t('donate.iban')}:</span>{' '}
-                  DE89 3704 0044 0532 0130 00
+                  {donateDetails.iban}
                 </p>
                 <p>
                   <span className='font-semibold text-[#425168]'>{t('donate.bic')}:</span>{' '}
-                  COBADEFFXXX
+                  {donateDetails.bic}
                 </p>
               </div>
             </article>
@@ -276,10 +243,10 @@ const DonatePage = () => {
                 {t('donate.inPerson')}
               </h3>
               <p className='mt-5 text-[16px] leading-[1.6] text-[#516075]'>
-                {t('donate.inPersonDesc')}
+                {donateDetails.inPersonDescription}
               </p>
               <p className='mt-5 text-[16px] text-[#516075]'>
-                {t('donate.officeHours')}
+                {donateDetails.officeHours}
               </p>
             </article>
 
@@ -297,6 +264,48 @@ const DonatePage = () => {
                 {t('common.actions.learnMoreButton')}
               </button>
             </article>
+            </div>
+          ) : (
+            <div className='mx-auto mt-10 max-w-[900px] rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-8 text-center shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
+              <p className='text-[17px] font-semibold text-[#2f3b4e]'>
+                Donation options are temporarily unavailable.
+              </p>
+              <p className='mt-2 text-[15px] text-[#66758a]'>
+                Please check back soon for updated donation details.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className='bg-white px-4 pb-16 md:px-6 md:pb-18'>
+        <div className='mx-auto max-w-[1280px]'>
+          <div className='text-center'>
+            <h2 className='text-[36px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
+              {t('donate.impactTitle')}
+            </h2>
+          </div>
+
+          <div className='mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4'>
+            {impactItems.map(({ title, description, icon: Icon, iconBg }) => (
+              <article
+                key={title}
+                className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-8 text-center shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
+              >
+                <div
+                  className='mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white'
+                  style={{ backgroundColor: iconBg }}
+                >
+                  <Icon className='h-7 w-7 stroke-[2]' />
+                </div>
+                <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
+                  {title}
+                </h3>
+                <p className='mt-4 text-[16px] leading-[1.45] text-[#516075]'>
+                  {description}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

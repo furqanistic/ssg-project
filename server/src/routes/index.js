@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import authRouter from './authRoutes.js'
 import adminContentRouter from './admin/contentRoutes.js'
+import youtubeRouter from './youtubeRoutes.js'
 
 const router = Router()
 
@@ -10,5 +11,6 @@ router.get('/health', (_req, res) => {
 
 router.use('/auth', authRouter)
 router.use('/admin/content', adminContentRouter)
+router.use('/youtube', youtubeRouter)
 
 export default router

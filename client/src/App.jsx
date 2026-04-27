@@ -15,13 +15,24 @@ import VisitorGuidePage from '@/pages/Visitors/VisitorGuidePage'
 import YouthEducationPage from '@/pages/YouthEducation/YouthEducationPage'
 import CremationFundPage from '@/pages/Services/CremationFundPage'
 import LibraryPage from '@/pages/Resources/LibraryPage'
-import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [pathname])
+
+  return null
+}
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path='/'>
             <Route index element={<HomePage />} />

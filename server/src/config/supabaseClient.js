@@ -1,6 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 import { env } from './env.js'
 
+const normalizeOrigin = (origin = '') => origin.trim().replace(/\/+$/, '')
+
+export const allowedCorsOrigins = Array.from(
+  new Set(
+    [
+      normalizeOrigin(env.FRONTEND_URL),
+      'https://ssgberlin.de',
+      'https://api.ssgberlin.de',
+    ].filter(Boolean),
+  ),
+)
+
+export const isAllowedCorsOrigin = (origin = '') => {
+  return allowedCorsOrigins.includes(normalizeOrigin(origin))
+}
+
 export const supabasePublic = createClient(env.SUPABASE_URL, env.SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     autoRefreshToken: false,

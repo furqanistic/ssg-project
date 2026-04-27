@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight, ExternalLink, Play, Radio, Youtube } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ExternalLink, Play, Youtube } from 'lucide-react'
 
 const CHANNEL_ID = 'UCs953CyNH7x8SfZ-a2jAv6A'
 const CHANNEL_URL = `https://www.youtube.com/channel/${CHANNEL_ID}`
-const LIVE_URL = `${CHANNEL_URL}/live`
 const UPLOADS_PLAYLIST_ID = CHANNEL_ID.startsWith('UC') ? `UU${CHANNEL_ID.slice(2)}` : ''
 const MAX_VIDEOS = 10
 const DISCOVERY_TIMEOUT_MS = 12_000
-const LIVE_PROBE_TIMEOUT_MS = 12_000
 const FALLBACK_VIDEO_IDS = [
   'bdZWgAJI_RA',
   'atgHGou3Lx8',
@@ -87,15 +85,11 @@ const fetchVideoOEmbedMeta = async (videoId) => {
 const YoutubeShowcaseSection = () => {
   const discoveryNodeRef = useRef(null)
   const discoveryPlayerRef = useRef(null)
-  const liveProbeNodeRef = useRef(null)
-  const liveProbePlayerRef = useRef(null)
   const sliderRef = useRef(null)
 
   const [videoIds, setVideoIds] = useState([])
   const [activeVideoId, setActiveVideoId] = useState(FALLBACK_VIDEO_IDS[0])
   const [isLoading, setIsLoading] = useState(true)
-  const [isLiveChecking, setIsLiveChecking] = useState(true)
-  const [liveVideoId, setLiveVideoId] = useState('')
   const [videoMeta, setVideoMeta] = useState({})
 
   const resolvedVideoIds = videoIds.length > 0 ? videoIds : FALLBACK_VIDEO_IDS.slice(0, MAX_VIDEOS)
@@ -116,7 +110,6 @@ const YoutubeShowcaseSection = () => {
   useEffect(() => {
     let isMounted = true
     let discoveryTimeoutId = null
-    let liveTimeoutId = null
 
     const stopDiscoveryLoading = () => {
       if (!isMounted) {
@@ -134,28 +127,10 @@ const YoutubeShowcaseSection = () => {
       }
     }
 
-    const stopLiveProbe = (videoId = '') => {
-      if (!isMounted) {
-        return
-      }
-
-      setLiveVideoId(videoId)
-      setIsLiveChecking(false)
-      if (liveProbePlayerRef.current) {
-        liveProbePlayerRef.current.destroy()
-        liveProbePlayerRef.current = null
-      }
-      if (liveTimeoutId) {
-        window.clearTimeout(liveTimeoutId)
-        liveTimeoutId = null
-      }
-    }
-
     const boot = async () => {
-      if (!UPLOADS_PLAYLIST_ID || !discoveryNodeRef.current || !liveProbeNodeRef.current) {
+      if (!UPLOADS_PLAYLIST_ID || !discoveryNodeRef.current) {
         if (isMounted) {
           stopDiscoveryLoading()
-          stopLiveProbe('')
         }
         return
       }
@@ -164,10 +139,6 @@ const YoutubeShowcaseSection = () => {
         discoveryTimeoutId = window.setTimeout(() => {
           stopDiscoveryLoading()
         }, DISCOVERY_TIMEOUT_MS)
-
-        liveTimeoutId = window.setTimeout(() => {
-          stopLiveProbe('')
-        }, LIVE_PROBE_TIMEOUT_MS)
 
         const YT = await loadYoutubeIframeApi()
         if (!isMounted || !discoveryNodeRef.current) {
@@ -220,51 +191,9 @@ const YoutubeShowcaseSection = () => {
             },
           },
         })
-
-        liveProbePlayerRef.current = new YT.Player(liveProbeNodeRef.current, {
-          width: '0',
-          height: '0',
-          videoId: 'live_stream',
-          playerVars: {
-            channel: CHANNEL_ID,
-            autoplay: 0,
-            controls: 0,
-            rel: 0,
-          },
-          events: {
-            onReady: (event) => {
-              let attempts = 0
-
-              const checkLiveVideo = () => {
-                const data = event.target.getVideoData?.() ?? {}
-                const candidateId = typeof data.video_id === 'string' ? data.video_id : ''
-                const isValidVideoId = /^[A-Za-z0-9_-]{11}$/.test(candidateId)
-
-                if (isValidVideoId) {
-                  stopLiveProbe(candidateId)
-                  return
-                }
-
-                if (attempts < 12) {
-                  attempts += 1
-                  window.setTimeout(checkLiveVideo, 250)
-                  return
-                }
-
-                stopLiveProbe('')
-              }
-
-              checkLiveVideo()
-            },
-            onError: () => {
-              stopLiveProbe('')
-            },
-          },
-        })
       } catch {
         if (isMounted) {
           stopDiscoveryLoading()
-          stopLiveProbe('')
         }
       }
     }
@@ -279,17 +208,8 @@ const YoutubeShowcaseSection = () => {
         discoveryPlayerRef.current = null
       }
 
-      if (liveProbePlayerRef.current) {
-        liveProbePlayerRef.current.destroy()
-        liveProbePlayerRef.current = null
-      }
-
       if (discoveryTimeoutId) {
         window.clearTimeout(discoveryTimeoutId)
-      }
-
-      if (liveTimeoutId) {
-        window.clearTimeout(liveTimeoutId)
       }
     }
   }, [])
@@ -395,32 +315,6 @@ const YoutubeShowcaseSection = () => {
               </a>
             </div>
           </div>
-
-          {!isLiveChecking && liveVideoId ? (
-            <div className='relative z-10 mt-8'>
-              <a
-                href={`${LIVE_URL}`}
-                target='_blank'
-                rel='noreferrer'
-                className='group flex flex-col gap-3 rounded-[16px] border border-red-200 bg-gradient-to-r from-red-50 to-white px-4 py-3 transition hover:border-red-300 md:flex-row md:items-center md:justify-between md:px-5 md:py-4'
-              >
-                <div className='flex items-start gap-3 md:items-center md:gap-4'>
-                  <span className='inline-flex shrink-0 items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-sm shadow-red-600/20 md:text-[12px]'>
-                    <Radio className='h-3.5 w-3.5' />
-                    Live Kirtan
-                  </span>
-                  <p className='line-clamp-2 text-[14px] font-semibold leading-snug text-red-950 md:text-[16px] md:leading-normal'>
-                    A livestream is currently active on YouTube.
-                  </p>
-                </div>
-
-                <span className='inline-flex shrink-0 items-center gap-1.5 text-[13px] font-semibold text-red-600 transition group-hover:text-red-700 md:text-[14px]'>
-                  Watch Live
-                  <ExternalLink className='h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5' />
-                </span>
-              </a>
-            </div>
-          ) : null}
 
           <div className='relative z-10 mt-8'>
             {isLoading ? (
@@ -554,7 +448,6 @@ const YoutubeShowcaseSection = () => {
           </div>
 
           <div ref={discoveryNodeRef} className='pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0' aria-hidden='true' />
-          <div ref={liveProbeNodeRef} className='pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0' aria-hidden='true' />
         </div>
       </div>
     </section>

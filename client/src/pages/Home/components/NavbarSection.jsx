@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, MapPin, Menu, PhoneCall, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -177,6 +177,32 @@ const NavbarSection = () => {
     </svg>
   )
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      document.body.style.overflow = ''
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isMobileMenuOpen])
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileMenuOpen(false)
+        setMobileOpenItem(null)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   return (
     <header
       className='fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-[#1e3a8a] backdrop-blur-md'
@@ -186,7 +212,7 @@ const NavbarSection = () => {
       }}
     >
       <div className='bg-[#1e3a8a]'>
-        <div className='mx-auto flex w-full flex-col items-center justify-center gap-1.5 px-4 py-1.5 text-center text-[11px] font-medium tracking-wide text-white/90 md:h-10 md:flex-row md:justify-end md:gap-4 md:py-0 md:text-[12px] lg:px-8'>
+        <div className='mx-auto flex h-10 w-full items-center justify-start gap-3 overflow-x-auto px-3 text-[11px] font-medium tracking-wide text-white/90 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:justify-end md:gap-4 md:px-4 md:text-[12px] lg:px-8'>
           <div className='relative'>
             <button
               type='button'
@@ -231,18 +257,18 @@ const NavbarSection = () => {
           </a>
         </div>
       </div>
-      <div className='mx-auto flex h-16 w-full items-center justify-between px-6 lg:px-8'>
+      <div className='mx-auto flex h-[72px] w-full items-center justify-between px-4 md:h-16 md:px-6 lg:px-8'>
         <Link to='/' className='flex items-center gap-3 md:gap-4'>
           <img
             src='/logo.png'
             alt={t('navbar.brand.name')}
             className='h-10 w-10 object-contain md:h-14 md:w-14'
           />
-          <div className='flex flex-col justify-center'>
-            <span className='text-[16px] font-bold leading-tight tracking-tight text-white md:text-[18px]'>
+          <div className='flex max-w-[210px] flex-col justify-center md:max-w-none'>
+            <span className='text-[13px] font-bold leading-tight tracking-tight text-white sm:text-[14px] md:text-[18px]'>
               {t('navbar.brand.name')}
             </span>
-            <span className='text-[12px] font-medium text-white/50 md:text-[13px]'>
+            <span className='text-[11px] font-medium text-white/60 sm:text-[12px] md:text-[13px]'>
               {t('navbar.brand.location')}
             </span>
           </div>
@@ -323,16 +349,16 @@ const NavbarSection = () => {
       </div>
 
       <div
-        className={`border-t border-white/10 bg-[#0f1726]/95 px-6 py-4 backdrop-blur-xl md:hidden ${
+        className={`absolute inset-x-0 top-full border-t border-white/10 bg-[#1e3a8a] px-4 pb-4 pt-3 shadow-[0_18px_35px_rgba(8,19,51,0.35)] backdrop-blur-xl md:hidden ${
           isMobileMenuOpen ? 'block' : 'hidden'
         }`}
       >
-        <nav className='flex max-h-[calc(100vh-7rem)] flex-col overflow-y-auto pb-2'>
+        <nav className='flex max-h-[calc(100dvh-132px)] flex-col overflow-y-auto pb-2'>
           {navItems.map((item) => {
             const isItemOpen = mobileOpenItem === item.label
 
             return (
-              <div key={`mobile-${item.label}`} className='border-b border-white/10 py-2'>
+              <div key={`mobile-${item.label}`} className='border-b border-white/10 py-1.5'>
                 <button
                   type='button'
                   onClick={() => setMobileOpenItem(isItemOpen ? null : item.label)}
@@ -347,7 +373,7 @@ const NavbarSection = () => {
                 </button>
 
                 {isItemOpen ? (
-                  <div className='mt-1 flex flex-col gap-4 pb-3 pl-1'>
+                  <div className='mt-1 flex flex-col gap-4 rounded-[10px] bg-white/5 px-2 pb-3 pt-2'>
                     {item.sections.map((section, sectionIndex) => (
                       <div key={`mobile-section-${item.label}-${sectionIndex}`}>
                         {section.heading ? (
@@ -367,7 +393,7 @@ const NavbarSection = () => {
                                   setIsMobileMenuOpen(false)
                                   setMobileOpenItem(null)
                                 }}
-                                className='text-[14px] font-medium text-white transition-colors'
+                                className='rounded-md px-1 py-1 text-[14px] font-medium text-white/95 transition-colors hover:bg-white/10'
                               >
                                 {link.label}
                               </Component>
@@ -383,7 +409,7 @@ const NavbarSection = () => {
           })}
         </nav>
 
-        <div className='mt-4 flex items-center justify-between gap-3'>
+        <div className='mt-4 flex items-center justify-between gap-2.5 rounded-[14px] border border-white/15 bg-white/10 p-2.5'>
           <div className='flex items-center rounded-full border border-white/50 bg-white/15 p-1.5 shadow-[0_4px_14px_rgba(0,0,0,0.2)]'>
             {['en', 'de'].map((lang) => (
               <button

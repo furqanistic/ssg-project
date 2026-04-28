@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import multer from 'multer'
 import {
+  contentHealth,
   fetchContent,
   uploadFile,
   updateSection,
@@ -17,6 +18,7 @@ const upload = multer({
 })
 
 adminContentRouter.get('/', fetchContent)
+adminContentRouter.get('/health', contentHealth)
 adminContentRouter.put('/:section', updateSection)
 adminContentRouter.post('/upload-image', upload.single('image'), uploadImage)
 adminContentRouter.post('/upload-file', upload.single('file'), uploadFile)

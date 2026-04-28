@@ -1,6 +1,7 @@
 import { ApiError } from '../../utils/ApiError.js'
 import { sendSuccess } from '../../utils/apiResponse.js'
 import {
+  getContentHealth,
   getContent,
   updateContentSection,
 } from '../../services/admin/contentService.js'
@@ -12,6 +13,22 @@ export const fetchContent = async (_req, res, next) => {
   try {
     const content = await getContent()
     return sendSuccess(res, 'Content fetched successfully.', content)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export const contentHealth = async (_req, res, next) => {
+  try {
+    const health = await getContentHealth()
+    const statusCode = health.ready ? 200 : 503
+    return res.status(statusCode).json({
+      success: health.ready,
+      message: health.ready
+        ? 'Content Supabase dependencies are ready.'
+        : 'Content Supabase dependencies are not fully configured.',
+      data: health,
+    })
   } catch (error) {
     return next(error)
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   useSiteContentQuery,
@@ -12,12 +12,12 @@ import {
 } from '@/services/authApi'
 import { useAuthStore } from '@/store/authStore'
 import { useToast } from '../../components/ui/toast-system.jsx'
-import DashboardAboutSection from '@/pages/Dashboard/sections/DashboardAboutSection'
-import DashboardContactSection from '@/pages/Dashboard/sections/DashboardContactSection'
-import DashboardEventsSection from '@/pages/Dashboard/sections/DashboardEventsSection'
-import DashboardMediaSection from '@/pages/Dashboard/sections/DashboardMediaSection'
-import DashboardProfileSection from '@/pages/Dashboard/sections/DashboardProfileSection'
-import DashboardVisitorsSection from '@/pages/Dashboard/sections/DashboardVisitorsSection'
+const DashboardAboutSection = lazy(() => import('@/pages/Dashboard/sections/DashboardAboutSection'))
+const DashboardContactSection = lazy(() => import('@/pages/Dashboard/sections/DashboardContactSection'))
+const DashboardEventsSection = lazy(() => import('@/pages/Dashboard/sections/DashboardEventsSection'))
+const DashboardMediaSection = lazy(() => import('@/pages/Dashboard/sections/DashboardMediaSection'))
+const DashboardProfileSection = lazy(() => import('@/pages/Dashboard/sections/DashboardProfileSection'))
+const DashboardVisitorsSection = lazy(() => import('@/pages/Dashboard/sections/DashboardVisitorsSection'))
 import { 
   Users, 
   Calendar, 
@@ -1625,7 +1625,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   if (isLoading) {
     return (
       <div className='grid min-h-screen place-items-center bg-[#f4f7ff] font-["Poppins","Segoe_UI",sans-serif]'>
-        <p className='text-[16px] text-gray-500'>Loading dashboard...</p>
+        <div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#001da5]' />
       </div>
     )
   }
@@ -1771,39 +1771,42 @@ const DashboardShell = ({ sectionKey = null }) => {
             </div>
 
             {active === 'visitors' ? (
-              <DashboardVisitorsSection
-                FileText={FileText}
-                Clock={Clock}
-                Plus={Plus}
-                Save={Save}
-                DataTable={DataTable}
-                openForms={openForms}
-                showForm={showForm}
-                actionButtonClass={actionButtonClass}
-                visitorRuleFormRef={visitorRuleFormRef}
-                getPanelClass={getPanelClass}
-                visitorDrafts={visitorDrafts}
-                setVisitorDrafts={setVisitorDrafts}
-                textareaClass={textareaClass}
-                hideForm={hideForm}
-                upsertVisitorsText={upsertVisitorsText}
-                primaryButtonClass={primaryButtonClass}
-                visitorsForm={visitorsForm}
-                startEdit={startEdit}
-                removeVisitorsRow={removeVisitorsRow}
-                visitorDailyFormRef={visitorDailyFormRef}
-                inputClass={inputClass}
-                upsertVisitorsPair={upsertVisitorsPair}
-                emptyPair={emptyPair}
-                visitorLangarFormRef={visitorLangarFormRef}
-                setVisitorsForm={setVisitorsForm}
-                visitorAddressFormRef={visitorAddressFormRef}
-                visitorReachFormRef={visitorReachFormRef}
-              />
+              <Suspense fallback={<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#001da5] mx-auto my-10' />}>
+                <DashboardVisitorsSection
+                  FileText={FileText}
+                  Clock={Clock}
+                  Plus={Plus}
+                  Save={Save}
+                  DataTable={DataTable}
+                  openForms={openForms}
+                  showForm={showForm}
+                  actionButtonClass={actionButtonClass}
+                  visitorRuleFormRef={visitorRuleFormRef}
+                  getPanelClass={getPanelClass}
+                  visitorDrafts={visitorDrafts}
+                  setVisitorDrafts={setVisitorDrafts}
+                  textareaClass={textareaClass}
+                  hideForm={hideForm}
+                  upsertVisitorsText={upsertVisitorsText}
+                  primaryButtonClass={primaryButtonClass}
+                  visitorsForm={visitorsForm}
+                  startEdit={startEdit}
+                  removeVisitorsRow={removeVisitorsRow}
+                  visitorDailyFormRef={visitorDailyFormRef}
+                  inputClass={inputClass}
+                  upsertVisitorsPair={upsertVisitorsPair}
+                  emptyPair={emptyPair}
+                  visitorLangarFormRef={visitorLangarFormRef}
+                  setVisitorsForm={setVisitorsForm}
+                  visitorAddressFormRef={visitorAddressFormRef}
+                  visitorReachFormRef={visitorReachFormRef}
+                />
+              </Suspense>
             ) : null}
 
             {active === 'events' ? (
-              <DashboardEventsSection
+              <Suspense fallback={<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#001da5] mx-auto my-10' />}>
+                <DashboardEventsSection
                 Calendar={Calendar}
                 Plus={Plus}
                 ImageIcon={ImageIcon}
@@ -1832,11 +1835,13 @@ const DashboardShell = ({ sectionKey = null }) => {
                 primaryButtonClass={primaryButtonClass}
                 eventsRows={eventsRows}
                 startEdit={startEdit}
-              />
+                />
+              </Suspense>
             ) : null}
 
             {active === 'media' ? (
-              <DashboardMediaSection
+              <Suspense fallback={<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#001da5] mx-auto my-10' />}>
+                <DashboardMediaSection
                 ImageIcon={ImageIcon}
                 Plus={Plus}
                 PlusCircle={PlusCircle}
@@ -1865,11 +1870,13 @@ const DashboardShell = ({ sectionKey = null }) => {
                 editingMediaUpdateIndex={editingMediaUpdateIndex}
                 mediaUpdatesRows={mediaUpdatesRows}
                 setMediaUpdatesRows={setMediaUpdatesRows}
-              />
+                />
+              </Suspense>
             ) : null}
 
             {active === 'contact' ? (
-              <DashboardContactSection
+              <Suspense fallback={<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#001da5] mx-auto my-10' />}>
+                <DashboardContactSection
                 Mail={Mail}
                 Plus={Plus}
                 Save={Save}
@@ -1890,7 +1897,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                 primaryButtonClass={primaryButtonClass}
                 editingContactAddressIndex={editingContactAddressIndex}
                 startEdit={startEdit}
-              />
+                />
+              </Suspense>
             ) : null}
 
             {active === 'donate' ? (
@@ -1987,7 +1995,8 @@ const DashboardShell = ({ sectionKey = null }) => {
             ) : null}
 
             {active === 'about-us' ? (
-              <DashboardAboutSection
+              <Suspense fallback={<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#001da5] mx-auto my-10' />}>
+                <DashboardAboutSection
                 Save={Save}
                 Plus={Plus}
                 DataTable={DataTable}
@@ -2008,10 +2017,12 @@ const DashboardShell = ({ sectionKey = null }) => {
                 startEdit={startEdit}
                 removeAboutUsArrayItem={removeAboutUsArrayItem}
                 normalizeColorValue={normalizeColorValue}
-              />
+                />
+              </Suspense>
             ) : null}
             {active === 'profile' ? (
-              <DashboardProfileSection
+              <Suspense fallback={<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#001da5] mx-auto my-10' />}>
+                <DashboardProfileSection
                 User={User}
                 PlusCircle={PlusCircle}
                 Plus={Plus}
@@ -2030,7 +2041,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                 users={users}
                 usersLoading={usersLoading}
                 primaryButtonClass={primaryButtonClass}
-              />
+                />
+              </Suspense>
             ) : null}
 
             {editModal.open ? (

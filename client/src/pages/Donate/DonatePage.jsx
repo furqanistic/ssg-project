@@ -29,14 +29,14 @@ const DonatePage = () => {
   const donateDetails = useMemo(() => {
     const donate = content?.donate ?? {}
     return {
-      bankName: donate.bankName || 'Commerzbank',
-      accountHolder: donate.accountHolder || 'Singh Sabha Gurudwara Berlin e.V.',
-      iban: donate.iban || 'DE89 3704 0044 0532 0130 00',
-      bic: donate.bic || 'COBADEFFXXX',
-      officeHours: donate.officeHours || t('donate.officeHours'),
-      inPersonDescription: donate.inPersonDescription || t('donate.inPersonDesc'),
+      bankName: donate.bankName || '',
+      accountHolder: donate.accountHolder || '',
+      iban: donate.iban || '',
+      bic: donate.bic || '',
+      officeHours: donate.officeHours || '',
+      inPersonDescription: donate.inPersonDescription || '',
     }
-  }, [content?.donate, t])
+  }, [content?.donate])
   const donationsOpen = useMemo(() => {
     const donate = content?.donate ?? {}
 

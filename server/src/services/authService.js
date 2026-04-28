@@ -142,3 +142,43 @@ export const listManagedUsers = async ({ page = 1, perPage = 100 } = {}) => {
     })),
   }
 }
+
+export const ensureAdminAccount = async ({ email, password, name }) => {
+  ensureServiceRoleConfigured()
+
+  const normalizedEmail = email.trim().toLowerCase()
+
+  const { data, error } = await supabaseAdmin.auth.admin.listUsers(1, 1000)
+  if (error) {
+    throw new ApiError(400, error.message)
+  }
+
+  const existingUser = (data?.users ?? []).find(
+    (user) => user.email?.trim().toLowerCase() === normalizedEmail,
+  )
+
+  if (!existingUser) {
+    await createUserWithRole({
+      email: normalizedEmail,
+      password,
+      role: 'admin',
+      name: name ?? '',
+    })
+    return { created: true, updated: false }
+  }
+
+  const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
+    password,
+    user_metadata: {
+      ...(existingUser.user_metadata ?? {}),
+      role: 'admin',
+      name: name ?? '',
+    },
+  })
+
+  if (updateError) {
+    throw new ApiError(400, updateError.message)
+  }
+
+  return { created: false, updated: true }
+}

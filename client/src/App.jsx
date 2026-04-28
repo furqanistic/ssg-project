@@ -1,22 +1,23 @@
 // File: client/src/App.jsx
-import HomePage from '@/pages/Home/HomePage'
-import CommitteePage from '@/pages/AboutUs/CommitteePage'
-import ContactPage from '@/pages/Contact/ContactPage'
-import DonatePage from '@/pages/Donate/DonatePage'
-import GovernancePage from '@/pages/AboutUs/GovernancePage'
-import HistoryPage from '@/pages/AboutUs/HistoryPage'
-import MissionPage from '@/pages/AboutUs/MissionPage'
-import AuthPage from '@/pages/Auth/AuthPage'
-import ProtectedRoute from '@/components/auth/ProtectedRoute'
-import DashboardPage from '@/pages/Dashboard/DashboardPage'
-import ProgramsPage from '@/pages/Events/ProgramsPage'
-import MediaCenterPage from '@/pages/Media/MediaCenterPage'
-import VisitorGuidePage from '@/pages/Visitors/VisitorGuidePage'
-import YouthEducationPage from '@/pages/YouthEducation/YouthEducationPage'
-import CremationFundPage from '@/pages/Services/CremationFundPage'
-import LibraryPage from '@/pages/Resources/LibraryPage'
-import React, { useEffect } from 'react'
+import React, { Suspense, lazy, useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
+
+const HomePage = lazy(() => import('@/pages/Home/HomePage'))
+const CommitteePage = lazy(() => import('@/pages/AboutUs/CommitteePage'))
+const ContactPage = lazy(() => import('@/pages/Contact/ContactPage'))
+const DonatePage = lazy(() => import('@/pages/Donate/DonatePage'))
+const GovernancePage = lazy(() => import('@/pages/AboutUs/GovernancePage'))
+const HistoryPage = lazy(() => import('@/pages/AboutUs/HistoryPage'))
+const MissionPage = lazy(() => import('@/pages/AboutUs/MissionPage'))
+const AuthPage = lazy(() => import('@/pages/Auth/AuthPage'))
+const DashboardPage = lazy(() => import('@/pages/Dashboard/DashboardPage'))
+const ProgramsPage = lazy(() => import('@/pages/Events/ProgramsPage'))
+const MediaCenterPage = lazy(() => import('@/pages/Media/MediaCenterPage'))
+const VisitorGuidePage = lazy(() => import('@/pages/Visitors/VisitorGuidePage'))
+const YouthEducationPage = lazy(() => import('@/pages/YouthEducation/YouthEducationPage'))
+const CremationFundPage = lazy(() => import('@/pages/Services/CremationFundPage'))
+const LibraryPage = lazy(() => import('@/pages/Resources/LibraryPage'))
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -30,9 +31,9 @@ const ScrollToTop = () => {
 
 const App = () => {
   return (
-    <>
-      <BrowserRouter>
-        <ScrollToTop />
+    <BrowserRouter>
+      <ScrollToTop />
+      <Suspense fallback={<div className='min-h-screen bg-[#f8faff]' />}>
         <Routes>
           <Route path='/'>
             <Route index element={<HomePage />} />
@@ -59,8 +60,8 @@ const App = () => {
             <Route path='services/antim-sanskar-fund' element={<CremationFundPage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
-    </>
+      </Suspense>
+    </BrowserRouter>
   )
 }
 

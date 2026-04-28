@@ -1,4 +1,5 @@
 import { supabase } from '../../config/supabaseClient.js'
+import { env } from '../../config/env.js'
 import { ApiError } from '../../utils/ApiError.js'
 
 const CONTENT_TABLE = 'site_content'
@@ -57,4 +58,51 @@ export const updateContentSection = async (section, value) => {
   }
 
   return upsertContent(nextContent)
+}
+
+export const getContentHealth = async () => {
+  const bucket = env.SUPABASE_STORAGE_BUCKET
+  const checks = {
+    tableReadable: false,
+    primaryRowPresent: false,
+    storageBucketConfigured: Boolean(bucket),
+    storageBucketExists: false,
+  }
+  const errors = []
+
+  const { data: row, error: tableError } = await supabase
+    .from(CONTENT_TABLE)
+    .select('id')
+    .eq('id', CONTENT_ROW_ID)
+    .maybeSingle()
+
+  if (tableError) {
+    errors.push(`Table read failed: ${tableError.message}`)
+  } else {
+    checks.tableReadable = true
+    checks.primaryRowPresent = Boolean(row?.id)
+  }
+
+  if (bucket) {
+    const { data: buckets, error: bucketError } = await supabase.storage.listBuckets()
+    if (bucketError) {
+      errors.push(`Storage bucket listing failed: ${bucketError.message}`)
+    } else {
+      checks.storageBucketExists = buckets?.some((item) => item.name === bucket) ?? false
+      if (!checks.storageBucketExists) {
+        errors.push(`Storage bucket "${bucket}" does not exist.`)
+      }
+    }
+  } else {
+    errors.push('SUPABASE_STORAGE_BUCKET is not configured.')
+  }
+
+  const ready = Object.values(checks).every(Boolean)
+
+  return {
+    ready,
+    checks,
+    bucket,
+    errors,
+  }
 }

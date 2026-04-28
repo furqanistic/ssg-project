@@ -15,22 +15,6 @@ import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
-const dailySchedule = [
-  { label: 'Morning Prayer (Asa Di Var)', value: '5:00 AM - 7:00 AM' },
-  { label: 'Gurudwara Open', value: '6:00 AM - 9:00 PM' },
-  { label: 'Evening Prayer (Rehras Sahib)', value: '6:00 PM - 7:00 PM' },
-  { label: 'Night Prayer (Kirtan Sohila)', value: '8:30 PM' },
-]
-
-const langarSchedule = [
-  { label: 'Lunch', value: '12:00 PM - 2:00 PM' },
-  { label: 'Dinner', value: '7:00 PM - 8:00 PM' },
-]
-const CONTACT_PHONE_DISPLAY = '+49 15567 277478'
-const CONTACT_PHONE_E164 = '+4915567277478'
-const CONTACT_WHATSAPP_URL = 'https://wa.me/4915567277478'
-const CONTACT_ADDRESS = 'Alt Biesdorf 71, 12683, Berlin'
-
 const VisitorGuidePage = () => {
   const { t } = useTranslation()
   const location = useLocation()
@@ -66,25 +50,23 @@ const VisitorGuidePage = () => {
         dailySchedule:
           content?.visitors?.openingTimings?.dailySchedule?.length > 0
             ? content.visitors.openingTimings.dailySchedule
-            : dailySchedule,
+            : [],
         langarSchedule:
           content?.visitors?.openingTimings?.langarSchedule?.length > 0
             ? content.visitors.openingTimings.langarSchedule
-            : langarSchedule,
-        sundaySpecial:
-          content?.visitors?.openingTimings?.sundaySpecial ??
-          'Weekly Kirtan Darbar: 11:00 AM - 1:00 PM followed by Langar',
+            : [],
+        sundaySpecial: content?.visitors?.openingTimings?.sundaySpecial ?? '',
       },
       location: {
-        addressLines: [CONTACT_ADDRESS],
-        howToReach: [
-          'U-Bahn: Take U5 to Biesdorf-Süd, then a short walk or bus ride.',
-          'Use map directions to reach Alt Biesdorf 71, 12683 Berlin.',
-        ],
+        addressLines:
+          content?.visitors?.location?.addressLines?.length > 0
+            ? content.visitors.location.addressLines
+            : content?.contact?.addressLines ?? [],
+        howToReach: content?.visitors?.location?.howToReach ?? [],
       },
       contact: {
-        phone: CONTACT_PHONE_DISPLAY,
-        email: content?.contact?.email ?? 'info@ssgberlin.de',
+        phone: content?.contact?.phone ?? '',
+        email: content?.contact?.email ?? '',
       },
     }),
     [content, t],
@@ -105,6 +87,7 @@ const VisitorGuidePage = () => {
     [t],
   )
   const faqItems = React.useMemo(() => t('visitors.faq', { returnObjects: true }), [t])
+  const contactPhoneDigits = String(visitorContent.contact.phone || '').replace(/[^\d+]/g, '')
 
   return (
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
@@ -330,13 +313,13 @@ const VisitorGuidePage = () => {
                 <p className='mt-3 text-[16px] text-[#516075]'>{visitorContent.contact.phone}</p>
                 <div className='mt-4 flex items-center gap-2'>
                   <a
-                    href={`tel:${CONTACT_PHONE_E164}`}
+                    href={contactPhoneDigits ? `tel:${contactPhoneDigits}` : '#'}
                     className='inline-flex h-9 items-center justify-center rounded-[10px] border border-[#dbe1ea] px-3 text-[13px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'
                   >
                     Call
                   </a>
                   <a
-                    href={CONTACT_WHATSAPP_URL}
+                    href={contactPhoneDigits ? `https://wa.me/${contactPhoneDigits.replace(/^\+/, '')}` : '#'}
                     target='_blank'
                     rel='noreferrer'
                     className='inline-flex h-9 items-center justify-center rounded-[10px] border border-[#dbe1ea] px-3 text-[13px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'

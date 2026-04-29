@@ -1,19 +1,9 @@
 const resolveApiBaseCandidates = () => {
   const bases = []
   const envBase = import.meta.env.VITE_API_BASE_URL
-  const isLocalHost = typeof window !== 'undefined'
-    && ['localhost', '127.0.0.1'].includes(window.location.hostname)
 
   if (envBase) {
     bases.push(envBase)
-  }
-
-  if (typeof window !== 'undefined') {
-    bases.push(`${window.location.origin}/api`)
-  }
-
-  if (isLocalHost) {
-    bases.push('http://localhost:8800/api')
   }
 
   return [...new Set(bases.map((base) => base.replace(/\/+$/, '')))]

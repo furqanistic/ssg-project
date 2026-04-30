@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   createManagedUser,
+  deleteManagedUser,
   listUsers,
   login,
   updateCurrentProfile,
@@ -13,5 +14,6 @@ authRouter.post('/login', login)
 authRouter.put('/profile', requireAuth, updateCurrentProfile)
 authRouter.get('/users', requireAuth, requireAdmin, listUsers)
 authRouter.post('/users', requireAuth, requireAdmin, createManagedUser)
+authRouter.delete('/users/:userId', requireAuth, requireAdmin, deleteManagedUser)
 
 export default authRouter

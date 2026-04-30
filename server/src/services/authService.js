@@ -143,6 +143,26 @@ export const listManagedUsers = async ({ page = 1, perPage = 100 } = {}) => {
   }
 }
 
+export const deleteManagedUserById = async (userId) => {
+  ensureServiceRoleConfigured()
+
+  const normalizedUserId = (userId ?? '').trim()
+
+  if (!normalizedUserId) {
+    throw new ApiError(400, 'User id is required.')
+  }
+
+  const { error } = await supabaseAdmin.auth.admin.deleteUser(normalizedUserId)
+
+  if (error) {
+    throw new ApiError(400, error.message)
+  }
+
+  return {
+    id: normalizedUserId,
+  }
+}
+
 export const ensureAdminAccount = async ({ email, password, name }) => {
   ensureServiceRoleConfigured()
 

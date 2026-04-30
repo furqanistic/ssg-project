@@ -51,6 +51,8 @@ const DashboardAboutSection = ({
   panelClass,
   aboutUsDirty,
   aboutUsLastSavedLabel,
+  aboutEditorLanguage,
+  setAboutEditorLanguage,
   aboutUsForm,
   updateAboutUsText,
   inputClass,
@@ -103,6 +105,26 @@ const DashboardAboutSection = ({
           </p>
         </div>
         <p className='text-[12px] font-medium text-gray-500'>{aboutUsLastSavedLabel}</p>
+      </div>
+
+      <div className='flex items-center justify-between rounded-[14px] border border-gray-200 bg-white px-4 py-3'>
+        <p className='text-[13px] font-semibold text-gray-700'>Editing Language</p>
+        <div className='flex items-center rounded-full border border-gray-200 bg-gray-50 p-1'>
+          {['en', 'de'].map((language) => (
+            <button
+              key={`about-lang-${language}`}
+              type='button'
+              onClick={() => setAboutEditorLanguage(language)}
+              className={`rounded-full px-4 py-2 text-[12px] font-bold uppercase tracking-wider transition-all ${
+                aboutEditorLanguage === language
+                  ? 'bg-[#001da5] text-white'
+                  : 'text-gray-600 hover:bg-white'
+              }`}
+            >
+              {language}
+            </button>
+          ))}
+        </div>
       </div>
 
       <AboutPagePanel

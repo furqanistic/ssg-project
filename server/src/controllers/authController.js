@@ -3,6 +3,7 @@ import {
   updateProfile,
   createUserWithRole,
   listManagedUsers,
+  deleteManagedUserById,
 } from '../services/authService.js'
 import { ApiError } from '../utils/ApiError.js'
 import { sendSuccess } from '../utils/apiResponse.js'
@@ -69,6 +70,26 @@ export const listUsers = async (_req, res, next) => {
   try {
     const data = await listManagedUsers()
     return sendSuccess(res, 'Users fetched successfully.', data)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export const deleteManagedUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const currentUserId = req.user?.id
+
+    if (!userId?.trim()) {
+      throw new ApiError(400, 'User id is required.')
+    }
+
+    if (currentUserId && currentUserId === userId.trim()) {
+      throw new ApiError(400, 'You cannot delete your own account.')
+    }
+
+    const data = await deleteManagedUserById(userId)
+    return sendSuccess(res, 'User deleted successfully.', data)
   } catch (error) {
     return next(error)
   }

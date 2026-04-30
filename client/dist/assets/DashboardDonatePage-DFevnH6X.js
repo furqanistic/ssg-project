@@ -1,0 +1,1 @@
+import{j as o}from"./index-CgA9-jaY.js";import{D as t}from"./DashboardShell-llTuTrhG.js";import"./useContent-Clz2flKF.js";import"./authApi-Dd0Z7P54.js";import"./file-text-Ch4spE0Q.js";import"./image-Cq_dwbbl.js";import"./users-De4lq056.js";import"./chevron-right-Dj3vTklE.js";import"./clock-3-DhPPz9ax.js";const x=()=>o.jsx(t,{sectionKey:"donate"});export{x as default};

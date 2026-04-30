@@ -7,6 +7,7 @@ import {
 import { uploadContentFile, uploadContentImage } from '@/services/contentApi'
 import {
   createUserRequest,
+  deleteUserRequest,
   listUsersRequest,
   updateProfileRequest,
 } from '@/services/authApi'
@@ -416,6 +417,327 @@ const createAboutUsPayload = (sourceForm) => ({
   },
 })
 
+const buildAboutUsEditorForm = (aboutUs = {}, language = 'en') => {
+  const defaultPathsBySection = [
+    ['/about-us/history', '/about-us/mission'],
+    ['/about-us/committee', '/about-us/governance'],
+  ]
+
+  return {
+    history: {
+      heroTitle: readLocalizedEditorValue(aboutUs.history?.heroTitle, language),
+      heroSubtitle: readLocalizedEditorValue(aboutUs.history?.heroSubtitle, language),
+      heroImage: aboutUs.history?.heroImage ?? '',
+      sections:
+        Array.isArray(aboutUs.history?.sections) && aboutUs.history.sections.length > 0
+          ? aboutUs.history.sections.map((item) => ({
+              title: readLocalizedEditorValue(item?.title, language),
+              body: readLocalizedEditorValue(item?.body, language),
+            }))
+          : [{ title: '', body: '' }],
+    },
+    mission: {
+      heroTitle: readLocalizedEditorValue(aboutUs.mission?.heroTitle, language),
+      heroDescription: readLocalizedEditorValue(aboutUs.mission?.heroDescription, language),
+      heroImage: aboutUs.mission?.heroImage ?? '',
+      coreValuesTitle: readLocalizedEditorValue(aboutUs.mission?.coreValuesTitle, language),
+      cards:
+        Array.isArray(aboutUs.mission?.cards) && aboutUs.mission.cards.length > 0
+          ? aboutUs.mission.cards.map((item) => ({
+              title: readLocalizedEditorValue(item?.title, language),
+              description: readLocalizedEditorValue(item?.description, language),
+              accent: normalizeColorValue(item?.accent, '#2d4f9f'),
+            }))
+          : [{ title: '', description: '', accent: '#2d4f9f' }],
+      coreValues:
+        Array.isArray(aboutUs.mission?.coreValues) && aboutUs.mission.coreValues.length > 0
+          ? aboutUs.mission.coreValues.map((item) => ({
+              title: readLocalizedEditorValue(item?.title, language),
+              description: readLocalizedEditorValue(item?.description, language),
+            }))
+          : [{ title: '', description: '' }],
+    },
+    committee: {
+      heroTitle: readLocalizedEditorValue(aboutUs.committee?.heroTitle, language),
+      heroSubtitle: readLocalizedEditorValue(aboutUs.committee?.heroSubtitle, language),
+      intro: readLocalizedEditorValue(aboutUs.committee?.intro, language),
+      members:
+        Array.isArray(aboutUs.committee?.members) && aboutUs.committee.members.length > 0
+          ? aboutUs.committee.members.map((item) => ({
+              initials: readLocalizedEditorValue(item?.initials, language),
+              name: readLocalizedEditorValue(item?.name, language),
+              role: readLocalizedEditorValue(item?.role, language),
+              email: readLocalizedEditorValue(item?.email, language),
+              phone: readLocalizedEditorValue(item?.phone, language),
+              image: item?.image ?? '',
+            }))
+          : [{ initials: '', name: '', role: '', email: '', phone: '', image: '' }],
+      ctaTitle: readLocalizedEditorValue(aboutUs.committee?.ctaTitle, language),
+      ctaDescription: readLocalizedEditorValue(aboutUs.committee?.ctaDescription, language),
+      ctaButtonLabel: readLocalizedEditorValue(aboutUs.committee?.ctaButtonLabel, language),
+    },
+    governance: {
+      heroTitle: readLocalizedEditorValue(aboutUs.governance?.heroTitle, language),
+      heroSubtitle: readLocalizedEditorValue(aboutUs.governance?.heroSubtitle, language),
+      heroImage: aboutUs.governance?.heroImage ?? '',
+      structureTitle: readLocalizedEditorValue(aboutUs.governance?.structureTitle, language),
+      structureIntro: readLocalizedEditorValue(aboutUs.governance?.structureIntro, language),
+      structureBlocks:
+        Array.isArray(aboutUs.governance?.structureBlocks) && aboutUs.governance.structureBlocks.length > 0
+          ? aboutUs.governance.structureBlocks.map((item) => ({
+              title: readLocalizedEditorValue(item?.title, language),
+              body: readLocalizedEditorValue(item?.body, language),
+            }))
+          : [{ title: '', body: '' }],
+      documentsTitle: readLocalizedEditorValue(aboutUs.governance?.documentsTitle, language),
+      documents:
+        Array.isArray(aboutUs.governance?.documents) && aboutUs.governance.documents.length > 0
+          ? aboutUs.governance.documents.map((item) => ({
+              title: readLocalizedEditorValue(item?.title, language),
+              size: readLocalizedEditorValue(item?.size, language),
+              accent: normalizeColorValue(item?.accent, '#f6ab3c'),
+              fileUrl: item?.fileUrl ?? '',
+            }))
+          : [{ title: '', size: '', accent: '#f6ab3c', fileUrl: '' }],
+      reportsTitle: readLocalizedEditorValue(aboutUs.governance?.reportsTitle, language),
+      reports:
+        Array.isArray(aboutUs.governance?.reports) && aboutUs.governance.reports.length > 0
+          ? aboutUs.governance.reports.map((item) => ({
+              title: readLocalizedEditorValue(item?.title, language),
+              size: readLocalizedEditorValue(item?.size, language),
+              fileUrl: item?.fileUrl ?? '',
+            }))
+          : [{ title: '', size: '', fileUrl: '' }],
+      downloadCtaLabel: readLocalizedEditorValue(aboutUs.governance?.downloadCtaLabel, language),
+      financialTitle: readLocalizedEditorValue(aboutUs.governance?.financialTitle, language),
+      financialDescription: readLocalizedEditorValue(aboutUs.governance?.financialDescription, language),
+      taxTitle: readLocalizedEditorValue(aboutUs.governance?.taxTitle, language),
+      taxDescription: readLocalizedEditorValue(aboutUs.governance?.taxDescription, language),
+    },
+    navbar: {
+      label: readLocalizedEditorValue(aboutUs.navbar?.label, language),
+      sections:
+        Array.isArray(aboutUs.navbar?.sections) && aboutUs.navbar.sections.length > 0
+          ? aboutUs.navbar.sections.map((section, sectionIndex) => {
+              const defaultPaths = defaultPathsBySection[sectionIndex] ?? []
+              const existingLinks = Array.isArray(section?.links) ? section.links : []
+              const requiredLength = Math.max(existingLinks.length, defaultPaths.length)
+              const mappedLinks = Array.from({ length: requiredLength }).map((_, linkIndex) => ({
+                label: readLocalizedEditorValue(existingLinks[linkIndex]?.label, language),
+                to: existingLinks[linkIndex]?.to ?? defaultPaths[linkIndex] ?? '',
+              }))
+
+              return {
+                heading: readLocalizedEditorValue(section?.heading, language),
+                links: mappedLinks,
+              }
+            })
+          : [
+              {
+                heading: '',
+                links: [
+                  { label: '', to: '/about-us/history' },
+                  { label: '', to: '/about-us/mission' },
+                ],
+              },
+              {
+                heading: '',
+                links: [
+                  { label: '', to: '/about-us/committee' },
+                  { label: '', to: '/about-us/governance' },
+                ],
+              },
+            ],
+    },
+  }
+}
+
+const buildLocalizedAboutUsPayload = (sourceForm, existingAboutUs = {}, language = 'en') => {
+  const payload = createAboutUsPayload(sourceForm)
+
+  return {
+    history: {
+      heroTitle: upsertLocalizedValue(existingAboutUs.history?.heroTitle, language, payload.history.heroTitle),
+      heroSubtitle: upsertLocalizedValue(
+        existingAboutUs.history?.heroSubtitle,
+        language,
+        payload.history.heroSubtitle,
+      ),
+      heroImage: payload.history.heroImage,
+      sections: payload.history.sections.map((item, index) => ({
+        title: upsertLocalizedValue(existingAboutUs.history?.sections?.[index]?.title, language, item.title),
+        body: upsertLocalizedValue(existingAboutUs.history?.sections?.[index]?.body, language, item.body),
+      })),
+    },
+    mission: {
+      heroTitle: upsertLocalizedValue(existingAboutUs.mission?.heroTitle, language, payload.mission.heroTitle),
+      heroDescription: upsertLocalizedValue(
+        existingAboutUs.mission?.heroDescription,
+        language,
+        payload.mission.heroDescription,
+      ),
+      heroImage: payload.mission.heroImage,
+      coreValuesTitle: upsertLocalizedValue(
+        existingAboutUs.mission?.coreValuesTitle,
+        language,
+        payload.mission.coreValuesTitle,
+      ),
+      cards: payload.mission.cards.map((item, index) => ({
+        title: upsertLocalizedValue(existingAboutUs.mission?.cards?.[index]?.title, language, item.title),
+        description: upsertLocalizedValue(
+          existingAboutUs.mission?.cards?.[index]?.description,
+          language,
+          item.description,
+        ),
+        accent: item.accent,
+      })),
+      coreValues: payload.mission.coreValues.map((item, index) => ({
+        title: upsertLocalizedValue(
+          existingAboutUs.mission?.coreValues?.[index]?.title,
+          language,
+          item.title,
+        ),
+        description: upsertLocalizedValue(
+          existingAboutUs.mission?.coreValues?.[index]?.description,
+          language,
+          item.description,
+        ),
+      })),
+    },
+    committee: {
+      heroTitle: upsertLocalizedValue(existingAboutUs.committee?.heroTitle, language, payload.committee.heroTitle),
+      heroSubtitle: upsertLocalizedValue(
+        existingAboutUs.committee?.heroSubtitle,
+        language,
+        payload.committee.heroSubtitle,
+      ),
+      intro: upsertLocalizedValue(existingAboutUs.committee?.intro, language, payload.committee.intro),
+      members: payload.committee.members.map((item, index) => ({
+        initials: upsertLocalizedValue(existingAboutUs.committee?.members?.[index]?.initials, language, item.initials),
+        name: upsertLocalizedValue(existingAboutUs.committee?.members?.[index]?.name, language, item.name),
+        role: upsertLocalizedValue(existingAboutUs.committee?.members?.[index]?.role, language, item.role),
+        email: upsertLocalizedValue(existingAboutUs.committee?.members?.[index]?.email, language, item.email),
+        phone: upsertLocalizedValue(existingAboutUs.committee?.members?.[index]?.phone, language, item.phone),
+        image: item.image,
+      })),
+      ctaTitle: upsertLocalizedValue(existingAboutUs.committee?.ctaTitle, language, payload.committee.ctaTitle),
+      ctaDescription: upsertLocalizedValue(
+        existingAboutUs.committee?.ctaDescription,
+        language,
+        payload.committee.ctaDescription,
+      ),
+      ctaButtonLabel: upsertLocalizedValue(
+        existingAboutUs.committee?.ctaButtonLabel,
+        language,
+        payload.committee.ctaButtonLabel,
+      ),
+    },
+    governance: {
+      heroTitle: upsertLocalizedValue(
+        existingAboutUs.governance?.heroTitle,
+        language,
+        payload.governance.heroTitle,
+      ),
+      heroSubtitle: upsertLocalizedValue(
+        existingAboutUs.governance?.heroSubtitle,
+        language,
+        payload.governance.heroSubtitle,
+      ),
+      heroImage: payload.governance.heroImage,
+      structureTitle: upsertLocalizedValue(
+        existingAboutUs.governance?.structureTitle,
+        language,
+        payload.governance.structureTitle,
+      ),
+      structureIntro: upsertLocalizedValue(
+        existingAboutUs.governance?.structureIntro,
+        language,
+        payload.governance.structureIntro,
+      ),
+      structureBlocks: payload.governance.structureBlocks.map((item, index) => ({
+        title: upsertLocalizedValue(
+          existingAboutUs.governance?.structureBlocks?.[index]?.title,
+          language,
+          item.title,
+        ),
+        body: upsertLocalizedValue(
+          existingAboutUs.governance?.structureBlocks?.[index]?.body,
+          language,
+          item.body,
+        ),
+      })),
+      documentsTitle: upsertLocalizedValue(
+        existingAboutUs.governance?.documentsTitle,
+        language,
+        payload.governance.documentsTitle,
+      ),
+      documents: payload.governance.documents.map((item, index) => ({
+        title: upsertLocalizedValue(
+          existingAboutUs.governance?.documents?.[index]?.title,
+          language,
+          item.title,
+        ),
+        size: upsertLocalizedValue(existingAboutUs.governance?.documents?.[index]?.size, language, item.size),
+        accent: item.accent,
+        fileUrl: item.fileUrl,
+      })),
+      reportsTitle: upsertLocalizedValue(
+        existingAboutUs.governance?.reportsTitle,
+        language,
+        payload.governance.reportsTitle,
+      ),
+      reports: payload.governance.reports.map((item, index) => ({
+        title: upsertLocalizedValue(
+          existingAboutUs.governance?.reports?.[index]?.title,
+          language,
+          item.title,
+        ),
+        size: upsertLocalizedValue(existingAboutUs.governance?.reports?.[index]?.size, language, item.size),
+        fileUrl: item.fileUrl,
+      })),
+      downloadCtaLabel: upsertLocalizedValue(
+        existingAboutUs.governance?.downloadCtaLabel,
+        language,
+        payload.governance.downloadCtaLabel,
+      ),
+      financialTitle: upsertLocalizedValue(
+        existingAboutUs.governance?.financialTitle,
+        language,
+        payload.governance.financialTitle,
+      ),
+      financialDescription: upsertLocalizedValue(
+        existingAboutUs.governance?.financialDescription,
+        language,
+        payload.governance.financialDescription,
+      ),
+      taxTitle: upsertLocalizedValue(existingAboutUs.governance?.taxTitle, language, payload.governance.taxTitle),
+      taxDescription: upsertLocalizedValue(
+        existingAboutUs.governance?.taxDescription,
+        language,
+        payload.governance.taxDescription,
+      ),
+    },
+    navbar: {
+      label: upsertLocalizedValue(existingAboutUs.navbar?.label, language, payload.navbar.label),
+      sections: payload.navbar.sections.map((section, sectionIndex) => ({
+        heading: upsertLocalizedValue(
+          existingAboutUs.navbar?.sections?.[sectionIndex]?.heading,
+          language,
+          section.heading,
+        ),
+        links: section.links.map((link, linkIndex) => ({
+          label: upsertLocalizedValue(
+            existingAboutUs.navbar?.sections?.[sectionIndex]?.links?.[linkIndex]?.label,
+            language,
+            link.label,
+          ),
+          to: link.to,
+        })),
+      })),
+    },
+  }
+}
+
 const DataTable = ({
   title,
   columns,
@@ -425,6 +747,10 @@ const DataTable = ({
   emptyMessage,
   showActions = true,
 }) => {
+  const hasEditAction = showActions && typeof onEdit === 'function'
+  const hasDeleteAction = showActions && typeof onDelete === 'function'
+  const hasActions = hasEditAction || hasDeleteAction
+
   return (
     <div className={panelClass}>
       <div className='mb-6 flex items-center justify-between'>
@@ -446,7 +772,7 @@ const DataTable = ({
                   {column.label}
                 </th>
               ))}
-              {showActions ? (
+              {hasActions ? (
                 <th className='border-b border-gray-100 px-4 py-3 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400'>
                   Actions
                 </th>
@@ -465,23 +791,27 @@ const DataTable = ({
                       {column.render ? column.render(row) : (row[column.key] || '-')}
                     </td>
                   ))}
-                  {showActions ? (
+                  {hasActions ? (
                     <td className='px-4 py-4'>
                       <div className='flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity'>
-                        <button
-                          type='button'
-                          onClick={() => onEdit(index)}
-                          className='inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type='button'
-                          onClick={() => onDelete(index)}
-                          className='inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
-                        >
-                          Delete
-                        </button>
+                        {hasEditAction ? (
+                          <button
+                            type='button'
+                            onClick={() => onEdit(index)}
+                            className='inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
+                          >
+                            Edit
+                          </button>
+                        ) : null}
+                        {hasDeleteAction ? (
+                          <button
+                            type='button'
+                            onClick={() => onDelete(index)}
+                            className='inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
+                          >
+                            Delete
+                          </button>
+                        ) : null}
                       </div>
                     </td>
                   ) : null}
@@ -490,7 +820,7 @@ const DataTable = ({
             ) : (
               <tr>
                 <td
-                  colSpan={showActions ? columns.length + 1 : columns.length}
+                  colSpan={hasActions ? columns.length + 1 : columns.length}
                   className='px-4 py-12 text-center text-[13px] text-gray-400'
                 >
                   {emptyMessage}
@@ -538,6 +868,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     address: [],
   })
   const [servicesEditorLanguage, setServicesEditorLanguage] = useState('en')
+  const [aboutEditorLanguage, setAboutEditorLanguage] = useState('en')
   const [donateForm, setDonateForm] = useState(defaultDonateForm)
   const [servicesForm, setServicesForm] = useState(defaultServicesForm)
   const [youthServicesForm, setYouthServicesForm] = useState(defaultYouthServicesForm)
@@ -598,6 +929,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [isProfileSaving, setIsProfileSaving] = useState(false)
   const [isCreatingUser, setIsCreatingUser] = useState(false)
   const [usersLoading, setUsersLoading] = useState(false)
+  const [isDeletingUserId, setIsDeletingUserId] = useState('')
   const [users, setUsers] = useState([])
   const [profileForm, setProfileForm] = useState({
     email: '',
@@ -630,6 +962,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const mediaCardFormRef = useRef(null)
   const mediaUpdateFormRef = useRef(null)
   const contactAddressFormRef = useRef(null)
+  const authFailureHandledRef = useRef(false)
 
   const startEdit = (type, index, data) => {
     setEditModal({
@@ -850,138 +1183,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       })),
     })
     const aboutUs = content.aboutUs ?? {}
-    const nextAboutUsForm = {
-      history: {
-        heroTitle: aboutUs.history?.heroTitle ?? '',
-        heroSubtitle: aboutUs.history?.heroSubtitle ?? '',
-        heroImage: aboutUs.history?.heroImage ?? '',
-        sections:
-          Array.isArray(aboutUs.history?.sections) && aboutUs.history.sections.length > 0
-            ? aboutUs.history.sections.map((item) => ({
-                title: item?.title ?? '',
-                body: item?.body ?? '',
-              }))
-            : [{ title: '', body: '' }],
-      },
-      mission: {
-        heroTitle: aboutUs.mission?.heroTitle ?? '',
-        heroDescription: aboutUs.mission?.heroDescription ?? '',
-        heroImage: aboutUs.mission?.heroImage ?? '',
-        coreValuesTitle: aboutUs.mission?.coreValuesTitle ?? '',
-        cards:
-          Array.isArray(aboutUs.mission?.cards) && aboutUs.mission.cards.length > 0
-            ? aboutUs.mission.cards.map((item) => ({
-                title: item?.title ?? '',
-                description: item?.description ?? '',
-                accent: normalizeColorValue(item?.accent, '#2d4f9f'),
-              }))
-            : [{ title: '', description: '', accent: '#2d4f9f' }],
-        coreValues:
-          Array.isArray(aboutUs.mission?.coreValues) && aboutUs.mission.coreValues.length > 0
-            ? aboutUs.mission.coreValues.map((item) => ({
-                title: item?.title ?? '',
-                description: item?.description ?? '',
-              }))
-            : [{ title: '', description: '' }],
-      },
-      committee: {
-        heroTitle: aboutUs.committee?.heroTitle ?? '',
-        heroSubtitle: aboutUs.committee?.heroSubtitle ?? '',
-        intro: aboutUs.committee?.intro ?? '',
-        members:
-          Array.isArray(aboutUs.committee?.members) && aboutUs.committee.members.length > 0
-            ? aboutUs.committee.members.map((item) => ({
-                initials: item?.initials ?? '',
-                name: item?.name ?? '',
-                role: item?.role ?? '',
-                email: item?.email ?? '',
-              phone: item?.phone ?? '',
-              image: item?.image ?? '',
-              }))
-            : [{ initials: '', name: '', role: '', email: '', phone: '', image: '' }],
-        ctaTitle: aboutUs.committee?.ctaTitle ?? '',
-        ctaDescription: aboutUs.committee?.ctaDescription ?? '',
-        ctaButtonLabel: aboutUs.committee?.ctaButtonLabel ?? '',
-      },
-      governance: {
-        heroTitle: aboutUs.governance?.heroTitle ?? '',
-        heroSubtitle: aboutUs.governance?.heroSubtitle ?? '',
-        heroImage: aboutUs.governance?.heroImage ?? '',
-        structureTitle: aboutUs.governance?.structureTitle ?? '',
-        structureIntro: aboutUs.governance?.structureIntro ?? '',
-        structureBlocks:
-          Array.isArray(aboutUs.governance?.structureBlocks) &&
-          aboutUs.governance.structureBlocks.length > 0
-            ? aboutUs.governance.structureBlocks.map((item) => ({
-                title: item?.title ?? '',
-                body: item?.body ?? '',
-              }))
-            : [{ title: '', body: '' }],
-        documentsTitle: aboutUs.governance?.documentsTitle ?? '',
-        documents:
-          Array.isArray(aboutUs.governance?.documents) && aboutUs.governance.documents.length > 0
-            ? aboutUs.governance.documents.map((item) => ({
-                title: item?.title ?? '',
-                size: item?.size ?? '',
-                accent: normalizeColorValue(item?.accent, '#f6ab3c'),
-                fileUrl: item?.fileUrl ?? '',
-              }))
-            : [{ title: '', size: '', accent: '#f6ab3c', fileUrl: '' }],
-        reportsTitle: aboutUs.governance?.reportsTitle ?? '',
-        reports:
-          Array.isArray(aboutUs.governance?.reports) && aboutUs.governance.reports.length > 0
-            ? aboutUs.governance.reports.map((item) => ({
-                title: item?.title ?? '',
-                size: item?.size ?? '',
-                fileUrl: item?.fileUrl ?? '',
-              }))
-            : [{ title: '', size: '', fileUrl: '' }],
-        downloadCtaLabel: aboutUs.governance?.downloadCtaLabel ?? '',
-        financialTitle: aboutUs.governance?.financialTitle ?? '',
-        financialDescription: aboutUs.governance?.financialDescription ?? '',
-        taxTitle: aboutUs.governance?.taxTitle ?? '',
-        taxDescription: aboutUs.governance?.taxDescription ?? '',
-      },
-      navbar: {
-        label: aboutUs.navbar?.label ?? '',
-        sections:
-          Array.isArray(aboutUs.navbar?.sections) && aboutUs.navbar.sections.length > 0
-            ? aboutUs.navbar.sections.map((section, sectionIndex) => {
-                const defaultPathsBySection = [
-                  ['/about-us/history', '/about-us/mission'],
-                  ['/about-us/committee', '/about-us/governance'],
-                ]
-                const defaultPaths = defaultPathsBySection[sectionIndex] ?? []
-                const existingLinks = Array.isArray(section?.links) ? section.links : []
-                const requiredLength = Math.max(existingLinks.length, defaultPaths.length)
-                const mappedLinks = Array.from({ length: requiredLength }).map((_, linkIndex) => ({
-                  label: existingLinks[linkIndex]?.label ?? '',
-                  to: existingLinks[linkIndex]?.to ?? defaultPaths[linkIndex] ?? '',
-                }))
-
-                return {
-                  heading: section?.heading ?? '',
-                  links: mappedLinks,
-                }
-              })
-            : [
-                {
-                  heading: '',
-                  links: [
-                    { label: '', to: '/about-us/history' },
-                    { label: '', to: '/about-us/mission' },
-                  ],
-                },
-                {
-                  heading: '',
-                  links: [
-                    { label: '', to: '/about-us/committee' },
-                    { label: '', to: '/about-us/governance' },
-                  ],
-                },
-              ],
-      },
-    }
+    const nextAboutUsForm = buildAboutUsEditorForm(aboutUs, aboutEditorLanguage)
     setAboutUsForm(nextAboutUsForm)
     setAboutUsSavedSnapshot(JSON.stringify(createAboutUsPayload(nextAboutUsForm)))
     setAboutUsLastSavedAt(new Date())
@@ -1020,7 +1222,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       mediaUpdates: false,
       contactAddress: false,
     })
-  }, [content, servicesEditorLanguage])
+  }, [aboutEditorLanguage, content, servicesEditorLanguage])
 
   const sectionLabel = useMemo(
     () => menu.find((item) => item.key === active)?.label ?? 'Content',
@@ -1097,6 +1299,33 @@ const DashboardShell = ({ sectionKey = null }) => {
     setSuccess('')
   }
 
+  const isUnauthorizedRequestError = (requestError) => {
+    if (requestError?.status === 401) {
+      return true
+    }
+
+    const message = typeof requestError?.message === 'string' ? requestError.message : ''
+    return /authorization token|session expired|invalid or expired/i.test(message)
+  }
+
+  const handleRequestError = (requestError, fallbackMessage = 'Request failed. Please try again.') => {
+    if (isUnauthorizedRequestError(requestError)) {
+      if (!authFailureHandledRef.current) {
+        authFailureHandledRef.current = true
+        logout()
+        toast.error('Your session expired. Please sign in again.')
+        navigate('/auth', { replace: true })
+      }
+      return
+    }
+
+    const message =
+      typeof requestError?.message === 'string' && requestError.message.trim()
+        ? requestError.message
+        : fallbackMessage
+    setError(message)
+  }
+
   const getPanelClass = () => panelClass
 
   useEffect(() => {
@@ -1120,9 +1349,13 @@ const DashboardShell = ({ sectionKey = null }) => {
   useEffect(() => {
     setProfileForm((prev) => ({
       ...prev,
-      email: user?.email ?? '',
+      email: currentUserEmail,
     }))
-  }, [user?.email])
+  }, [currentUserEmail])
+
+  useEffect(() => {
+    authFailureHandledRef.current = false
+  }, [session?.accessToken])
 
   const loadUsers = async () => {
     if (!session?.accessToken) {
@@ -1134,7 +1367,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       const response = await listUsersRequest({ token: session.accessToken })
       setUsers(response.data?.users ?? [])
     } catch (requestError) {
-      setError(requestError.message)
+      handleRequestError(requestError, 'Unable to load user accounts.')
     } finally {
       setUsersLoading(false)
     }
@@ -1498,7 +1731,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       }))
       setSuccess('Profile updated successfully.')
     } catch (requestError) {
-      setError(requestError.message)
+      handleRequestError(requestError, 'Failed to update profile.')
     } finally {
       setIsProfileSaving(false)
     }
@@ -1545,9 +1778,54 @@ const DashboardShell = ({ sectionKey = null }) => {
       })
       await loadUsers()
     } catch (requestError) {
-      setError(requestError.message)
+      handleRequestError(requestError, 'Failed to create user.')
     } finally {
       setIsCreatingUser(false)
+    }
+  }
+
+  const handleDeleteUser = async (targetUser) => {
+    resetStatus()
+
+    if (!session?.accessToken) {
+      setError('You need to login again to delete users.')
+      return
+    }
+
+    const targetId = (targetUser?.id ?? '').trim()
+    const targetEmail = (targetUser?.email ?? '').trim()
+    const currentUserId = (user?.id ?? '').trim()
+
+    if (!targetId) {
+      setError('Unable to delete this user because id is missing.')
+      return
+    }
+
+    if (currentUserId && targetId === currentUserId) {
+      setError('You cannot delete your own account.')
+      return
+    }
+
+    const confirmDelete = window.confirm(
+      `Delete user "${targetEmail || targetId}"? This action cannot be undone.`,
+    )
+
+    if (!confirmDelete) {
+      return
+    }
+
+    try {
+      setIsDeletingUserId(targetId)
+      await deleteUserRequest({
+        token: session.accessToken,
+        userId: targetId,
+      })
+      setSuccess('User deleted successfully.')
+      await loadUsers()
+    } catch (requestError) {
+      handleRequestError(requestError, 'Failed to delete user.')
+    } finally {
+      setIsDeletingUserId('')
     }
   }
 
@@ -1809,9 +2087,9 @@ const DashboardShell = ({ sectionKey = null }) => {
         setAboutUsForm(nextAboutUsForm)
         await updateMutation.mutateAsync({
           section: 'aboutUs',
-          data: buildAboutUsPayload(nextAboutUsForm),
+          data: buildAboutUsPayload(nextAboutUsForm, content?.aboutUs ?? {}, aboutEditorLanguage),
         })
-        setAboutUsSavedSnapshot(JSON.stringify(buildAboutUsPayload(nextAboutUsForm)))
+        setAboutUsSavedSnapshot(JSON.stringify(createAboutUsPayload(nextAboutUsForm)))
         setAboutUsLastSavedAt(new Date())
       }
 
@@ -2153,9 +2431,9 @@ const DashboardShell = ({ sectionKey = null }) => {
       if (active === 'about-us') {
         await updateMutation.mutateAsync({
           section: 'aboutUs',
-          data: buildAboutUsPayload(),
+          data: buildAboutUsPayload(aboutUsForm, content?.aboutUs ?? {}, aboutEditorLanguage),
         })
-        setAboutUsSavedSnapshot(JSON.stringify(buildAboutUsPayload()))
+        setAboutUsSavedSnapshot(JSON.stringify(createAboutUsPayload(aboutUsForm)))
         setAboutUsLastSavedAt(new Date())
       }
 
@@ -2165,7 +2443,11 @@ const DashboardShell = ({ sectionKey = null }) => {
     }
   }
 
-  const buildAboutUsPayload = (sourceForm = aboutUsForm) => createAboutUsPayload(sourceForm)
+  const buildAboutUsPayload = (
+    sourceForm = aboutUsForm,
+    existingAboutUs = content?.aboutUs ?? {},
+    language = aboutEditorLanguage,
+  ) => buildLocalizedAboutUsPayload(sourceForm, existingAboutUs, language)
 
   const saveAboutUsNonPopupSection = async (sectionLabel = 'About section') => {
     setError('')
@@ -2174,9 +2456,9 @@ const DashboardShell = ({ sectionKey = null }) => {
     try {
       await updateMutation.mutateAsync({
         section: 'aboutUs',
-        data: buildAboutUsPayload(),
+        data: buildAboutUsPayload(aboutUsForm, content?.aboutUs ?? {}, aboutEditorLanguage),
       })
-      setAboutUsSavedSnapshot(JSON.stringify(buildAboutUsPayload()))
+      setAboutUsSavedSnapshot(JSON.stringify(createAboutUsPayload(aboutUsForm)))
       setAboutUsLastSavedAt(new Date())
       setSuccess(`${sectionLabel} saved successfully.`)
     } catch (requestError) {
@@ -3113,6 +3395,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                 panelClass={panelClass}
                 aboutUsDirty={aboutUsDirty}
                 aboutUsLastSavedLabel={aboutUsLastSavedLabel}
+                aboutEditorLanguage={aboutEditorLanguage}
+                setAboutEditorLanguage={setAboutEditorLanguage}
                 aboutUsForm={aboutUsForm}
                 updateAboutUsText={updateAboutUsText}
                 inputClass={inputClass}
@@ -3150,6 +3434,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                 isCreatingUser={isCreatingUser}
                 users={users}
                 usersLoading={usersLoading}
+                isDeletingUserId={isDeletingUserId}
+                currentUserId={user?.id ?? ''}
+                handleDeleteUser={handleDeleteUser}
                 primaryButtonClass={primaryButtonClass}
                 />
               </Suspense>

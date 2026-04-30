@@ -46,6 +46,7 @@ const ICON_MAP = {
   Calendar: Calendar,
   ImageIcon: ImageIcon,
   Mail: Mail,
+  FileText: FileText,
   CircleDollarSign: CircleDollarSign,
   Info: Info,
   User: User,
@@ -57,6 +58,7 @@ const menu = [
   { key: 'media', label: 'Media', icon: 'ImageIcon' },
   { key: 'contact', label: 'Contact', icon: 'Mail' },
   { key: 'donate', label: 'Donate', icon: 'CircleDollarSign' },
+  { key: 'services', label: 'Services', icon: 'FileText' },
   { key: 'about-us', label: 'About Us', icon: 'Info' },
   { key: 'profile', label: 'Profile', icon: 'User' },
 ]
@@ -127,6 +129,82 @@ const defaultDonateForm = {
   bic: '',
   officeHours: '',
   inPersonDescription: '',
+}
+const defaultServicesForm = {
+  heroTitle: '',
+  heroSubtitle: '',
+  heroImage: '',
+  aboutTitle: '',
+  aboutText: '',
+  supportText: '',
+  supportImage: '',
+  contactButtonLabel: '',
+  donateButtonLabel: '',
+}
+const defaultYouthServicesForm = {
+  navbar: {
+    label: '',
+    s1h: '',
+    s2h: '',
+    gurmukhi: '',
+    german: '',
+    camps: '',
+    registration: '',
+    cremationFund: '',
+  },
+  heading: '',
+  subtitle: '',
+  intro: '',
+  gurmukhi: {
+    title: '',
+    description: '',
+    image: '',
+    scheduleTitle: '',
+    scheduleDay: '',
+    scheduleTime: '',
+    scheduleLocation: '',
+    levels: [
+      { title: '', description: '' },
+      { title: '', description: '' },
+      { title: '', description: '' },
+    ],
+  },
+  german: {
+    title: '',
+    description: '',
+    image: '',
+    scheduleTitle: '',
+    scheduleDay: '',
+    scheduleTime: '',
+    scheduleLocation: '',
+    tracks: [
+      { title: '', description: '' },
+      { title: '', description: '' },
+      { title: '', description: '' },
+    ],
+  },
+  camps: {
+    title: '',
+    subtitle: '',
+    cards: [
+      { title: '', description: '', time: '' },
+      { title: '', description: '', time: '' },
+      { title: '', description: '', time: '' },
+    ],
+  },
+  registration: {
+    title: '',
+    description: '',
+    contactButtonLabel: '',
+    scheduleButtonLabel: '',
+  },
+  whyEnrollTitle: '',
+  reasons: [
+    { title: '', text: '' },
+    { title: '', text: '' },
+    { title: '', text: '' },
+    { title: '', text: '' },
+  ],
 }
 
 const panelClass = 'rounded-[24px] border border-gray-100 bg-white p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden transition-all duration-300'
@@ -418,6 +496,8 @@ const DashboardShell = ({ sectionKey = null }) => {
     address: [],
   })
   const [donateForm, setDonateForm] = useState(defaultDonateForm)
+  const [servicesForm, setServicesForm] = useState(defaultServicesForm)
+  const [youthServicesForm, setYouthServicesForm] = useState(defaultYouthServicesForm)
   const [aboutUsForm, setAboutUsForm] = useState(defaultAboutUsForm)
   const [aboutUsSavedSnapshot, setAboutUsSavedSnapshot] = useState('')
   const [aboutUsLastSavedAt, setAboutUsLastSavedAt] = useState(null)
@@ -471,6 +551,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [isUploadingModalImage, setIsUploadingModalImage] = useState(false)
   const [modalUploadProgress, setModalUploadProgress] = useState(0)
   const [isUploadingAboutImage, setIsUploadingAboutImage] = useState(false)
+  const [uploadingServicesImageField, setUploadingServicesImageField] = useState('')
   const [isProfileSaving, setIsProfileSaving] = useState(false)
   const [isCreatingUser, setIsCreatingUser] = useState(false)
   const [usersLoading, setUsersLoading] = useState(false)
@@ -586,6 +667,96 @@ const DashboardShell = ({ sectionKey = null }) => {
       bic: content.donate?.bic ?? '',
       officeHours: content.donate?.officeHours ?? '',
       inPersonDescription: content.donate?.inPersonDescription ?? '',
+    })
+    const cremationFund = content.services?.cremationFund ?? {}
+    setServicesForm({
+      heroTitle: cremationFund.heroTitle ?? '',
+      heroSubtitle: cremationFund.heroSubtitle ?? '',
+      heroImage: cremationFund.heroImage ?? '',
+      aboutTitle: cremationFund.aboutTitle ?? '',
+      aboutText: cremationFund.aboutText ?? '',
+      supportText: cremationFund.supportText ?? '',
+      supportImage: cremationFund.supportImage ?? '',
+      contactButtonLabel: cremationFund.contactButtonLabel ?? '',
+      donateButtonLabel: cremationFund.donateButtonLabel ?? '',
+    })
+    const youthEducation = content.services?.youthEducation ?? {}
+    const gurmukhiLevels =
+      Array.isArray(youthEducation.gurmukhi?.levels) && youthEducation.gurmukhi.levels.length > 0
+        ? youthEducation.gurmukhi.levels
+        : defaultYouthServicesForm.gurmukhi.levels
+    const germanTracks =
+      Array.isArray(youthEducation.german?.tracks) && youthEducation.german.tracks.length > 0
+        ? youthEducation.german.tracks
+        : defaultYouthServicesForm.german.tracks
+    const campsCards =
+      Array.isArray(youthEducation.camps?.cards) && youthEducation.camps.cards.length > 0
+        ? youthEducation.camps.cards
+        : defaultYouthServicesForm.camps.cards
+    const reasons =
+      Array.isArray(youthEducation.reasons) && youthEducation.reasons.length > 0
+        ? youthEducation.reasons
+        : defaultYouthServicesForm.reasons
+    setYouthServicesForm({
+      navbar: {
+        label: youthEducation.navbar?.label ?? '',
+        s1h: youthEducation.navbar?.s1h ?? '',
+        s2h: youthEducation.navbar?.s2h ?? '',
+        gurmukhi: youthEducation.navbar?.gurmukhi ?? '',
+        german: youthEducation.navbar?.german ?? '',
+        camps: youthEducation.navbar?.camps ?? '',
+        registration: youthEducation.navbar?.registration ?? '',
+        cremationFund: youthEducation.navbar?.cremationFund ?? '',
+      },
+      heading: youthEducation.heading ?? '',
+      subtitle: youthEducation.subtitle ?? '',
+      intro: youthEducation.intro ?? '',
+      gurmukhi: {
+        title: youthEducation.gurmukhi?.title ?? '',
+        description: youthEducation.gurmukhi?.description ?? '',
+        image: youthEducation.gurmukhi?.image ?? '',
+        scheduleTitle: youthEducation.gurmukhi?.scheduleTitle ?? '',
+        scheduleDay: youthEducation.gurmukhi?.scheduleDay ?? '',
+        scheduleTime: youthEducation.gurmukhi?.scheduleTime ?? '',
+        scheduleLocation: youthEducation.gurmukhi?.scheduleLocation ?? '',
+        levels: Array.from({ length: 3 }).map((_, index) => ({
+          title: gurmukhiLevels[index]?.title ?? '',
+          description: gurmukhiLevels[index]?.description ?? '',
+        })),
+      },
+      german: {
+        title: youthEducation.german?.title ?? '',
+        description: youthEducation.german?.description ?? '',
+        image: youthEducation.german?.image ?? '',
+        scheduleTitle: youthEducation.german?.scheduleTitle ?? '',
+        scheduleDay: youthEducation.german?.scheduleDay ?? '',
+        scheduleTime: youthEducation.german?.scheduleTime ?? '',
+        scheduleLocation: youthEducation.german?.scheduleLocation ?? '',
+        tracks: Array.from({ length: 3 }).map((_, index) => ({
+          title: germanTracks[index]?.title ?? '',
+          description: germanTracks[index]?.description ?? '',
+        })),
+      },
+      camps: {
+        title: youthEducation.camps?.title ?? '',
+        subtitle: youthEducation.camps?.subtitle ?? '',
+        cards: Array.from({ length: 3 }).map((_, index) => ({
+          title: campsCards[index]?.title ?? '',
+          description: campsCards[index]?.description ?? '',
+          time: campsCards[index]?.time ?? '',
+        })),
+      },
+      registration: {
+        title: youthEducation.registration?.title ?? '',
+        description: youthEducation.registration?.description ?? '',
+        contactButtonLabel: youthEducation.registration?.contactButtonLabel ?? '',
+        scheduleButtonLabel: youthEducation.registration?.scheduleButtonLabel ?? '',
+      },
+      whyEnrollTitle: youthEducation.whyEnrollTitle ?? '',
+      reasons: Array.from({ length: 4 }).map((_, index) => ({
+        title: reasons[index]?.title ?? '',
+        text: reasons[index]?.text ?? '',
+      })),
     })
     const aboutUs = content.aboutUs ?? {}
     const nextAboutUsForm = {
@@ -1111,6 +1282,81 @@ const DashboardShell = ({ sectionKey = null }) => {
     }
   }
 
+  const uploadServicesImage = async (file, field) => {
+    resetStatus()
+    if (!file) {
+      setError('Please choose an image file first.')
+      return
+    }
+
+    try {
+      setUploadingServicesImageField(field)
+      const uploaded = await uploadContentImage(file, 'services')
+      setServicesForm((prev) => ({ ...prev, [field]: uploaded.url || '' }))
+      setSuccess('Service image uploaded to Supabase Storage.')
+    } catch (uploadError) {
+      setError(uploadError.message || 'Failed to upload image.')
+    } finally {
+      setUploadingServicesImageField('')
+    }
+  }
+
+  const updateYouthServicesField = (path, value) => {
+    setYouthServicesForm((prev) => {
+      const keys = path.split('.')
+      const next = { ...prev }
+      let cursor = next
+
+      for (let i = 0; i < keys.length - 1; i += 1) {
+        const key = keys[i]
+        const isArrayKey = Number.isInteger(Number(key))
+
+        if (isArrayKey) {
+          const arrayIndex = Number(key)
+          cursor[arrayIndex] = { ...(cursor[arrayIndex] ?? {}) }
+          cursor = cursor[arrayIndex]
+          continue
+        }
+
+        const currentValue = cursor[key]
+        if (Array.isArray(currentValue)) {
+          cursor[key] = [...currentValue]
+        } else {
+          cursor[key] = { ...(currentValue ?? {}) }
+        }
+        cursor = cursor[key]
+      }
+
+      const lastKey = keys[keys.length - 1]
+      if (Number.isInteger(Number(lastKey))) {
+        cursor[Number(lastKey)] = value
+      } else {
+        cursor[lastKey] = value
+      }
+
+      return next
+    })
+  }
+
+  const uploadYouthServicesImage = async (file, fieldPath) => {
+    resetStatus()
+    if (!file) {
+      setError('Please choose an image file first.')
+      return
+    }
+
+    try {
+      setUploadingServicesImageField(fieldPath)
+      const uploaded = await uploadContentImage(file, 'services')
+      updateYouthServicesField(fieldPath, uploaded.url || '')
+      setSuccess('Youth image uploaded to Supabase Storage.')
+    } catch (uploadError) {
+      setError(uploadError.message || 'Failed to upload image.')
+    } finally {
+      setUploadingServicesImageField('')
+    }
+  }
+
   const handleProfileUpdate = async () => {
     resetStatus()
 
@@ -1583,6 +1829,94 @@ const DashboardShell = ({ sectionKey = null }) => {
         })
       }
 
+      if (active === 'services') {
+        await updateMutation.mutateAsync({
+          section: 'services',
+          data: {
+            cremationFund: {
+              heroTitle: servicesForm.heroTitle.trim(),
+              heroSubtitle: servicesForm.heroSubtitle.trim(),
+              heroImage: servicesForm.heroImage.trim(),
+              aboutTitle: servicesForm.aboutTitle.trim(),
+              aboutText: servicesForm.aboutText.trim(),
+              supportText: servicesForm.supportText.trim(),
+              supportImage: servicesForm.supportImage.trim(),
+              contactButtonLabel: servicesForm.contactButtonLabel.trim(),
+              donateButtonLabel: servicesForm.donateButtonLabel.trim(),
+            },
+            youthEducation: {
+              navbar: {
+                label: youthServicesForm.navbar.label.trim(),
+                s1h: youthServicesForm.navbar.s1h.trim(),
+                s2h: youthServicesForm.navbar.s2h.trim(),
+                gurmukhi: youthServicesForm.navbar.gurmukhi.trim(),
+                german: youthServicesForm.navbar.german.trim(),
+                camps: youthServicesForm.navbar.camps.trim(),
+                registration: youthServicesForm.navbar.registration.trim(),
+                cremationFund: youthServicesForm.navbar.cremationFund.trim(),
+              },
+              heading: youthServicesForm.heading.trim(),
+              subtitle: youthServicesForm.subtitle.trim(),
+              intro: youthServicesForm.intro.trim(),
+              gurmukhi: {
+                title: youthServicesForm.gurmukhi.title.trim(),
+                description: youthServicesForm.gurmukhi.description.trim(),
+                image: youthServicesForm.gurmukhi.image.trim(),
+                scheduleTitle: youthServicesForm.gurmukhi.scheduleTitle.trim(),
+                scheduleDay: youthServicesForm.gurmukhi.scheduleDay.trim(),
+                scheduleTime: youthServicesForm.gurmukhi.scheduleTime.trim(),
+                scheduleLocation: youthServicesForm.gurmukhi.scheduleLocation.trim(),
+                levels: youthServicesForm.gurmukhi.levels
+                  .map((item) => ({
+                    title: item.title.trim(),
+                    description: item.description.trim(),
+                  }))
+                  .filter((item) => item.title || item.description),
+              },
+              german: {
+                title: youthServicesForm.german.title.trim(),
+                description: youthServicesForm.german.description.trim(),
+                image: youthServicesForm.german.image.trim(),
+                scheduleTitle: youthServicesForm.german.scheduleTitle.trim(),
+                scheduleDay: youthServicesForm.german.scheduleDay.trim(),
+                scheduleTime: youthServicesForm.german.scheduleTime.trim(),
+                scheduleLocation: youthServicesForm.german.scheduleLocation.trim(),
+                tracks: youthServicesForm.german.tracks
+                  .map((item) => ({
+                    title: item.title.trim(),
+                    description: item.description.trim(),
+                  }))
+                  .filter((item) => item.title || item.description),
+              },
+              camps: {
+                title: youthServicesForm.camps.title.trim(),
+                subtitle: youthServicesForm.camps.subtitle.trim(),
+                cards: youthServicesForm.camps.cards
+                  .map((item) => ({
+                    title: item.title.trim(),
+                    description: item.description.trim(),
+                    time: item.time.trim(),
+                  }))
+                  .filter((item) => item.title || item.description || item.time),
+              },
+              registration: {
+                title: youthServicesForm.registration.title.trim(),
+                description: youthServicesForm.registration.description.trim(),
+                contactButtonLabel: youthServicesForm.registration.contactButtonLabel.trim(),
+                scheduleButtonLabel: youthServicesForm.registration.scheduleButtonLabel.trim(),
+              },
+              whyEnrollTitle: youthServicesForm.whyEnrollTitle.trim(),
+              reasons: youthServicesForm.reasons
+                .map((item) => ({
+                  title: item.title.trim(),
+                  text: item.text.trim(),
+                }))
+                .filter((item) => item.title || item.text),
+            },
+          },
+        })
+      }
+
       if (active === 'about-us') {
         await updateMutation.mutateAsync({
           section: 'aboutUs',
@@ -1988,6 +2322,522 @@ const DashboardShell = ({ sectionKey = null }) => {
                         className={textareaClass}
                         placeholder='Share where and how visitors can donate in person.'
                       />
+                    </div>
+                  </div>
+                </article>
+              </section>
+            ) : null}
+
+            {active === 'services' ? (
+              <section className='space-y-6'>
+                <article className={panelClass}>
+                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Cremation Fund Page</h3>
+                  <p className='mt-1 text-[13px] text-gray-500'>
+                    These fields are rendered on `/services/antim-sanskar-fund`.
+                  </p>
+                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Hero Title</label>
+                      <input
+                        type='text'
+                        value={servicesForm.heroTitle}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, heroTitle: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='Page heading'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Hero Subtitle</label>
+                      <textarea
+                        value={servicesForm.heroSubtitle}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, heroSubtitle: event.target.value }))
+                        }
+                        className={textareaClass}
+                        placeholder='Short supporting intro'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Hero Image URL</label>
+                      <input
+                        type='text'
+                        value={servicesForm.heroImage}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, heroImage: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='https://...'
+                      />
+                      <div className='mt-2 flex items-center gap-3'>
+                        <label className='inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-50'>
+                          <input
+                            type='file'
+                            accept='image/*'
+                            className='hidden'
+                            onChange={(event) => {
+                              const file = event.target.files?.[0]
+                              if (file) {
+                                uploadServicesImage(file, 'heroImage')
+                              }
+                              event.target.value = ''
+                            }}
+                          />
+                          Upload Hero Image
+                        </label>
+                        {uploadingServicesImageField === 'heroImage' ? (
+                          <span className='text-[12px] font-medium text-gray-500'>Uploading...</span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                  {servicesForm.heroImage ? (
+                    <img
+                      src={servicesForm.heroImage}
+                      alt='Hero preview'
+                      className='mt-4 h-40 w-full rounded-[12px] border border-gray-100 object-cover'
+                    />
+                  ) : null}
+                </article>
+
+                <article className={panelClass}>
+                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Main Content</h3>
+                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Section Title</label>
+                      <input
+                        type='text'
+                        value={servicesForm.aboutTitle}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, aboutTitle: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='Section heading'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>About Text</label>
+                      <textarea
+                        value={servicesForm.aboutText}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, aboutText: event.target.value }))
+                        }
+                        className={textareaClass}
+                        placeholder='Main paragraph'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Support Text</label>
+                      <textarea
+                        value={servicesForm.supportText}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, supportText: event.target.value }))
+                        }
+                        className={textareaClass}
+                        placeholder='Secondary paragraph'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Support Image URL</label>
+                      <input
+                        type='text'
+                        value={servicesForm.supportImage}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, supportImage: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='https://...'
+                      />
+                      <div className='mt-2 flex items-center gap-3'>
+                        <label className='inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-50'>
+                          <input
+                            type='file'
+                            accept='image/*'
+                            className='hidden'
+                            onChange={(event) => {
+                              const file = event.target.files?.[0]
+                              if (file) {
+                                uploadServicesImage(file, 'supportImage')
+                              }
+                              event.target.value = ''
+                            }}
+                          />
+                          Upload Support Image
+                        </label>
+                        {uploadingServicesImageField === 'supportImage' ? (
+                          <span className='text-[12px] font-medium text-gray-500'>Uploading...</span>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Contact Button Label</label>
+                      <input
+                        type='text'
+                        value={servicesForm.contactButtonLabel}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, contactButtonLabel: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='Contact us'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Donate Button Label</label>
+                      <input
+                        type='text'
+                        value={servicesForm.donateButtonLabel}
+                        onChange={(event) =>
+                          setServicesForm((prev) => ({ ...prev, donateButtonLabel: event.target.value }))
+                        }
+                        className={inputClass}
+                        placeholder='Donate now'
+                      />
+                    </div>
+                  </div>
+                  {servicesForm.supportImage ? (
+                    <img
+                      src={servicesForm.supportImage}
+                      alt='Support preview'
+                      className='mt-4 h-40 w-full rounded-[12px] border border-gray-100 object-cover'
+                    />
+                  ) : null}
+                </article>
+
+                <article className={panelClass}>
+                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Youth Dropdown Labels</h3>
+                  <p className='mt-1 text-[13px] text-gray-500'>
+                    These are the labels shown in the Services dropdown (Classes / Programs items).
+                  </p>
+                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Menu Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.label}
+                        onChange={(event) => updateYouthServicesField('navbar.label', event.target.value)}
+                        className={inputClass}
+                        placeholder='Services'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Cremation Link Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.cremationFund}
+                        onChange={(event) => updateYouthServicesField('navbar.cremationFund', event.target.value)}
+                        className={inputClass}
+                        placeholder='Cremation Fund (Antim Sanskar Fund)'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Section 1 Heading</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.s1h}
+                        onChange={(event) => updateYouthServicesField('navbar.s1h', event.target.value)}
+                        className={inputClass}
+                        placeholder='CLASSES'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Section 2 Heading</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.s2h}
+                        onChange={(event) => updateYouthServicesField('navbar.s2h', event.target.value)}
+                        className={inputClass}
+                        placeholder='PROGRAMS'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Gurmukhi Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.gurmukhi}
+                        onChange={(event) => updateYouthServicesField('navbar.gurmukhi', event.target.value)}
+                        className={inputClass}
+                        placeholder='Gurmukhi Class'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>German Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.german}
+                        onChange={(event) => updateYouthServicesField('navbar.german', event.target.value)}
+                        className={inputClass}
+                        placeholder='German Class'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Camps Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.camps}
+                        onChange={(event) => updateYouthServicesField('navbar.camps', event.target.value)}
+                        className={inputClass}
+                        placeholder='Camps & Workshops'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Registration Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.registration}
+                        onChange={(event) => updateYouthServicesField('navbar.registration', event.target.value)}
+                        className={inputClass}
+                        placeholder='Registration'
+                      />
+                    </div>
+                  </div>
+                </article>
+
+                <article className={panelClass}>
+                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Youth Education Page</h3>
+                  <p className='mt-1 text-[13px] text-gray-500'>
+                    These fields are rendered on `/youth-education` (all sections from your dropdown).
+                  </p>
+                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Page Heading</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.heading}
+                        onChange={(event) => updateYouthServicesField('heading', event.target.value)}
+                        className={inputClass}
+                        placeholder='Youth & Education'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Page Subtitle</label>
+                      <textarea
+                        value={youthServicesForm.subtitle}
+                        onChange={(event) => updateYouthServicesField('subtitle', event.target.value)}
+                        className={textareaClass}
+                        placeholder='Subtitle'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Intro</label>
+                      <textarea
+                        value={youthServicesForm.intro}
+                        onChange={(event) => updateYouthServicesField('intro', event.target.value)}
+                        className={textareaClass}
+                        placeholder='Intro paragraph'
+                      />
+                    </div>
+                  </div>
+
+                  <div className='mt-8 rounded-[16px] border border-gray-100 p-5'>
+                    <h4 className='text-[16px] font-bold text-gray-900'>Gurmukhi Section</h4>
+                    <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                      <div>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Title</label>
+                        <input
+                          type='text'
+                          value={youthServicesForm.gurmukhi.title}
+                          onChange={(event) => updateYouthServicesField('gurmukhi.title', event.target.value)}
+                          className={inputClass}
+                        />
+                      </div>
+                      <div>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Image URL</label>
+                        <input
+                          type='text'
+                          value={youthServicesForm.gurmukhi.image}
+                          onChange={(event) => updateYouthServicesField('gurmukhi.image', event.target.value)}
+                          className={inputClass}
+                        />
+                        <div className='mt-2 flex items-center gap-3'>
+                          <label className='inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-50'>
+                            <input
+                              type='file'
+                              accept='image/*'
+                              className='hidden'
+                              onChange={(event) => {
+                                const file = event.target.files?.[0]
+                                if (file) uploadYouthServicesImage(file, 'gurmukhi.image')
+                                event.target.value = ''
+                              }}
+                            />
+                            Upload Image
+                          </label>
+                          {uploadingServicesImageField === 'gurmukhi.image' ? (
+                            <span className='text-[12px] font-medium text-gray-500'>Uploading...</span>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className='md:col-span-2'>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Description</label>
+                        <textarea
+                          value={youthServicesForm.gurmukhi.description}
+                          onChange={(event) => updateYouthServicesField('gurmukhi.description', event.target.value)}
+                          className={textareaClass}
+                        />
+                      </div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Title</label><input type='text' value={youthServicesForm.gurmukhi.scheduleTitle} onChange={(event) => updateYouthServicesField('gurmukhi.scheduleTitle', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Day</label><input type='text' value={youthServicesForm.gurmukhi.scheduleDay} onChange={(event) => updateYouthServicesField('gurmukhi.scheduleDay', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Time</label><input type='text' value={youthServicesForm.gurmukhi.scheduleTime} onChange={(event) => updateYouthServicesField('gurmukhi.scheduleTime', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Location</label><input type='text' value={youthServicesForm.gurmukhi.scheduleLocation} onChange={(event) => updateYouthServicesField('gurmukhi.scheduleLocation', event.target.value)} className={inputClass} /></div>
+                    </div>
+                  </div>
+
+                  <div className='mt-6 rounded-[16px] border border-gray-100 p-5'>
+                    <h4 className='text-[16px] font-bold text-gray-900'>German Section</h4>
+                    <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Title</label><input type='text' value={youthServicesForm.german.title} onChange={(event) => updateYouthServicesField('german.title', event.target.value)} className={inputClass} /></div>
+                      <div>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Image URL</label>
+                        <input type='text' value={youthServicesForm.german.image} onChange={(event) => updateYouthServicesField('german.image', event.target.value)} className={inputClass} />
+                        <div className='mt-2 flex items-center gap-3'>
+                          <label className='inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-50'>
+                            <input
+                              type='file'
+                              accept='image/*'
+                              className='hidden'
+                              onChange={(event) => {
+                                const file = event.target.files?.[0]
+                                if (file) uploadYouthServicesImage(file, 'german.image')
+                                event.target.value = ''
+                              }}
+                            />
+                            Upload Image
+                          </label>
+                          {uploadingServicesImageField === 'german.image' ? (
+                            <span className='text-[12px] font-medium text-gray-500'>Uploading...</span>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className='md:col-span-2'><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Description</label><textarea value={youthServicesForm.german.description} onChange={(event) => updateYouthServicesField('german.description', event.target.value)} className={textareaClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Title</label><input type='text' value={youthServicesForm.german.scheduleTitle} onChange={(event) => updateYouthServicesField('german.scheduleTitle', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Day</label><input type='text' value={youthServicesForm.german.scheduleDay} onChange={(event) => updateYouthServicesField('german.scheduleDay', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Time</label><input type='text' value={youthServicesForm.german.scheduleTime} onChange={(event) => updateYouthServicesField('german.scheduleTime', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Location</label><input type='text' value={youthServicesForm.german.scheduleLocation} onChange={(event) => updateYouthServicesField('german.scheduleLocation', event.target.value)} className={inputClass} /></div>
+                    </div>
+                  </div>
+
+                  <div className='mt-6 rounded-[16px] border border-gray-100 p-5'>
+                    <h4 className='text-[16px] font-bold text-gray-900'>Programs, Registration & Reasons</h4>
+                    <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Camps Title</label><input type='text' value={youthServicesForm.camps.title} onChange={(event) => updateYouthServicesField('camps.title', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Why Enroll Title</label><input type='text' value={youthServicesForm.whyEnrollTitle} onChange={(event) => updateYouthServicesField('whyEnrollTitle', event.target.value)} className={inputClass} /></div>
+                      <div className='md:col-span-2'><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Camps Subtitle</label><textarea value={youthServicesForm.camps.subtitle} onChange={(event) => updateYouthServicesField('camps.subtitle', event.target.value)} className={textareaClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Registration Title</label><input type='text' value={youthServicesForm.registration.title} onChange={(event) => updateYouthServicesField('registration.title', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Registration Contact Button</label><input type='text' value={youthServicesForm.registration.contactButtonLabel} onChange={(event) => updateYouthServicesField('registration.contactButtonLabel', event.target.value)} className={inputClass} /></div>
+                      <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Registration Schedule Button</label><input type='text' value={youthServicesForm.registration.scheduleButtonLabel} onChange={(event) => updateYouthServicesField('registration.scheduleButtonLabel', event.target.value)} className={inputClass} /></div>
+                      <div className='md:col-span-2'><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Registration Description</label><textarea value={youthServicesForm.registration.description} onChange={(event) => updateYouthServicesField('registration.description', event.target.value)} className={textareaClass} /></div>
+                    </div>
+
+                    <div className='mt-6 grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      {youthServicesForm.gurmukhi.levels.map((_, index) => (
+                        <div key={`gurmukhi-level-${index}`} className='rounded-[12px] border border-gray-100 p-4'>
+                          <p className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Gurmukhi Level {index + 1}</p>
+                          <input
+                            type='text'
+                            value={youthServicesForm.gurmukhi.levels[index].title}
+                            onChange={(event) =>
+                              updateYouthServicesField(`gurmukhi.levels.${index}.title`, event.target.value)
+                            }
+                            className={inputClass}
+                            placeholder='Title'
+                          />
+                          <textarea
+                            value={youthServicesForm.gurmukhi.levels[index].description}
+                            onChange={(event) =>
+                              updateYouthServicesField(`gurmukhi.levels.${index}.description`, event.target.value)
+                            }
+                            className={textareaClass}
+                            placeholder='Description'
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className='mt-6 grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      {youthServicesForm.german.tracks.map((_, index) => (
+                        <div key={`german-track-${index}`} className='rounded-[12px] border border-gray-100 p-4'>
+                          <p className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>German Track {index + 1}</p>
+                          <input
+                            type='text'
+                            value={youthServicesForm.german.tracks[index].title}
+                            onChange={(event) =>
+                              updateYouthServicesField(`german.tracks.${index}.title`, event.target.value)
+                            }
+                            className={inputClass}
+                            placeholder='Title'
+                          />
+                          <textarea
+                            value={youthServicesForm.german.tracks[index].description}
+                            onChange={(event) =>
+                              updateYouthServicesField(`german.tracks.${index}.description`, event.target.value)
+                            }
+                            className={textareaClass}
+                            placeholder='Description'
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className='mt-6 grid grid-cols-1 gap-6'>
+                      {youthServicesForm.camps.cards.map((_, index) => (
+                        <div key={`camp-card-${index}`} className='rounded-[12px] border border-gray-100 p-4'>
+                          <p className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Camp Card {index + 1}</p>
+                          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                            <input
+                              type='text'
+                              value={youthServicesForm.camps.cards[index].title}
+                              onChange={(event) =>
+                                updateYouthServicesField(`camps.cards.${index}.title`, event.target.value)
+                              }
+                              className={inputClass}
+                              placeholder='Title'
+                            />
+                            <input
+                              type='text'
+                              value={youthServicesForm.camps.cards[index].time}
+                              onChange={(event) =>
+                                updateYouthServicesField(`camps.cards.${index}.time`, event.target.value)
+                              }
+                              className={inputClass}
+                              placeholder='Time label'
+                            />
+                          </div>
+                          <textarea
+                            value={youthServicesForm.camps.cards[index].description}
+                            onChange={(event) =>
+                              updateYouthServicesField(`camps.cards.${index}.description`, event.target.value)
+                            }
+                            className={textareaClass}
+                            placeholder='Description'
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className='mt-6 grid grid-cols-1 gap-6 md:grid-cols-2'>
+                      {youthServicesForm.reasons.map((_, index) => (
+                        <div key={`reason-${index}`} className='rounded-[12px] border border-gray-100 p-4'>
+                          <p className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Reason {index + 1}</p>
+                          <input
+                            type='text'
+                            value={youthServicesForm.reasons[index].title}
+                            onChange={(event) =>
+                              updateYouthServicesField(`reasons.${index}.title`, event.target.value)
+                            }
+                            className={inputClass}
+                            placeholder='Reason title'
+                          />
+                          <textarea
+                            value={youthServicesForm.reasons[index].text}
+                            onChange={(event) =>
+                              updateYouthServicesField(`reasons.${index}.text`, event.target.value)
+                            }
+                            className={textareaClass}
+                            placeholder='Reason text'
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </article>

@@ -7,7 +7,15 @@ import {
 } from '../../services/admin/contentService.js'
 import { uploadFileToStorage, uploadImageToStorage } from '../../services/admin/storageService.js'
 
-const editableSections = new Set(['visitors', 'events', 'media', 'contact', 'aboutUs', 'donate'])
+const editableSections = new Set([
+  'visitors',
+  'events',
+  'media',
+  'contact',
+  'aboutUs',
+  'donate',
+  'services',
+])
 
 export const fetchContent = async (_req, res, next) => {
   try {

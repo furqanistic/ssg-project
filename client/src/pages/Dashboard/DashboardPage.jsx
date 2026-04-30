@@ -7,6 +7,7 @@ const DashboardDonatePage = lazy(() => import('@/pages/Dashboard/sections/Dashbo
 const DashboardEventsPage = lazy(() => import('@/pages/Dashboard/sections/DashboardEventsPage'))
 const DashboardMediaPage = lazy(() => import('@/pages/Dashboard/sections/DashboardMediaPage'))
 const DashboardProfilePage = lazy(() => import('@/pages/Dashboard/sections/DashboardProfilePage'))
+const DashboardServicesPage = lazy(() => import('@/pages/Dashboard/sections/DashboardServicesPage'))
 const DashboardVisitorsPage = lazy(() => import('@/pages/Dashboard/sections/DashboardVisitorsPage'))
 
 const DashboardPage = () => {
@@ -19,6 +20,7 @@ const DashboardPage = () => {
         <Route path='media' element={<DashboardMediaPage />} />
         <Route path='contact' element={<DashboardContactPage />} />
         <Route path='donate' element={<DashboardDonatePage />} />
+        <Route path='services' element={<DashboardServicesPage />} />
         <Route path='about' element={<DashboardAboutPage />} />
         <Route path='about-us' element={<DashboardAboutPage />} />
         <Route path='profile' element={<DashboardProfilePage />} />

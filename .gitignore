@@ -1,0 +1,5 @@
+# macOS AppleDouble metadata (common on ExFAT / SMB / non-APFS volumes)
+._*
+.DS_Store
+.AppleDouble
+.LSOverride

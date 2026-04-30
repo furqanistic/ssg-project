@@ -3,14 +3,15 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import {
   useSiteContentQuery,
   useUpdateContentSectionMutation,
+  useUploadContentFileMutation,
+  useUploadContentImageMutation,
 } from '@/hooks/useContent'
-import { uploadContentFile, uploadContentImage } from '@/services/contentApi'
 import {
-  createUserRequest,
-  deleteUserRequest,
-  listUsersRequest,
-  updateProfileRequest,
-} from '@/services/authApi'
+  useAuthUsersQuery,
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useUpdateProfileMutation,
+} from '@/hooks/useAuthQueries'
 import { useAuthStore } from '@/store/authStore'
 import { useToast } from '../../components/ui/toast-system.jsx'
 const DashboardAboutSection = lazy(() => import('@/pages/Dashboard/sections/DashboardAboutSection'))
@@ -926,11 +927,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [modalUploadProgress, setModalUploadProgress] = useState(0)
   const [isUploadingAboutImage, setIsUploadingAboutImage] = useState(false)
   const [uploadingServicesImageField, setUploadingServicesImageField] = useState('')
-  const [isProfileSaving, setIsProfileSaving] = useState(false)
-  const [isCreatingUser, setIsCreatingUser] = useState(false)
-  const [usersLoading, setUsersLoading] = useState(false)
   const [isDeletingUserId, setIsDeletingUserId] = useState('')
-  const [users, setUsers] = useState([])
   const [profileForm, setProfileForm] = useState({
     email: '',
     password: '',
@@ -987,6 +984,18 @@ const DashboardShell = ({ sectionKey = null }) => {
 
   const { data: content, isLoading } = useSiteContentQuery()
   const updateMutation = useUpdateContentSectionMutation()
+  const uploadImageMutation = useUploadContentImageMutation()
+  const uploadFileMutation = useUploadContentFileMutation()
+  const updateProfileMutation = useUpdateProfileMutation()
+  const createUserMutation = useCreateUserMutation()
+  const deleteUserMutation = useDeleteUserMutation()
+
+  const usersQuery = useAuthUsersQuery({
+    token: session?.accessToken,
+    enabled: active === 'profile' && Boolean(session?.accessToken),
+  })
+  const users = usersQuery.data ?? []
+  const usersLoading = usersQuery.isFetching
 
   useEffect(() => {
     if (!content) {
@@ -1357,28 +1366,15 @@ const DashboardShell = ({ sectionKey = null }) => {
     authFailureHandledRef.current = false
   }, [session?.accessToken])
 
-  const loadUsers = async () => {
-    if (!session?.accessToken) {
+  useEffect(() => {
+    if (!usersQuery.isError || !usersQuery.error) {
       return
     }
 
-    try {
-      setUsersLoading(true)
-      const response = await listUsersRequest({ token: session.accessToken })
-      setUsers(response.data?.users ?? [])
-    } catch (requestError) {
-      handleRequestError(requestError, 'Unable to load user accounts.')
-    } finally {
-      setUsersLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (active === 'profile') {
-      loadUsers()
-    }
+    handleRequestError(usersQuery.error, 'Unable to load user accounts.')
+    // handleRequestError is intentionally omitted from deps (stable error UX via setError + toast pipeline)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, session?.accessToken])
+  }, [usersQuery.isError, usersQuery.error])
 
   const saveEventsSection = async (rows, successMessage = 'Events saved successfully.') => {
     const cleanedRows = rows
@@ -1450,7 +1446,7 @@ const DashboardShell = ({ sectionKey = null }) => {
 
     try {
       setIsUploadingEventImage(true)
-      const uploaded = await uploadContentImage(eventImageFile, 'events')
+      const uploaded = await uploadImageMutation.mutateAsync({ file: eventImageFile, section: 'events' })
       setEventDraft((prev) => ({ ...prev, image: uploaded.url || '' }))
       setSuccess('Event image uploaded to Supabase Storage.')
     } catch (uploadError) {
@@ -1596,7 +1592,7 @@ const DashboardShell = ({ sectionKey = null }) => {
 
     try {
       setIsUploadingAboutImage(true)
-      const uploaded = await uploadContentImage(file, 'aboutUs')
+      const uploaded = await uploadImageMutation.mutateAsync({ file, section: 'aboutUs' })
       applyUrl(uploaded.url || '')
       setSuccess(successMessage)
     } catch (uploadError) {
@@ -1615,7 +1611,7 @@ const DashboardShell = ({ sectionKey = null }) => {
 
     try {
       setUploadingServicesImageField(field)
-      const uploaded = await uploadContentImage(file, 'services')
+      const uploaded = await uploadImageMutation.mutateAsync({ file, section: 'services' })
       setServicesForm((prev) => ({ ...prev, [field]: uploaded.url || '' }))
       setSuccess('Service image uploaded to Supabase Storage.')
     } catch (uploadError) {
@@ -1671,7 +1667,7 @@ const DashboardShell = ({ sectionKey = null }) => {
 
     try {
       setUploadingServicesImageField(fieldPath)
-      const uploaded = await uploadContentImage(file, 'services')
+      const uploaded = await uploadImageMutation.mutateAsync({ file, section: 'services' })
       updateYouthServicesField(fieldPath, uploaded.url || '')
       setSuccess('Youth image uploaded to Supabase Storage.')
     } catch (uploadError) {
@@ -1709,8 +1705,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     }
 
     try {
-      setIsProfileSaving(true)
-      const response = await updateProfileRequest({
+      const response = await updateProfileMutation.mutateAsync({
         token: session.accessToken,
         email: email || undefined,
         password: password || undefined,
@@ -1732,8 +1727,6 @@ const DashboardShell = ({ sectionKey = null }) => {
       setSuccess('Profile updated successfully.')
     } catch (requestError) {
       handleRequestError(requestError, 'Failed to update profile.')
-    } finally {
-      setIsProfileSaving(false)
     }
   }
 
@@ -1761,8 +1754,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     }
 
     try {
-      setIsCreatingUser(true)
-      await createUserRequest({
+      await createUserMutation.mutateAsync({
         token: session.accessToken,
         email,
         password,
@@ -1776,11 +1768,8 @@ const DashboardShell = ({ sectionKey = null }) => {
         password: '',
         role: 'user',
       })
-      await loadUsers()
     } catch (requestError) {
       handleRequestError(requestError, 'Failed to create user.')
-    } finally {
-      setIsCreatingUser(false)
     }
   }
 
@@ -1816,12 +1805,11 @@ const DashboardShell = ({ sectionKey = null }) => {
 
     try {
       setIsDeletingUserId(targetId)
-      await deleteUserRequest({
+      await deleteUserMutation.mutateAsync({
         token: session.accessToken,
         userId: targetId,
       })
       setSuccess('User deleted successfully.')
-      await loadUsers()
     } catch (requestError) {
       handleRequestError(requestError, 'Failed to delete user.')
     } finally {
@@ -1842,10 +1830,10 @@ const DashboardShell = ({ sectionKey = null }) => {
     if ((type === 'events' || type === 'about-committee-member') && modalImageFile) {
       try {
         setIsUploadingModalImage(true)
-        const uploaded = await uploadContentImage(
-          modalImageFile,
-          type === 'events' ? 'events' : 'aboutUs',
-        )
+        const uploaded = await uploadImageMutation.mutateAsync({
+          file: modalImageFile,
+          section: type === 'events' ? 'events' : 'aboutUs',
+        })
         nextData.image = uploaded.url || ''
       } catch (uploadError) {
         setError(uploadError.message || 'Failed to upload image.')
@@ -1859,13 +1847,13 @@ const DashboardShell = ({ sectionKey = null }) => {
     if ((type === 'about-governance-document' || type === 'about-governance-report') && modalImageFile) {
       try {
         setIsUploadingModalImage(true)
-        const uploaded = await uploadContentFile(
-          modalImageFile,
-          type === 'about-governance-document'
+        const uploaded = await uploadFileMutation.mutateAsync({
+          file: modalImageFile,
+          section: type === 'about-governance-document'
             ? 'aboutUs/governance-documents'
             : 'aboutUs/governance-reports',
-          (percent) => setModalUploadProgress(percent),
-        )
+          onProgress: (percent) => setModalUploadProgress(percent),
+        })
         setModalUploadProgress(100)
         nextData.fileUrl = uploaded.url || ''
         nextData.size = nextData.size || uploaded.size || ''
@@ -3427,11 +3415,11 @@ const DashboardShell = ({ sectionKey = null }) => {
                 inputClass={inputClass}
                 setProfileForm={setProfileForm}
                 handleProfileUpdate={handleProfileUpdate}
-                isProfileSaving={isProfileSaving}
+                isProfileSaving={updateProfileMutation.isPending}
                 newUserForm={newUserForm}
                 setNewUserForm={setNewUserForm}
                 handleCreateUser={handleCreateUser}
-                isCreatingUser={isCreatingUser}
+                isCreatingUser={createUserMutation.isPending}
                 users={users}
                 usersLoading={usersLoading}
                 isDeletingUserId={isDeletingUserId}

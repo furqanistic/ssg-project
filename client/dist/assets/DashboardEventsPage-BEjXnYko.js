@@ -1,0 +1,1 @@
+import{j as t}from"./index-B0KetAEg.js";import{D as o}from"./DashboardShell-BlWT5rUN.js";import"./useContent-t1ONQgX-.js";import"./useAuthQueries-Bvn4a2VU.js";import"./file-text-cxoQ5FHI.js";import"./image-BkQE_0nu.js";import"./users-C2ccVEUa.js";import"./chevron-right-Bn2zZN5U.js";import"./clock-3-F9ce-DiS.js";const d=()=>t.jsx(o,{sectionKey:"events"});export{d as default};

@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getPublicContent, updateContentSection } from '@/services/contentApi'
+import {
+  getPublicContent,
+  updateContentSection,
+  uploadContentFile,
+  uploadContentImage,
+} from '@/services/contentApi'
 
 export const CONTENT_QUERY_KEY = ['site-content']
 
@@ -20,5 +25,18 @@ export const useUpdateContentSectionMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CONTENT_QUERY_KEY })
     },
+  })
+}
+
+export const useUploadContentImageMutation = () => {
+  return useMutation({
+    mutationFn: ({ file, section }) => uploadContentImage(file, section),
+  })
+}
+
+export const useUploadContentFileMutation = () => {
+  return useMutation({
+    mutationFn: ({ file, section, onProgress }) =>
+      uploadContentFile(file, section, onProgress),
   })
 }

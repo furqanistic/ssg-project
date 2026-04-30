@@ -1,4 +1,4 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/+$/, '')
+import { axiosInstance } from '../lib/axiosInstance'
 
 const createApiError = (message, status, payload) => {
   const error = new Error(message)
@@ -7,82 +7,76 @@ const createApiError = (message, status, payload) => {
   return error
 }
 
-const parseResponse = async (response) => {
-  const payload = await response.json().catch(() => ({}))
-
-  if (!response.ok || payload.success === false) {
-    const message = payload.message ?? 'Request failed. Please try again.'
-    throw createApiError(message, response.status, payload)
+const request = async (config) => {
+  try {
+    const { data, status } = await axiosInstance.request(config)
+    if (data?.success === false) {
+      const message = data.message ?? 'Request failed. Please try again.'
+      throw createApiError(message, status, data)
+    }
+    return data
+  } catch (err) {
+    if (err.response) {
+      const payload = err.response.data ?? {}
+      const message = payload.message ?? 'Request failed. Please try again.'
+      throw createApiError(message, err.response.status, payload)
+    }
+    throw err
   }
-
-  return payload
 }
 
 export const signupRequest = async ({ name, email, password }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+  return request({
+    url: '/auth/signup',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name, email, password }),
+    data: { name, email, password },
   })
-
-  return parseResponse(response)
 }
 
 export const loginRequest = async ({ email, password }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+  return request({
+    url: '/auth/login',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
+    data: { email, password },
   })
-
-  return parseResponse(response)
 }
 
 const authHeaders = (token) => ({
-  'Content-Type': 'application/json',
   Authorization: `Bearer ${token}`,
 })
 
 export const updateProfileRequest = async ({ token, email, password }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+  return request({
+    url: '/auth/profile',
     method: 'PUT',
     headers: authHeaders(token),
-    body: JSON.stringify({ email, password }),
+    data: { email, password },
   })
-
-  return parseResponse(response)
 }
 
 export const listUsersRequest = async ({ token }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/users`, {
+  return request({
+    url: '/auth/users',
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: authHeaders(token),
   })
-
-  return parseResponse(response)
 }
 
 export const createUserRequest = async ({ token, email, password, role, name }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/users`, {
+  return request({
+    url: '/auth/users',
     method: 'POST',
-    headers: authHeaders(token),
-    body: JSON.stringify({ email, password, role, name }),
+    headers: {
+      ...authHeaders(token),
+    },
+    data: { email, password, role, name },
   })
-
-  return parseResponse(response)
 }
 
 export const deleteUserRequest = async ({ token, userId }) => {
-  const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
+  return request({
+    url: `/auth/users/${userId}`,
     method: 'DELETE',
     headers: authHeaders(token),
   })
-
-  return parseResponse(response)
 }

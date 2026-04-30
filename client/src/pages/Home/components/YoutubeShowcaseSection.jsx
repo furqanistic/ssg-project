@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, ExternalLink, Play, Youtube } from 'lucide-react'
+import { axiosInstance } from '@/lib/axiosInstance'
 
 const CHANNEL_ID = 'UCs953CyNH7x8SfZ-a2jAv6A'
 const CHANNEL_URL = `https://www.youtube.com/channel/${CHANNEL_ID}`
@@ -69,13 +70,10 @@ const thumbnailUrl = (videoId, quality = 'hqdefault.jpg') => {
 
 const fetchVideoOEmbedMeta = async (videoId) => {
   const watchUrl = encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)
-  const response = await fetch(`https://www.youtube.com/oembed?url=${watchUrl}&format=json`)
+  const { data: payload } = await axiosInstance.get(
+    `https://www.youtube.com/oembed?url=${watchUrl}&format=json`,
+  )
 
-  if (!response.ok) {
-    throw new Error('Unable to load YouTube title.')
-  }
-
-  const payload = await response.json()
   return {
     title: payload?.title || 'YouTube Video',
     authorName: payload?.author_name || 'YouTube',

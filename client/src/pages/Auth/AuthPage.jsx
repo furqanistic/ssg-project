@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
-import { loginRequest } from '@/services/authApi'
+import { useLoginMutation } from '@/hooks/useAuthQueries'
 import { useAuthStore } from '@/store/authStore'
 
 const initialLoginState = {
@@ -17,8 +17,9 @@ const AuthPage = () => {
   const setAuth = useAuthStore((state) => state.setAuth)
   const session = useAuthStore((state) => state.session)
 
+  const loginMutation = useLoginMutation()
+
   const [loginForm, setLoginForm] = useState(initialLoginState)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -32,26 +33,24 @@ const AuthPage = () => {
     setLoginForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleLogin = async (event) => {
+  const handleLogin = (event) => {
     event.preventDefault()
     setError('')
-    setIsLoading(true)
 
-    try {
-      const response = await loginRequest(loginForm)
+    loginMutation.mutate(loginForm, {
+      onSuccess: (response) => {
+        setAuth({
+          user: response.data?.user ?? null,
+          session: response.data?.session ?? null,
+        })
 
-      setAuth({
-        user: response.data?.user ?? null,
-        session: response.data?.session ?? null,
-      })
-
-      setLoginForm(initialLoginState)
-      navigate('/dashboard', { replace: true })
-    } catch (requestError) {
-      setError(requestError.message)
-    } finally {
-      setIsLoading(false)
-    }
+        setLoginForm(initialLoginState)
+        navigate('/dashboard', { replace: true })
+      },
+      onError: (requestError) => {
+        setError(requestError.message)
+      },
+    })
   }
 
   return (
@@ -120,11 +119,11 @@ const AuthPage = () => {
               </div>
 
               <button
-                disabled={isLoading}
+                disabled={loginMutation.isPending}
                 type='submit'
                 className='inline-flex h-12 w-full items-center justify-center rounded-[12px] bg-[#2b4faa] px-8 text-[15px] font-semibold text-white transition hover:bg-[#244599] disabled:cursor-not-allowed disabled:opacity-70'
               >
-                {isLoading ? t('common.actions.signingIn') : t('common.actions.signIn')}
+                {loginMutation.isPending ? t('common.actions.signingIn') : t('common.actions.signIn')}
               </button>
             </form>
 

@@ -7,6 +7,7 @@ import {
   Users,
 } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useSiteContentQuery } from '@/hooks/useContent'
@@ -18,9 +19,23 @@ const scrollTargets = [
   'registration',
 ]
 
+const readLocalizedValue = (value, language = 'en') => {
+  if (typeof value === 'string') {
+    return value
+  }
+
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value[language] || value.en || ''
+  }
+
+  return ''
+}
+
 const YouthEducationPage = () => {
   const location = useLocation()
   const { data: content } = useSiteContentQuery()
+  const { i18n } = useTranslation()
+  const language = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0]
 
   useEffect(() => {
     const hash = location.hash.slice(1)
@@ -46,62 +61,62 @@ const YouthEducationPage = () => {
   const youth = useMemo(() => {
     const source = content?.services?.youthEducation ?? {}
     const reasons = Array.from({ length: 4 }).map((_, index) => ({
-      title: source.reasons?.[index]?.title ?? '',
-      text: source.reasons?.[index]?.text ?? '',
+      title: readLocalizedValue(source.reasons?.[index]?.title, language),
+      text: readLocalizedValue(source.reasons?.[index]?.text, language),
     }))
     const gurmukhiLevels = Array.from({ length: 3 }).map((_, index) => ({
-      title: source.gurmukhi?.levels?.[index]?.title ?? '',
-      description: source.gurmukhi?.levels?.[index]?.description ?? '',
+      title: readLocalizedValue(source.gurmukhi?.levels?.[index]?.title, language),
+      description: readLocalizedValue(source.gurmukhi?.levels?.[index]?.description, language),
     }))
     const germanTracks = Array.from({ length: 3 }).map((_, index) => ({
-      title: source.german?.tracks?.[index]?.title ?? '',
-      description: source.german?.tracks?.[index]?.description ?? '',
+      title: readLocalizedValue(source.german?.tracks?.[index]?.title, language),
+      description: readLocalizedValue(source.german?.tracks?.[index]?.description, language),
     }))
     const campsCards = Array.from({ length: 3 }).map((_, index) => ({
-      title: source.camps?.cards?.[index]?.title ?? '',
-      description: source.camps?.cards?.[index]?.description ?? '',
-      time: source.camps?.cards?.[index]?.time ?? '',
+      title: readLocalizedValue(source.camps?.cards?.[index]?.title, language),
+      description: readLocalizedValue(source.camps?.cards?.[index]?.description, language),
+      time: readLocalizedValue(source.camps?.cards?.[index]?.time, language),
     }))
 
     return {
-      heading: source.heading ?? '',
-      subtitle: source.subtitle ?? '',
-      intro: source.intro ?? '',
+      heading: readLocalizedValue(source.heading, language),
+      subtitle: readLocalizedValue(source.subtitle, language),
+      intro: readLocalizedValue(source.intro, language),
       gurmukhi: {
-        title: source.gurmukhi?.title ?? '',
-        description: source.gurmukhi?.description ?? '',
+        title: readLocalizedValue(source.gurmukhi?.title, language),
+        description: readLocalizedValue(source.gurmukhi?.description, language),
         image: source.gurmukhi?.image ?? '',
-        scheduleTitle: source.gurmukhi?.scheduleTitle ?? '',
-        scheduleDay: source.gurmukhi?.scheduleDay ?? '',
-        scheduleTime: source.gurmukhi?.scheduleTime ?? '',
-        scheduleLocation: source.gurmukhi?.scheduleLocation ?? '',
+        scheduleTitle: readLocalizedValue(source.gurmukhi?.scheduleTitle, language),
+        scheduleDay: readLocalizedValue(source.gurmukhi?.scheduleDay, language),
+        scheduleTime: readLocalizedValue(source.gurmukhi?.scheduleTime, language),
+        scheduleLocation: readLocalizedValue(source.gurmukhi?.scheduleLocation, language),
         levels: gurmukhiLevels,
       },
       german: {
-        title: source.german?.title ?? '',
-        description: source.german?.description ?? '',
+        title: readLocalizedValue(source.german?.title, language),
+        description: readLocalizedValue(source.german?.description, language),
         image: source.german?.image ?? '',
-        scheduleTitle: source.german?.scheduleTitle ?? '',
-        scheduleDay: source.german?.scheduleDay ?? '',
-        scheduleTime: source.german?.scheduleTime ?? '',
-        scheduleLocation: source.german?.scheduleLocation ?? '',
+        scheduleTitle: readLocalizedValue(source.german?.scheduleTitle, language),
+        scheduleDay: readLocalizedValue(source.german?.scheduleDay, language),
+        scheduleTime: readLocalizedValue(source.german?.scheduleTime, language),
+        scheduleLocation: readLocalizedValue(source.german?.scheduleLocation, language),
         tracks: germanTracks,
       },
       camps: {
-        title: source.camps?.title ?? '',
-        subtitle: source.camps?.subtitle ?? '',
+        title: readLocalizedValue(source.camps?.title, language),
+        subtitle: readLocalizedValue(source.camps?.subtitle, language),
         cards: campsCards,
       },
       registration: {
-        title: source.registration?.title ?? '',
-        description: source.registration?.description ?? '',
-        contactButtonLabel: source.registration?.contactButtonLabel ?? '',
-        scheduleButtonLabel: source.registration?.scheduleButtonLabel ?? '',
+        title: readLocalizedValue(source.registration?.title, language),
+        description: readLocalizedValue(source.registration?.description, language),
+        contactButtonLabel: readLocalizedValue(source.registration?.contactButtonLabel, language),
+        scheduleButtonLabel: readLocalizedValue(source.registration?.scheduleButtonLabel, language),
       },
-      whyEnrollTitle: source.whyEnrollTitle ?? '',
+      whyEnrollTitle: readLocalizedValue(source.whyEnrollTitle, language),
       reasons,
     }
-  }, [content?.services?.youthEducation])
+  }, [content?.services?.youthEducation, language])
 
   return (
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>

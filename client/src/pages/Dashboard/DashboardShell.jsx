@@ -207,6 +207,48 @@ const defaultYouthServicesForm = {
   ],
 }
 
+const readLocalizedEditorValue = (value, language = 'en') => {
+  if (typeof value === 'string') {
+    return language === 'en' ? value : ''
+  }
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return typeof value[language] === 'string' ? value[language] : ''
+  }
+  return ''
+}
+
+const upsertLocalizedValue = (existingValue, language = 'en', nextValue = '') => {
+  const next = {
+    en: '',
+    de: '',
+  }
+
+  if (typeof existingValue === 'string') {
+    next.en = existingValue
+  } else if (existingValue && typeof existingValue === 'object' && !Array.isArray(existingValue)) {
+    next.en = typeof existingValue.en === 'string' ? existingValue.en : ''
+    next.de = typeof existingValue.de === 'string' ? existingValue.de : ''
+  }
+
+  next[language] = (nextValue ?? '').trim()
+  return next
+}
+
+const localizedValueHasContent = (value) => {
+  if (typeof value === 'string') {
+    return value.trim().length > 0
+  }
+
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false
+  }
+
+  return ['en', 'de'].some((language) => {
+    const text = value[language]
+    return typeof text === 'string' && text.trim().length > 0
+  })
+}
+
 const panelClass = 'rounded-[24px] border border-gray-100 bg-white p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden transition-all duration-300'
 const inputClass = 'mt-2 h-11 w-full rounded-[14px] border border-gray-200 bg-gray-50 px-4 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:bg-gray-100/50 focus:border-[#001da5] focus:bg-white focus:ring-4 focus:ring-[#001da5]/5'
 const textareaClass = 'mt-2 min-h-[120px] w-full rounded-[14px] border border-gray-200 bg-gray-50 p-4 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:bg-gray-100/50 focus:border-[#001da5] focus:bg-white focus:ring-4 focus:ring-[#001da5]/5'
@@ -495,6 +537,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     email: '',
     address: [],
   })
+  const [servicesEditorLanguage, setServicesEditorLanguage] = useState('en')
   const [donateForm, setDonateForm] = useState(defaultDonateForm)
   const [servicesForm, setServicesForm] = useState(defaultServicesForm)
   const [youthServicesForm, setYouthServicesForm] = useState(defaultYouthServicesForm)
@@ -670,15 +713,21 @@ const DashboardShell = ({ sectionKey = null }) => {
     })
     const cremationFund = content.services?.cremationFund ?? {}
     setServicesForm({
-      heroTitle: cremationFund.heroTitle ?? '',
-      heroSubtitle: cremationFund.heroSubtitle ?? '',
+      heroTitle: readLocalizedEditorValue(cremationFund.heroTitle, servicesEditorLanguage),
+      heroSubtitle: readLocalizedEditorValue(cremationFund.heroSubtitle, servicesEditorLanguage),
       heroImage: cremationFund.heroImage ?? '',
-      aboutTitle: cremationFund.aboutTitle ?? '',
-      aboutText: cremationFund.aboutText ?? '',
-      supportText: cremationFund.supportText ?? '',
+      aboutTitle: readLocalizedEditorValue(cremationFund.aboutTitle, servicesEditorLanguage),
+      aboutText: readLocalizedEditorValue(cremationFund.aboutText, servicesEditorLanguage),
+      supportText: readLocalizedEditorValue(cremationFund.supportText, servicesEditorLanguage),
       supportImage: cremationFund.supportImage ?? '',
-      contactButtonLabel: cremationFund.contactButtonLabel ?? '',
-      donateButtonLabel: cremationFund.donateButtonLabel ?? '',
+      contactButtonLabel: readLocalizedEditorValue(
+        cremationFund.contactButtonLabel,
+        servicesEditorLanguage,
+      ),
+      donateButtonLabel: readLocalizedEditorValue(
+        cremationFund.donateButtonLabel,
+        servicesEditorLanguage,
+      ),
     })
     const youthEducation = content.services?.youthEducation ?? {}
     const gurmukhiLevels =
@@ -699,63 +748,105 @@ const DashboardShell = ({ sectionKey = null }) => {
         : defaultYouthServicesForm.reasons
     setYouthServicesForm({
       navbar: {
-        label: youthEducation.navbar?.label ?? '',
-        s1h: youthEducation.navbar?.s1h ?? '',
-        s2h: youthEducation.navbar?.s2h ?? '',
-        gurmukhi: youthEducation.navbar?.gurmukhi ?? '',
-        german: youthEducation.navbar?.german ?? '',
-        camps: youthEducation.navbar?.camps ?? '',
-        registration: youthEducation.navbar?.registration ?? '',
-        cremationFund: youthEducation.navbar?.cremationFund ?? '',
+        label: readLocalizedEditorValue(youthEducation.navbar?.label, servicesEditorLanguage),
+        s1h: readLocalizedEditorValue(youthEducation.navbar?.s1h, servicesEditorLanguage),
+        s2h: readLocalizedEditorValue(youthEducation.navbar?.s2h, servicesEditorLanguage),
+        gurmukhi: readLocalizedEditorValue(youthEducation.navbar?.gurmukhi, servicesEditorLanguage),
+        german: readLocalizedEditorValue(youthEducation.navbar?.german, servicesEditorLanguage),
+        camps: readLocalizedEditorValue(youthEducation.navbar?.camps, servicesEditorLanguage),
+        registration: readLocalizedEditorValue(
+          youthEducation.navbar?.registration,
+          servicesEditorLanguage,
+        ),
+        cremationFund: readLocalizedEditorValue(
+          youthEducation.navbar?.cremationFund,
+          servicesEditorLanguage,
+        ),
       },
-      heading: youthEducation.heading ?? '',
-      subtitle: youthEducation.subtitle ?? '',
-      intro: youthEducation.intro ?? '',
+      heading: readLocalizedEditorValue(youthEducation.heading, servicesEditorLanguage),
+      subtitle: readLocalizedEditorValue(youthEducation.subtitle, servicesEditorLanguage),
+      intro: readLocalizedEditorValue(youthEducation.intro, servicesEditorLanguage),
       gurmukhi: {
-        title: youthEducation.gurmukhi?.title ?? '',
-        description: youthEducation.gurmukhi?.description ?? '',
+        title: readLocalizedEditorValue(youthEducation.gurmukhi?.title, servicesEditorLanguage),
+        description: readLocalizedEditorValue(
+          youthEducation.gurmukhi?.description,
+          servicesEditorLanguage,
+        ),
         image: youthEducation.gurmukhi?.image ?? '',
-        scheduleTitle: youthEducation.gurmukhi?.scheduleTitle ?? '',
-        scheduleDay: youthEducation.gurmukhi?.scheduleDay ?? '',
-        scheduleTime: youthEducation.gurmukhi?.scheduleTime ?? '',
-        scheduleLocation: youthEducation.gurmukhi?.scheduleLocation ?? '',
+        scheduleTitle: readLocalizedEditorValue(
+          youthEducation.gurmukhi?.scheduleTitle,
+          servicesEditorLanguage,
+        ),
+        scheduleDay: readLocalizedEditorValue(
+          youthEducation.gurmukhi?.scheduleDay,
+          servicesEditorLanguage,
+        ),
+        scheduleTime: readLocalizedEditorValue(
+          youthEducation.gurmukhi?.scheduleTime,
+          servicesEditorLanguage,
+        ),
+        scheduleLocation: readLocalizedEditorValue(
+          youthEducation.gurmukhi?.scheduleLocation,
+          servicesEditorLanguage,
+        ),
         levels: Array.from({ length: 3 }).map((_, index) => ({
-          title: gurmukhiLevels[index]?.title ?? '',
-          description: gurmukhiLevels[index]?.description ?? '',
+          title: readLocalizedEditorValue(gurmukhiLevels[index]?.title, servicesEditorLanguage),
+          description: readLocalizedEditorValue(
+            gurmukhiLevels[index]?.description,
+            servicesEditorLanguage,
+          ),
         })),
       },
       german: {
-        title: youthEducation.german?.title ?? '',
-        description: youthEducation.german?.description ?? '',
+        title: readLocalizedEditorValue(youthEducation.german?.title, servicesEditorLanguage),
+        description: readLocalizedEditorValue(youthEducation.german?.description, servicesEditorLanguage),
         image: youthEducation.german?.image ?? '',
-        scheduleTitle: youthEducation.german?.scheduleTitle ?? '',
-        scheduleDay: youthEducation.german?.scheduleDay ?? '',
-        scheduleTime: youthEducation.german?.scheduleTime ?? '',
-        scheduleLocation: youthEducation.german?.scheduleLocation ?? '',
+        scheduleTitle: readLocalizedEditorValue(
+          youthEducation.german?.scheduleTitle,
+          servicesEditorLanguage,
+        ),
+        scheduleDay: readLocalizedEditorValue(youthEducation.german?.scheduleDay, servicesEditorLanguage),
+        scheduleTime: readLocalizedEditorValue(youthEducation.german?.scheduleTime, servicesEditorLanguage),
+        scheduleLocation: readLocalizedEditorValue(
+          youthEducation.german?.scheduleLocation,
+          servicesEditorLanguage,
+        ),
         tracks: Array.from({ length: 3 }).map((_, index) => ({
-          title: germanTracks[index]?.title ?? '',
-          description: germanTracks[index]?.description ?? '',
+          title: readLocalizedEditorValue(germanTracks[index]?.title, servicesEditorLanguage),
+          description: readLocalizedEditorValue(
+            germanTracks[index]?.description,
+            servicesEditorLanguage,
+          ),
         })),
       },
       camps: {
-        title: youthEducation.camps?.title ?? '',
-        subtitle: youthEducation.camps?.subtitle ?? '',
+        title: readLocalizedEditorValue(youthEducation.camps?.title, servicesEditorLanguage),
+        subtitle: readLocalizedEditorValue(youthEducation.camps?.subtitle, servicesEditorLanguage),
         cards: Array.from({ length: 3 }).map((_, index) => ({
-          title: campsCards[index]?.title ?? '',
-          description: campsCards[index]?.description ?? '',
-          time: campsCards[index]?.time ?? '',
+          title: readLocalizedEditorValue(campsCards[index]?.title, servicesEditorLanguage),
+          description: readLocalizedEditorValue(campsCards[index]?.description, servicesEditorLanguage),
+          time: readLocalizedEditorValue(campsCards[index]?.time, servicesEditorLanguage),
         })),
       },
       registration: {
-        title: youthEducation.registration?.title ?? '',
-        description: youthEducation.registration?.description ?? '',
-        contactButtonLabel: youthEducation.registration?.contactButtonLabel ?? '',
-        scheduleButtonLabel: youthEducation.registration?.scheduleButtonLabel ?? '',
+        title: readLocalizedEditorValue(youthEducation.registration?.title, servicesEditorLanguage),
+        description: readLocalizedEditorValue(
+          youthEducation.registration?.description,
+          servicesEditorLanguage,
+        ),
+        contactButtonLabel: readLocalizedEditorValue(
+          youthEducation.registration?.contactButtonLabel,
+          servicesEditorLanguage,
+        ),
+        scheduleButtonLabel: readLocalizedEditorValue(
+          youthEducation.registration?.scheduleButtonLabel,
+          servicesEditorLanguage,
+        ),
       },
-      whyEnrollTitle: youthEducation.whyEnrollTitle ?? '',
+      whyEnrollTitle: readLocalizedEditorValue(youthEducation.whyEnrollTitle, servicesEditorLanguage),
       reasons: Array.from({ length: 4 }).map((_, index) => ({
-        title: reasons[index]?.title ?? '',
-        text: reasons[index]?.text ?? '',
+        title: readLocalizedEditorValue(reasons[index]?.title, servicesEditorLanguage),
+        text: readLocalizedEditorValue(reasons[index]?.text, servicesEditorLanguage),
       })),
     })
     const aboutUs = content.aboutUs ?? {}
@@ -929,7 +1020,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       mediaUpdates: false,
       contactAddress: false,
     })
-  }, [content])
+  }, [content, servicesEditorLanguage])
 
   const sectionLabel = useMemo(
     () => menu.find((item) => item.key === active)?.label ?? 'Content',
@@ -1830,88 +1921,230 @@ const DashboardShell = ({ sectionKey = null }) => {
       }
 
       if (active === 'services') {
+        const existingServices = content?.services ?? {}
+        const existingCremation = existingServices.cremationFund ?? {}
+        const existingYouth = existingServices.youthEducation ?? {}
+        const language = servicesEditorLanguage
+
         await updateMutation.mutateAsync({
           section: 'services',
           data: {
             cremationFund: {
-              heroTitle: servicesForm.heroTitle.trim(),
-              heroSubtitle: servicesForm.heroSubtitle.trim(),
+              heroTitle: upsertLocalizedValue(existingCremation.heroTitle, language, servicesForm.heroTitle),
+              heroSubtitle: upsertLocalizedValue(
+                existingCremation.heroSubtitle,
+                language,
+                servicesForm.heroSubtitle,
+              ),
               heroImage: servicesForm.heroImage.trim(),
-              aboutTitle: servicesForm.aboutTitle.trim(),
-              aboutText: servicesForm.aboutText.trim(),
-              supportText: servicesForm.supportText.trim(),
+              aboutTitle: upsertLocalizedValue(existingCremation.aboutTitle, language, servicesForm.aboutTitle),
+              aboutText: upsertLocalizedValue(existingCremation.aboutText, language, servicesForm.aboutText),
+              supportText: upsertLocalizedValue(
+                existingCremation.supportText,
+                language,
+                servicesForm.supportText,
+              ),
               supportImage: servicesForm.supportImage.trim(),
-              contactButtonLabel: servicesForm.contactButtonLabel.trim(),
-              donateButtonLabel: servicesForm.donateButtonLabel.trim(),
+              contactButtonLabel: upsertLocalizedValue(
+                existingCremation.contactButtonLabel,
+                language,
+                servicesForm.contactButtonLabel,
+              ),
+              donateButtonLabel: upsertLocalizedValue(
+                existingCremation.donateButtonLabel,
+                language,
+                servicesForm.donateButtonLabel,
+              ),
             },
             youthEducation: {
               navbar: {
-                label: youthServicesForm.navbar.label.trim(),
-                s1h: youthServicesForm.navbar.s1h.trim(),
-                s2h: youthServicesForm.navbar.s2h.trim(),
-                gurmukhi: youthServicesForm.navbar.gurmukhi.trim(),
-                german: youthServicesForm.navbar.german.trim(),
-                camps: youthServicesForm.navbar.camps.trim(),
-                registration: youthServicesForm.navbar.registration.trim(),
-                cremationFund: youthServicesForm.navbar.cremationFund.trim(),
+                label: upsertLocalizedValue(existingYouth.navbar?.label, language, youthServicesForm.navbar.label),
+                s1h: upsertLocalizedValue(existingYouth.navbar?.s1h, language, youthServicesForm.navbar.s1h),
+                s2h: upsertLocalizedValue(existingYouth.navbar?.s2h, language, youthServicesForm.navbar.s2h),
+                gurmukhi: upsertLocalizedValue(
+                  existingYouth.navbar?.gurmukhi,
+                  language,
+                  youthServicesForm.navbar.gurmukhi,
+                ),
+                german: upsertLocalizedValue(
+                  existingYouth.navbar?.german,
+                  language,
+                  youthServicesForm.navbar.german,
+                ),
+                camps: upsertLocalizedValue(existingYouth.navbar?.camps, language, youthServicesForm.navbar.camps),
+                registration: upsertLocalizedValue(
+                  existingYouth.navbar?.registration,
+                  language,
+                  youthServicesForm.navbar.registration,
+                ),
+                cremationFund: upsertLocalizedValue(
+                  existingYouth.navbar?.cremationFund,
+                  language,
+                  youthServicesForm.navbar.cremationFund,
+                ),
               },
-              heading: youthServicesForm.heading.trim(),
-              subtitle: youthServicesForm.subtitle.trim(),
-              intro: youthServicesForm.intro.trim(),
+              heading: upsertLocalizedValue(existingYouth.heading, language, youthServicesForm.heading),
+              subtitle: upsertLocalizedValue(existingYouth.subtitle, language, youthServicesForm.subtitle),
+              intro: upsertLocalizedValue(existingYouth.intro, language, youthServicesForm.intro),
               gurmukhi: {
-                title: youthServicesForm.gurmukhi.title.trim(),
-                description: youthServicesForm.gurmukhi.description.trim(),
+                title: upsertLocalizedValue(
+                  existingYouth.gurmukhi?.title,
+                  language,
+                  youthServicesForm.gurmukhi.title,
+                ),
+                description: upsertLocalizedValue(
+                  existingYouth.gurmukhi?.description,
+                  language,
+                  youthServicesForm.gurmukhi.description,
+                ),
                 image: youthServicesForm.gurmukhi.image.trim(),
-                scheduleTitle: youthServicesForm.gurmukhi.scheduleTitle.trim(),
-                scheduleDay: youthServicesForm.gurmukhi.scheduleDay.trim(),
-                scheduleTime: youthServicesForm.gurmukhi.scheduleTime.trim(),
-                scheduleLocation: youthServicesForm.gurmukhi.scheduleLocation.trim(),
+                scheduleTitle: upsertLocalizedValue(
+                  existingYouth.gurmukhi?.scheduleTitle,
+                  language,
+                  youthServicesForm.gurmukhi.scheduleTitle,
+                ),
+                scheduleDay: upsertLocalizedValue(
+                  existingYouth.gurmukhi?.scheduleDay,
+                  language,
+                  youthServicesForm.gurmukhi.scheduleDay,
+                ),
+                scheduleTime: upsertLocalizedValue(
+                  existingYouth.gurmukhi?.scheduleTime,
+                  language,
+                  youthServicesForm.gurmukhi.scheduleTime,
+                ),
+                scheduleLocation: upsertLocalizedValue(
+                  existingYouth.gurmukhi?.scheduleLocation,
+                  language,
+                  youthServicesForm.gurmukhi.scheduleLocation,
+                ),
                 levels: youthServicesForm.gurmukhi.levels
-                  .map((item) => ({
-                    title: item.title.trim(),
-                    description: item.description.trim(),
+                  .map((item, index) => ({
+                    title: upsertLocalizedValue(
+                      existingYouth.gurmukhi?.levels?.[index]?.title,
+                      language,
+                      item.title,
+                    ),
+                    description: upsertLocalizedValue(
+                      existingYouth.gurmukhi?.levels?.[index]?.description,
+                      language,
+                      item.description,
+                    ),
                   }))
-                  .filter((item) => item.title || item.description),
+                  .filter((item) => localizedValueHasContent(item.title) || localizedValueHasContent(item.description)),
               },
               german: {
-                title: youthServicesForm.german.title.trim(),
-                description: youthServicesForm.german.description.trim(),
+                title: upsertLocalizedValue(existingYouth.german?.title, language, youthServicesForm.german.title),
+                description: upsertLocalizedValue(
+                  existingYouth.german?.description,
+                  language,
+                  youthServicesForm.german.description,
+                ),
                 image: youthServicesForm.german.image.trim(),
-                scheduleTitle: youthServicesForm.german.scheduleTitle.trim(),
-                scheduleDay: youthServicesForm.german.scheduleDay.trim(),
-                scheduleTime: youthServicesForm.german.scheduleTime.trim(),
-                scheduleLocation: youthServicesForm.german.scheduleLocation.trim(),
+                scheduleTitle: upsertLocalizedValue(
+                  existingYouth.german?.scheduleTitle,
+                  language,
+                  youthServicesForm.german.scheduleTitle,
+                ),
+                scheduleDay: upsertLocalizedValue(
+                  existingYouth.german?.scheduleDay,
+                  language,
+                  youthServicesForm.german.scheduleDay,
+                ),
+                scheduleTime: upsertLocalizedValue(
+                  existingYouth.german?.scheduleTime,
+                  language,
+                  youthServicesForm.german.scheduleTime,
+                ),
+                scheduleLocation: upsertLocalizedValue(
+                  existingYouth.german?.scheduleLocation,
+                  language,
+                  youthServicesForm.german.scheduleLocation,
+                ),
                 tracks: youthServicesForm.german.tracks
-                  .map((item) => ({
-                    title: item.title.trim(),
-                    description: item.description.trim(),
+                  .map((item, index) => ({
+                    title: upsertLocalizedValue(
+                      existingYouth.german?.tracks?.[index]?.title,
+                      language,
+                      item.title,
+                    ),
+                    description: upsertLocalizedValue(
+                      existingYouth.german?.tracks?.[index]?.description,
+                      language,
+                      item.description,
+                    ),
                   }))
-                  .filter((item) => item.title || item.description),
+                  .filter((item) => localizedValueHasContent(item.title) || localizedValueHasContent(item.description)),
               },
               camps: {
-                title: youthServicesForm.camps.title.trim(),
-                subtitle: youthServicesForm.camps.subtitle.trim(),
+                title: upsertLocalizedValue(existingYouth.camps?.title, language, youthServicesForm.camps.title),
+                subtitle: upsertLocalizedValue(
+                  existingYouth.camps?.subtitle,
+                  language,
+                  youthServicesForm.camps.subtitle,
+                ),
                 cards: youthServicesForm.camps.cards
-                  .map((item) => ({
-                    title: item.title.trim(),
-                    description: item.description.trim(),
-                    time: item.time.trim(),
+                  .map((item, index) => ({
+                    title: upsertLocalizedValue(
+                      existingYouth.camps?.cards?.[index]?.title,
+                      language,
+                      item.title,
+                    ),
+                    description: upsertLocalizedValue(
+                      existingYouth.camps?.cards?.[index]?.description,
+                      language,
+                      item.description,
+                    ),
+                    time: upsertLocalizedValue(
+                      existingYouth.camps?.cards?.[index]?.time,
+                      language,
+                      item.time,
+                    ),
                   }))
-                  .filter((item) => item.title || item.description || item.time),
+                  .filter(
+                    (item) =>
+                      localizedValueHasContent(item.title) ||
+                      localizedValueHasContent(item.description) ||
+                      localizedValueHasContent(item.time),
+                  ),
               },
               registration: {
-                title: youthServicesForm.registration.title.trim(),
-                description: youthServicesForm.registration.description.trim(),
-                contactButtonLabel: youthServicesForm.registration.contactButtonLabel.trim(),
-                scheduleButtonLabel: youthServicesForm.registration.scheduleButtonLabel.trim(),
+                title: upsertLocalizedValue(
+                  existingYouth.registration?.title,
+                  language,
+                  youthServicesForm.registration.title,
+                ),
+                description: upsertLocalizedValue(
+                  existingYouth.registration?.description,
+                  language,
+                  youthServicesForm.registration.description,
+                ),
+                contactButtonLabel: upsertLocalizedValue(
+                  existingYouth.registration?.contactButtonLabel,
+                  language,
+                  youthServicesForm.registration.contactButtonLabel,
+                ),
+                scheduleButtonLabel: upsertLocalizedValue(
+                  existingYouth.registration?.scheduleButtonLabel,
+                  language,
+                  youthServicesForm.registration.scheduleButtonLabel,
+                ),
               },
-              whyEnrollTitle: youthServicesForm.whyEnrollTitle.trim(),
+              whyEnrollTitle: upsertLocalizedValue(
+                existingYouth.whyEnrollTitle,
+                language,
+                youthServicesForm.whyEnrollTitle,
+              ),
               reasons: youthServicesForm.reasons
-                .map((item) => ({
-                  title: item.title.trim(),
-                  text: item.text.trim(),
+                .map((item, index) => ({
+                  title: upsertLocalizedValue(
+                    existingYouth.reasons?.[index]?.title,
+                    language,
+                    item.title,
+                  ),
+                  text: upsertLocalizedValue(existingYouth.reasons?.[index]?.text, language, item.text),
                 }))
-                .filter((item) => item.title || item.text),
+                .filter((item) => localizedValueHasContent(item.title) || localizedValueHasContent(item.text)),
             },
           },
         })
@@ -2330,6 +2563,33 @@ const DashboardShell = ({ sectionKey = null }) => {
 
             {active === 'services' ? (
               <section className='space-y-6'>
+                <article className={panelClass}>
+                  <div className='flex flex-wrap items-center justify-between gap-4'>
+                    <div>
+                      <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Language Editor</h3>
+                      <p className='mt-1 text-[13px] text-gray-500'>
+                        Switch language to edit EN/DE values stored in Supabase.
+                      </p>
+                    </div>
+                    <div className='flex items-center rounded-full border border-gray-200 bg-gray-50 p-1'>
+                      {['en', 'de'].map((language) => (
+                        <button
+                          key={`services-lang-${language}`}
+                          type='button'
+                          onClick={() => setServicesEditorLanguage(language)}
+                          className={`rounded-full px-4 py-2 text-[12px] font-bold uppercase tracking-wider transition-all ${
+                            servicesEditorLanguage === language
+                              ? 'bg-[#001da5] text-white'
+                              : 'text-gray-600 hover:bg-white'
+                          }`}
+                        >
+                          {language}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Cremation Fund Page</h3>
                   <p className='mt-1 text-[13px] text-gray-500'>

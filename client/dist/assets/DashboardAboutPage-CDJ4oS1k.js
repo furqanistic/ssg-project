@@ -1,1 +1,0 @@
-import{j as o}from"./index-BQwjE9b6.js";import{D as t}from"./DashboardShell-DfPZPkyr.js";import"./useContent-BFsjpGOh.js";import"./authApi-VHXigUeJ.js";import"./file-text-3BqeHAo0.js";import"./image-cDQo4vR5.js";import"./users-DQoA8i4U.js";import"./chevron-right-Dp-m2ERp.js";import"./clock-3-GqudOBLZ.js";const n=()=>o.jsx(t,{sectionKey:"about-us"});export{n as default};

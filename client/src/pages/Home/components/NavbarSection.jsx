@@ -22,7 +22,19 @@ const getDefaultAboutSections = (t) => [
   },
 ]
 
-const getNavItems = (t, youthServices = {}) => [
+const readLocalizedDisplayValue = (value, language = 'en') => {
+  if (typeof value === 'string') {
+    return value
+  }
+
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value[language] || value.en || ''
+  }
+
+  return ''
+}
+
+const getNavItems = (t, youthServices = {}, language = 'en') => [
   {
     label: t('navbar.items.about.label'),
     sections: getDefaultAboutSections(t),
@@ -73,34 +85,34 @@ const getNavItems = (t, youthServices = {}) => [
     panelClassName: 'w-[560px] grid-cols-2',
   },
   {
-    label: youthServices.navbar?.label ?? '',
+    label: readLocalizedDisplayValue(youthServices.navbar?.label, language),
     sections: [
       {
-        heading: youthServices.navbar?.s1h ?? '',
+        heading: readLocalizedDisplayValue(youthServices.navbar?.s1h, language),
         links: [
           {
-            label: youthServices.navbar?.gurmukhi ?? '',
+            label: readLocalizedDisplayValue(youthServices.navbar?.gurmukhi, language),
             to: '/youth-education#gurmukhi-class',
           },
           {
-            label: youthServices.navbar?.german ?? '',
+            label: readLocalizedDisplayValue(youthServices.navbar?.german, language),
             to: '/youth-education#german-class',
           },
         ],
       },
       {
-        heading: youthServices.navbar?.s2h ?? '',
+        heading: readLocalizedDisplayValue(youthServices.navbar?.s2h, language),
         links: [
           {
-            label: youthServices.navbar?.camps ?? '',
+            label: readLocalizedDisplayValue(youthServices.navbar?.camps, language),
             to: '/youth-education#camps-workshops',
           },
           {
-            label: youthServices.navbar?.registration ?? '',
+            label: readLocalizedDisplayValue(youthServices.navbar?.registration, language),
             to: '/youth-education#registration',
           },
           {
-            label: youthServices.navbar?.cremationFund ?? '',
+            label: readLocalizedDisplayValue(youthServices.navbar?.cremationFund, language),
             to: '/services/antim-sanskar-fund',
           },
         ],
@@ -183,10 +195,11 @@ const NavbarSection = () => {
   const { i18n, t } = useTranslation()
   const isLoggedIn = useAuthStore((state) => Boolean(state.session?.accessToken))
   const { data: content } = useSiteContentQuery()
+  const language = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0]
 
   const navItems = useMemo(
-    () => getNavItems(t, content?.services?.youthEducation ?? {}),
-    [content?.services?.youthEducation, t],
+    () => getNavItems(t, content?.services?.youthEducation ?? {}, language),
+    [content?.services?.youthEducation, language, t],
   )
   const WhatsAppIcon = ({ className = '' }) => (
     <svg viewBox='0 0 24 24' fill='currentColor' className={className} aria-hidden='true'>

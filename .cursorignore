@@ -1,0 +1,4 @@
+# Hide macOS metadata from Cursor indexing (recreates on foreign filesystems)
+._*
+.DS_Store
+

@@ -17,6 +17,7 @@ const MediaCenterPage = lazy(() => import('@/pages/Media/MediaCenterPage'))
 const VisitorGuidePage = lazy(() => import('@/pages/Visitors/VisitorGuidePage'))
 const YouthEducationPage = lazy(() => import('@/pages/YouthEducation/YouthEducationPage'))
 const CremationFundPage = lazy(() => import('@/pages/Services/CremationFundPage'))
+const ServiceDetailPage = lazy(() => import('@/pages/Services/ServiceDetailPage'))
 const LibraryPage = lazy(() => import('@/pages/Resources/LibraryPage'))
 
 const ScrollToTop = () => {
@@ -55,9 +56,11 @@ const App = () => {
             <Route path='events/programs' element={<ProgramsPage />} />
             <Route path='media' element={<MediaCenterPage />} />
             <Route path='resources/library' element={<LibraryPage />} />
+            <Route path='resources/:serviceSlug' element={<ServiceDetailPage />} />
             <Route path='visitors/guide' element={<VisitorGuidePage />} />
             <Route path='youth-education' element={<YouthEducationPage />} />
             <Route path='services/antim-sanskar-fund' element={<CremationFundPage />} />
+            <Route path='services/:serviceSlug' element={<ServiceDetailPage />} />
           </Route>
         </Routes>
       </Suspense>

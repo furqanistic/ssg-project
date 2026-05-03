@@ -143,6 +143,44 @@ const defaultServicesForm = {
   contactButtonLabel: '',
   donateButtonLabel: '',
 }
+const defaultAdditionalServiceLinks = [
+  {
+    label: { en: 'Library', de: 'Bibliothek' },
+    to: '/resources/library',
+    pageTitle: { en: '', de: '' },
+    pageSubtitle: { en: '', de: '' },
+    pageContent: { en: '', de: '' },
+  },
+]
+const emptyAdditionalServiceLink = {
+  label: '',
+  to: '',
+  pageTitle: '',
+  pageSubtitle: '',
+  pageContent: '',
+}
+const defaultServicesNavbarLabels = {
+  en: {
+    label: 'Services',
+    s1h: 'CLASSES',
+    s2h: 'PROGRAMS',
+    gurmukhi: 'Gurmukhi Class',
+    german: 'German Class',
+    camps: 'Camps & Workshops',
+    registration: 'Registration',
+    cremationFund: 'Cremation Fund (Antim Sanskar Fund)',
+  },
+  de: {
+    label: 'Services',
+    s1h: 'KURSE',
+    s2h: 'PROGRAMME',
+    gurmukhi: 'Gurmukhi-Kurs',
+    german: 'Deutschkurs',
+    camps: 'Camps & Workshops',
+    registration: 'Anmeldung',
+    cremationFund: 'Antim Sanskar Fonds',
+  },
+}
 const defaultYouthServicesForm = {
   navbar: {
     label: '',
@@ -153,6 +191,13 @@ const defaultYouthServicesForm = {
     camps: '',
     registration: '',
     cremationFund: '',
+    additionalLinks: defaultAdditionalServiceLinks.map((link) => ({
+      label: link.label.en,
+      to: link.to,
+      pageTitle: link.pageTitle.en,
+      pageSubtitle: link.pageSubtitle.en,
+      pageContent: link.pageContent.en,
+    })),
   },
   heading: '',
   subtitle: '',
@@ -249,6 +294,16 @@ const localizedValueHasContent = (value) => {
     const text = value[language]
     return typeof text === 'string' && text.trim().length > 0
   })
+}
+
+const createServicePath = (label = '') => {
+  const slug = label
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  return slug ? `/services/${slug}` : ''
 }
 
 const panelClass = 'rounded-[24px] border border-gray-100 bg-white p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden transition-all duration-300'
@@ -1088,22 +1143,37 @@ const DashboardShell = ({ sectionKey = null }) => {
       Array.isArray(youthEducation.reasons) && youthEducation.reasons.length > 0
         ? youthEducation.reasons
         : defaultYouthServicesForm.reasons
+    const navbarAdditionalLinks =
+      Array.isArray(youthEducation.navbar?.additionalLinks) && youthEducation.navbar.additionalLinks.length > 0
+        ? youthEducation.navbar.additionalLinks
+        : defaultAdditionalServiceLinks
+    const navbarDefaults = defaultServicesNavbarLabels[servicesEditorLanguage] ?? defaultServicesNavbarLabels.en
     setYouthServicesForm({
       navbar: {
-        label: readLocalizedEditorValue(youthEducation.navbar?.label, servicesEditorLanguage),
-        s1h: readLocalizedEditorValue(youthEducation.navbar?.s1h, servicesEditorLanguage),
-        s2h: readLocalizedEditorValue(youthEducation.navbar?.s2h, servicesEditorLanguage),
-        gurmukhi: readLocalizedEditorValue(youthEducation.navbar?.gurmukhi, servicesEditorLanguage),
-        german: readLocalizedEditorValue(youthEducation.navbar?.german, servicesEditorLanguage),
-        camps: readLocalizedEditorValue(youthEducation.navbar?.camps, servicesEditorLanguage),
+        label: readLocalizedEditorValue(youthEducation.navbar?.label, servicesEditorLanguage) || navbarDefaults.label,
+        s1h: readLocalizedEditorValue(youthEducation.navbar?.s1h, servicesEditorLanguage) || navbarDefaults.s1h,
+        s2h: readLocalizedEditorValue(youthEducation.navbar?.s2h, servicesEditorLanguage) || navbarDefaults.s2h,
+        gurmukhi:
+          readLocalizedEditorValue(youthEducation.navbar?.gurmukhi, servicesEditorLanguage) ||
+          navbarDefaults.gurmukhi,
+        german:
+          readLocalizedEditorValue(youthEducation.navbar?.german, servicesEditorLanguage) || navbarDefaults.german,
+        camps: readLocalizedEditorValue(youthEducation.navbar?.camps, servicesEditorLanguage) || navbarDefaults.camps,
         registration: readLocalizedEditorValue(
           youthEducation.navbar?.registration,
           servicesEditorLanguage,
-        ),
+        ) || navbarDefaults.registration,
         cremationFund: readLocalizedEditorValue(
           youthEducation.navbar?.cremationFund,
           servicesEditorLanguage,
-        ),
+        ) || navbarDefaults.cremationFund,
+        additionalLinks: navbarAdditionalLinks.map((link) => ({
+          label: readLocalizedEditorValue(link?.label, servicesEditorLanguage),
+          to: typeof link?.to === 'string' ? link.to : '',
+          pageTitle: readLocalizedEditorValue(link?.pageTitle, servicesEditorLanguage),
+          pageSubtitle: readLocalizedEditorValue(link?.pageSubtitle, servicesEditorLanguage),
+          pageContent: readLocalizedEditorValue(link?.pageContent, servicesEditorLanguage),
+        })),
       },
       heading: readLocalizedEditorValue(youthEducation.heading, servicesEditorLanguage),
       subtitle: readLocalizedEditorValue(youthEducation.subtitle, servicesEditorLanguage),
@@ -1656,6 +1726,47 @@ const DashboardShell = ({ sectionKey = null }) => {
 
       return next
     })
+  }
+
+  const addAdditionalServiceLink = () => {
+    setYouthServicesForm((prev) => ({
+      ...prev,
+      navbar: {
+        ...prev.navbar,
+        additionalLinks: [...(prev.navbar.additionalLinks ?? []), emptyAdditionalServiceLink],
+      },
+    }))
+  }
+
+  const removeAdditionalServiceLink = (indexToRemove) => {
+    setYouthServicesForm((prev) => ({
+      ...prev,
+      navbar: {
+        ...prev.navbar,
+        additionalLinks: (prev.navbar.additionalLinks ?? []).filter((_, index) => index !== indexToRemove),
+      },
+    }))
+  }
+
+  const updateAdditionalServiceLabel = (index, value) => {
+    setYouthServicesForm((prev) => ({
+      ...prev,
+      navbar: {
+        ...prev.navbar,
+        additionalLinks: (prev.navbar.additionalLinks ?? []).map((link, linkIndex) => {
+          if (linkIndex !== index) {
+            return link
+          }
+
+          return {
+            ...link,
+            label: value,
+            pageTitle: link.pageTitle || value,
+            to: link.to || createServicePath(value),
+          }
+        }),
+      },
+    }))
   }
 
   const uploadYouthServicesImage = async (file, fieldPath) => {
@@ -2248,6 +2359,31 @@ const DashboardShell = ({ sectionKey = null }) => {
                   language,
                   youthServicesForm.navbar.cremationFund,
                 ),
+                additionalLinks: (youthServicesForm.navbar.additionalLinks ?? [])
+                  .map((link, index) => ({
+                    label: upsertLocalizedValue(
+                      existingYouth.navbar?.additionalLinks?.[index]?.label,
+                      language,
+                      link.label,
+                    ),
+                    to: link.to.trim(),
+                    pageTitle: upsertLocalizedValue(
+                      existingYouth.navbar?.additionalLinks?.[index]?.pageTitle,
+                      language,
+                      link.pageTitle,
+                    ),
+                    pageSubtitle: upsertLocalizedValue(
+                      existingYouth.navbar?.additionalLinks?.[index]?.pageSubtitle,
+                      language,
+                      link.pageSubtitle,
+                    ),
+                    pageContent: upsertLocalizedValue(
+                      existingYouth.navbar?.additionalLinks?.[index]?.pageContent,
+                      language,
+                      link.pageContent,
+                    ),
+                  }))
+                  .filter((link) => localizedValueHasContent(link.label) && link.to),
               },
               heading: upsertLocalizedValue(existingYouth.heading, language, youthServicesForm.heading),
               subtitle: upsertLocalizedValue(existingYouth.subtitle, language, youthServicesForm.subtitle),
@@ -2833,6 +2969,24 @@ const DashboardShell = ({ sectionKey = null }) => {
 
             {active === 'services' ? (
               <section className='space-y-6'>
+                <article className='sticky top-4 z-20 flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-blue-100 bg-white/95 px-5 py-4 shadow-[0_16px_35px_rgba(0,29,165,0.12)] backdrop-blur'>
+                  <div>
+                    <h3 className='text-[15px] font-black tracking-tight text-gray-900'>Save Services Changes</h3>
+                    <p className='mt-0.5 text-[12px] font-medium text-gray-500'>
+                      Save after editing links or page content so the navbar and service page update.
+                    </p>
+                  </div>
+                  <button
+                    type='button'
+                    onClick={onSave}
+                    disabled={updateMutation.isPending}
+                    className='inline-flex h-11 items-center justify-center gap-2 rounded-[12px] bg-[#001da5] px-5 text-[13px] font-bold text-white shadow-lg shadow-blue-500/20 transition hover:bg-[#001580] disabled:cursor-not-allowed disabled:opacity-70'
+                  >
+                    <Save className='h-4 w-4' />
+                    {updateMutation.isPending ? 'Saving...' : 'Save Services'}
+                  </button>
+                </article>
+
                 <article className={panelClass}>
                   <div className='flex flex-wrap items-center justify-between gap-4'>
                     <div>
@@ -2856,6 +3010,159 @@ const DashboardShell = ({ sectionKey = null }) => {
                           {language}
                         </button>
                       ))}
+                    </div>
+                  </div>
+                </article>
+
+                <article className={panelClass}>
+                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Services Dropdown Links</h3>
+                  <p className='mt-1 text-[13px] text-gray-500'>
+                    Manage the Services menu and content pages shown on the website.
+                  </p>
+                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Menu Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.label}
+                        onChange={(event) => updateYouthServicesField('navbar.label', event.target.value)}
+                        className={inputClass}
+                        placeholder='Services'
+                      />
+                    </div>
+                    <div>
+                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Antim Sanskar Link Label</label>
+                      <input
+                        type='text'
+                        value={youthServicesForm.navbar.cremationFund}
+                        onChange={(event) => updateYouthServicesField('navbar.cremationFund', event.target.value)}
+                        className={inputClass}
+                        placeholder='Cremation Fund (Antim Sanskar Fund)'
+                      />
+                    </div>
+                    <div className='md:col-span-2'>
+                      <div className='flex flex-wrap items-center justify-between gap-3'>
+                        <div>
+                          <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>
+                            Additional Service Links
+                          </label>
+                          <p className='mt-1 text-[12px] text-gray-500'>
+                            Use /services/example for a dashboard-managed page, or link to an existing page like /resources/library.
+                          </p>
+                        </div>
+                        <button
+                          type='button'
+                          onClick={addAdditionalServiceLink}
+                          className='inline-flex items-center gap-2 rounded-[10px] bg-[#001da5] px-3 py-2 text-[12px] font-bold text-white transition hover:bg-[#00167c]'
+                        >
+                          <Plus className='h-4 w-4' />
+                          Add Service
+                        </button>
+                      </div>
+                      <div className='mt-3 space-y-3'>
+                        {(youthServicesForm.navbar.additionalLinks ?? []).map((link, index) => (
+                          <div
+                            key={`additional-service-link-${index}`}
+                            className='grid grid-cols-1 gap-3 rounded-[14px] border border-gray-200 bg-gray-50 p-3 md:grid-cols-2'
+                          >
+                            <div>
+                              <label className='text-[11px] font-bold uppercase tracking-wider text-gray-500'>
+                                Label
+                              </label>
+                              <input
+                                type='text'
+                                value={link.label}
+                                onChange={(event) => updateAdditionalServiceLabel(index, event.target.value)}
+                                className={inputClass}
+                                placeholder='Library'
+                              />
+                            </div>
+                            <div>
+                              <label className='text-[11px] font-bold uppercase tracking-wider text-gray-500'>
+                                Link / Path
+                              </label>
+                              <input
+                                type='text'
+                                value={link.to}
+                                onChange={(event) =>
+                                  updateYouthServicesField(
+                                    `navbar.additionalLinks.${index}.to`,
+                                    event.target.value,
+                                  )
+                                }
+                                className={inputClass}
+                                placeholder='/services/library'
+                              />
+                            </div>
+                            <div>
+                              <label className='text-[11px] font-bold uppercase tracking-wider text-gray-500'>
+                                Page Title
+                              </label>
+                              <input
+                                type='text'
+                                value={link.pageTitle}
+                                onChange={(event) =>
+                                  updateYouthServicesField(
+                                    `navbar.additionalLinks.${index}.pageTitle`,
+                                    event.target.value,
+                                  )
+                                }
+                                className={inputClass}
+                                placeholder='Library'
+                              />
+                            </div>
+                            <div>
+                              <label className='text-[11px] font-bold uppercase tracking-wider text-gray-500'>
+                                Page Subtitle
+                              </label>
+                              <input
+                                type='text'
+                                value={link.pageSubtitle}
+                                onChange={(event) =>
+                                  updateYouthServicesField(
+                                    `navbar.additionalLinks.${index}.pageSubtitle`,
+                                    event.target.value,
+                                  )
+                                }
+                                className={inputClass}
+                                placeholder='Short introduction for this service'
+                              />
+                            </div>
+                            <div className='md:col-span-2'>
+                              <label className='text-[11px] font-bold uppercase tracking-wider text-gray-500'>
+                                Page Content
+                              </label>
+                              <textarea
+                                value={link.pageContent}
+                                onChange={(event) =>
+                                  updateYouthServicesField(
+                                    `navbar.additionalLinks.${index}.pageContent`,
+                                    event.target.value,
+                                  )
+                                }
+                                className={textareaClass}
+                                placeholder='Describe this service. This content appears on the generated service page.'
+                              />
+                            </div>
+                            <div className='md:col-span-2 flex justify-end'>
+                            <button
+                              type='button'
+                              onClick={() => removeAdditionalServiceLink(index)}
+                              className='inline-flex h-11 items-center justify-center gap-2 rounded-[10px] border border-red-100 bg-white px-3 text-[12px] font-bold text-red-600 transition hover:bg-red-50'
+                              aria-label={`Remove service link ${index + 1}`}
+                            >
+                              <Trash2 className='h-4 w-4' />
+                              Remove Service
+                            </button>
+                            </div>
+                          </div>
+                        ))}
+                        {(youthServicesForm.navbar.additionalLinks ?? []).length === 0 ? (
+                          <p className='rounded-[12px] border border-dashed border-gray-200 px-4 py-3 text-[13px] text-gray-500'>
+                            No additional service links yet. Use "Add Service" to list another page in the dropdown.
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -3037,29 +3344,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Youth Dropdown Labels</h3>
                   <p className='mt-1 text-[13px] text-gray-500'>
-                    These are the labels shown in the Services dropdown (Classes / Programs items).
+                    These are the class and program labels shown in the Services dropdown.
                   </p>
                   <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <div>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Menu Label</label>
-                      <input
-                        type='text'
-                        value={youthServicesForm.navbar.label}
-                        onChange={(event) => updateYouthServicesField('navbar.label', event.target.value)}
-                        className={inputClass}
-                        placeholder='Services'
-                      />
-                    </div>
-                    <div>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Cremation Link Label</label>
-                      <input
-                        type='text'
-                        value={youthServicesForm.navbar.cremationFund}
-                        onChange={(event) => updateYouthServicesField('navbar.cremationFund', event.target.value)}
-                        className={inputClass}
-                        placeholder='Cremation Fund (Antim Sanskar Fund)'
-                      />
-                    </div>
                     <div>
                       <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Section 1 Heading</label>
                       <input

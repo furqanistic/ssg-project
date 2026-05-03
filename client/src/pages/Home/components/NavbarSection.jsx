@@ -22,131 +22,180 @@ const getDefaultAboutSections = (t) => [
   },
 ]
 
-const readLocalizedDisplayValue = (value, language = 'en') => {
+const readLocalizedDisplayValue = (value, language = 'en', fallback = '') => {
   if (typeof value === 'string') {
-    return value
+    return value.trim() || fallback
   }
 
   if (value && typeof value === 'object' && !Array.isArray(value)) {
-    return value[language] || value.en || ''
+    return value[language] || value.en || fallback
   }
 
-  return ''
+  return fallback
 }
 
-const getNavItems = (t, youthServices = {}, language = 'en') => [
-  {
-    label: t('navbar.items.about.label'),
-    sections: getDefaultAboutSections(t),
-    panelClassName: 'w-[560px] grid-cols-2',
-  },
-  {
-    label: t('navbar.items.visitors.label'),
-    sections: [
-      {
-        links: [
-          { label: t('navbar.items.visitors.guide'), to: '/visitors/guide#visitor-guide' },
-          { label: t('navbar.items.visitors.rules'), to: '/visitors/guide#rules-etiquette' },
-          {
-            label: t('navbar.items.visitors.timings'),
-            to: '/visitors/guide#opening-timings',
-          },
-          {
-            label: t('navbar.items.visitors.location'),
-            to: '/visitors/guide#location-map',
-          },
-          { label: t('navbar.items.visitors.faq'), to: '/visitors/guide#faq' },
-        ],
-      },
-    ],
-    panelClassName: 'w-[280px] grid-cols-1',
-  },
-  {
-    label: t('navbar.items.events.label'),
-    sections: [
-      {
-        heading: t('navbar.items.events.s1h'),
-        links: [
-          { label: t('navbar.items.events.daily'), to: '/events/programs#daily' },
-          { label: t('navbar.items.events.weekly'), to: '/events/programs#weekly' },
-          { label: t('navbar.items.events.monthly'), to: '/events/programs#monthly' },
-          { label: t('navbar.items.events.yearly'), to: '/events/programs#yearly' },
-        ],
-      },
-      {
-        heading: t('navbar.items.events.s2h'),
-        links: [
-          { label: t('navbar.items.events.upcoming'), to: '/events/programs#all' },
-          { label: t('navbar.items.events.calendar'), to: '/events/programs#yearly' },
-          { label: t('navbar.items.events.past'), to: '/events/programs#all' },
-        ],
-      },
-    ],
-    panelClassName: 'w-[560px] grid-cols-2',
-  },
-  {
-    label: readLocalizedDisplayValue(youthServices.navbar?.label, language),
-    sections: [
-      {
-        heading: readLocalizedDisplayValue(youthServices.navbar?.s1h, language),
-        links: [
-          {
-            label: readLocalizedDisplayValue(youthServices.navbar?.gurmukhi, language),
-            to: '/youth-education#gurmukhi-class',
-          },
-          {
-            label: readLocalizedDisplayValue(youthServices.navbar?.german, language),
-            to: '/youth-education#german-class',
-          },
-        ],
-      },
-      {
-        heading: readLocalizedDisplayValue(youthServices.navbar?.s2h, language),
-        links: [
-          {
-            label: readLocalizedDisplayValue(youthServices.navbar?.camps, language),
-            to: '/youth-education#camps-workshops',
-          },
-          {
-            label: readLocalizedDisplayValue(youthServices.navbar?.registration, language),
-            to: '/youth-education#registration',
-          },
-          {
-            label: readLocalizedDisplayValue(youthServices.navbar?.cremationFund, language),
-            to: '/services/antim-sanskar-fund',
-          },
-        ],
-      },
-    ],
-    panelClassName: 'w-[560px] grid-cols-2',
-  },
-  {
-    label: t('navbar.items.media.label'),
-    sections: [
-      {
-        links: [
-          { label: t('navbar.items.media.gallery'), to: '/media#photo-gallery' },
-          { label: t('navbar.items.media.videos'), to: '/media#videos' },
-          { label: t('navbar.items.media.live'), to: '/media#live-kirtan' },
-          { label: t('navbar.items.media.library'), to: '/resources/library' },
-        ],
-      },
-    ],
-    panelClassName: 'w-[280px] grid-cols-1',
-  },
-  {
-    label: t('navbar.items.contact.label'),
-    sections: [
-      {
-        links: [
-          { label: t('navbar.items.contact.volunteer'), to: '/contact#volunteer' },
-          { label: t('navbar.items.contact.form'), to: '/contact#contact-form' },
-        ],
-      },
-    ],
-    panelClassName: 'w-[280px] grid-cols-1',
-  },
-]
+const getConfiguredServiceLinks = (t, youthServices = {}, language = 'en') => {
+  const configuredLinks = Array.isArray(youthServices.navbar?.additionalLinks)
+    ? youthServices.navbar.additionalLinks
+    : []
+
+  const links = configuredLinks
+    .map((link) => ({
+      label: readLocalizedDisplayValue(link?.label, language),
+      to: typeof link?.to === 'string' ? link.to.trim() : '',
+    }))
+    .filter((link) => link.label && link.to)
+
+  if (links.length > 0) {
+    return links
+  }
+
+  return [{ label: t('navbar.items.media.library'), to: '/resources/library' }]
+}
+
+const getNavItems = (t, youthServices = {}, language = 'en') => {
+  const serviceLinks = [
+    {
+      label: readLocalizedDisplayValue(
+        youthServices.navbar?.cremationFund,
+        language,
+        t('navbar.items.youth.cremationFund'),
+      ),
+      to: '/services/antim-sanskar-fund',
+    },
+    ...getConfiguredServiceLinks(t, youthServices, language),
+  ]
+
+  return [
+    {
+      label: t('navbar.items.about.label'),
+      sections: getDefaultAboutSections(t),
+      panelClassName: 'w-[560px] grid-cols-2',
+    },
+    {
+      label: t('navbar.items.visitors.label'),
+      sections: [
+        {
+          links: [
+            { label: t('navbar.items.visitors.guide'), to: '/visitors/guide#visitor-guide' },
+            { label: t('navbar.items.visitors.rules'), to: '/visitors/guide#rules-etiquette' },
+            {
+              label: t('navbar.items.visitors.timings'),
+              to: '/visitors/guide#opening-timings',
+            },
+            {
+              label: t('navbar.items.visitors.location'),
+              to: '/visitors/guide#location-map',
+            },
+            { label: t('navbar.items.visitors.faq'), to: '/visitors/guide#faq' },
+          ],
+        },
+      ],
+      panelClassName: 'w-[280px] grid-cols-1',
+    },
+    {
+      label: t('navbar.items.events.label'),
+      sections: [
+        {
+          heading: t('navbar.items.events.s1h'),
+          links: [
+            { label: t('navbar.items.events.daily'), to: '/events/programs#daily' },
+            { label: t('navbar.items.events.weekly'), to: '/events/programs#weekly' },
+            { label: t('navbar.items.events.monthly'), to: '/events/programs#monthly' },
+            { label: t('navbar.items.events.yearly'), to: '/events/programs#yearly' },
+          ],
+        },
+        {
+          heading: t('navbar.items.events.s2h'),
+          links: [
+            { label: t('navbar.items.events.upcoming'), to: '/events/programs#all' },
+            { label: t('navbar.items.events.calendar'), to: '/events/programs#yearly' },
+            { label: t('navbar.items.events.past'), to: '/events/programs#all' },
+          ],
+        },
+      ],
+      panelClassName: 'w-[560px] grid-cols-2',
+    },
+    {
+      label: readLocalizedDisplayValue(youthServices.navbar?.label, language, t('navbar.items.youth.label')),
+      sections: [
+        {
+          heading: readLocalizedDisplayValue(youthServices.navbar?.s1h, language, t('navbar.items.youth.s1h')),
+          links: [
+            {
+              label: readLocalizedDisplayValue(
+                youthServices.navbar?.gurmukhi,
+                language,
+                t('navbar.items.youth.gurmukhi'),
+              ),
+              to: '/youth-education#gurmukhi-class',
+            },
+            {
+              label: readLocalizedDisplayValue(
+                youthServices.navbar?.german,
+                language,
+                t('navbar.items.youth.german'),
+              ),
+              to: '/youth-education#german-class',
+            },
+          ],
+        },
+        {
+          heading: readLocalizedDisplayValue(youthServices.navbar?.s2h, language, t('navbar.items.youth.s2h')),
+          links: [
+            {
+              label: readLocalizedDisplayValue(
+                youthServices.navbar?.camps,
+                language,
+                t('navbar.items.youth.camps'),
+              ),
+              to: '/youth-education#camps-workshops',
+            },
+            {
+              label: readLocalizedDisplayValue(
+                youthServices.navbar?.registration,
+                language,
+                t('navbar.items.youth.registration'),
+              ),
+              to: '/youth-education#registration',
+            },
+          ],
+        },
+        {
+          heading: t('navbar.items.youth.label'),
+          links: serviceLinks,
+        },
+      ],
+      panelClassName: 'w-[720px] grid-cols-3',
+    },
+    {
+      label: t('navbar.items.media.label'),
+      sections: [
+        {
+          links: [
+            { label: t('navbar.items.media.gallery'), to: '/media#photo-gallery' },
+            { label: t('navbar.items.media.videos'), to: '/media#videos' },
+            { label: t('navbar.items.media.live'), to: '/media#live-kirtan' },
+            { label: t('navbar.items.media.library'), to: '/resources/library' },
+          ],
+        },
+      ],
+      panelClassName: 'w-[280px] grid-cols-1',
+    },
+    {
+      label: t('navbar.items.contact.label'),
+      sections: [
+        {
+          links: [
+            { label: t('navbar.items.contact.volunteer'), to: '/contact#volunteer' },
+            { label: t('navbar.items.contact.form'), to: '/contact#contact-form' },
+          ],
+        },
+      ],
+      panelClassName: 'w-[280px] grid-cols-1',
+    },
+  ]
+}
 
 const NavbarDropdown = ({ item, isOpen }) => {
   return (
@@ -187,6 +236,12 @@ const NavbarDropdown = ({ item, isOpen }) => {
   )
 }
 
+const WhatsAppIcon = ({ className = '' }) => (
+  <svg viewBox='0 0 24 24' fill='currentColor' className={className} aria-hidden='true'>
+    <path d='M12.04 2C6.62 2 2.2 6.34 2.2 11.68c0 1.88.55 3.7 1.58 5.27L2 22l5.25-1.72a9.97 9.97 0 0 0 4.79 1.22h.01c5.42 0 9.84-4.34 9.84-9.68C21.89 6.34 17.47 2 12.04 2Zm0 17.73h-.01a8.2 8.2 0 0 1-4.17-1.14l-.3-.18-3.11 1.02 1.01-3.02-.2-.31a8 8 0 0 1-1.26-4.28c0-4.35 3.6-7.9 8.03-7.9 4.43 0 8.03 3.55 8.03 7.9 0 4.36-3.6 7.91-8.02 7.91Zm4.4-5.9c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.23-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.95-1.17-.72-.62-1.21-1.38-1.35-1.61-.14-.24-.01-.36.1-.47.1-.1.24-.27.36-.4.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.27-.74-1.74-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.57 4.11 3.61.57.24 1.02.39 1.37.5.58.18 1.11.15 1.53.09.47-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z' />
+  </svg>
+)
+
 const NavbarSection = () => {
   const [openItem, setOpenItem] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -201,12 +256,6 @@ const NavbarSection = () => {
     () => getNavItems(t, content?.services?.youthEducation ?? {}, language),
     [content?.services?.youthEducation, language, t],
   )
-  const WhatsAppIcon = ({ className = '' }) => (
-    <svg viewBox='0 0 24 24' fill='currentColor' className={className} aria-hidden='true'>
-      <path d='M12.04 2C6.62 2 2.2 6.34 2.2 11.68c0 1.88.55 3.7 1.58 5.27L2 22l5.25-1.72a9.97 9.97 0 0 0 4.79 1.22h.01c5.42 0 9.84-4.34 9.84-9.68C21.89 6.34 17.47 2 12.04 2Zm0 17.73h-.01a8.2 8.2 0 0 1-4.17-1.14l-.3-.18-3.11 1.02 1.01-3.02-.2-.31a8 8 0 0 1-1.26-4.28c0-4.35 3.6-7.9 8.03-7.9 4.43 0 8.03 3.55 8.03 7.9 0 4.36-3.6 7.91-8.02 7.91Zm4.4-5.9c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.23-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.95-1.17-.72-.62-1.21-1.38-1.35-1.61-.14-.24-.01-.36.1-.47.1-.1.24-.27.36-.4.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.27-.74-1.74-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.57 4.11 3.61.57.24 1.02.39 1.37.5.58.18 1.11.15 1.53.09.47-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z' />
-    </svg>
-  )
-
   useEffect(() => {
     if (!isMobileMenuOpen) {
       document.body.style.overflow = ''
@@ -412,7 +461,7 @@ const NavbarSection = () => {
                           </p>
                         ) : null}
                         <div className='flex flex-col gap-2'>
-                          {section.links.map((link) => {
+                          {section.links.filter((link) => link.label).map((link) => {
                             const Component = link.to ? Link : 'a'
                             return (
                               <Component

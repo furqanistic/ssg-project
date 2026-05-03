@@ -15,6 +15,9 @@ import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
+const mapEmbedUrl =
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3156207235006!2d13.54695737668049!3d52.50962697205845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a849415a3c34c1%3A0x38e28ffe06a0b655!2sAlt-Biesdorf%2071%2C%2012683%20Berlin%2C%20Germany!5e0!3m2!1sen!2s!4v1777803546100!5m2!1sen!2s'
+
 const VisitorGuidePage = () => {
   const { t } = useTranslation()
   const location = useLocation()
@@ -252,9 +255,9 @@ const VisitorGuidePage = () => {
       <section id='location-map' className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='mx-auto max-w-[1040px]'>
-              <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
               {t('visitors.locationTitle')}
-              </h2>
+            </h2>
 
             <div className='mt-8 rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
               <div className='flex items-start gap-4'>
@@ -274,8 +277,20 @@ const VisitorGuidePage = () => {
                 </div>
               </div>
 
-              <div className='mt-8 flex h-[300px] items-center justify-center rounded-[14px] bg-[#edf1f7] text-[16px] text-[#7a879b] md:h-[430px]'>
-                {t('visitors.mapPlaceholder')}
+              <div className='mt-8 overflow-hidden rounded-[14px] border border-[#dbe1ea] bg-[#edf1f7] shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
+                <div className='h-[320px] w-full md:h-[430px]'>
+                  <iframe
+                    title='Visitor location map'
+                    src={mapEmbedUrl}
+                    width='100%'
+                    height='100%'
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading='lazy'
+                    referrerPolicy='no-referrer-when-downgrade'
+                    className='h-full w-full'
+                  />
+                </div>
               </div>
 
               <div className='mt-8 text-[15px] leading-[1.65] text-[#516075] md:text-[16px]'>

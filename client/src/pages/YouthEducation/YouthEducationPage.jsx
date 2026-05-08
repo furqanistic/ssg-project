@@ -6,7 +6,7 @@ import {
   Heart,
   Users,
 } from 'lucide-react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
@@ -19,22 +19,22 @@ const scrollTargets = [
   'registration',
 ]
 
-const readLocalizedValue = (value, language = 'en') => {
+const readLocalizedValue = (value, language = 'en', fallback = '') => {
   if (typeof value === 'string') {
-    return value
+    return value || fallback
   }
 
   if (value && typeof value === 'object' && !Array.isArray(value)) {
-    return value[language] || value.en || ''
+    return value[language] || value.en || fallback
   }
 
-  return ''
+  return fallback
 }
 
 const YouthEducationPage = () => {
   const location = useLocation()
   const { data: content } = useSiteContentQuery()
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
   const language = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0]
 
   useEffect(() => {
@@ -60,9 +60,11 @@ const YouthEducationPage = () => {
 
   const youth = useMemo(() => {
     const source = content?.services?.youthEducation ?? {}
+    const fallbackReasonsRaw = t('youthEducationPage.reasons', { returnObjects: true })
+    const fallbackReasons = Array.isArray(fallbackReasonsRaw) ? fallbackReasonsRaw : []
     const reasons = Array.from({ length: 4 }).map((_, index) => ({
-      title: readLocalizedValue(source.reasons?.[index]?.title, language),
-      text: readLocalizedValue(source.reasons?.[index]?.text, language),
+      title: readLocalizedValue(source.reasons?.[index]?.title, language, fallbackReasons[index]?.title || ''),
+      text: readLocalizedValue(source.reasons?.[index]?.text, language, fallbackReasons[index]?.text || ''),
     }))
     const gurmukhiLevels = Array.from({ length: 3 }).map((_, index) => ({
       title: readLocalizedValue(source.gurmukhi?.levels?.[index]?.title, language),
@@ -113,10 +115,26 @@ const YouthEducationPage = () => {
         contactButtonLabel: readLocalizedValue(source.registration?.contactButtonLabel, language),
         scheduleButtonLabel: readLocalizedValue(source.registration?.scheduleButtonLabel, language),
       },
-      whyEnrollTitle: readLocalizedValue(source.whyEnrollTitle, language),
+      whyEnrollTitle: readLocalizedValue(
+        source.whyEnrollTitle,
+        language,
+        t('youthEducationPage.whyEnrollTitle'),
+      ),
       reasons,
     }
-  }, [content?.services?.youthEducation, language])
+  }, [content?.services?.youthEducation, language, t])
+
+  const reasonItems = useMemo(() => {
+    const reasonIcons = [BookOpen, Users, GraduationCap, Heart]
+    return reasonIcons
+      .map((Icon, index) => ({
+        Icon,
+        title: youth.reasons[index]?.title || '',
+        text: youth.reasons[index]?.text || '',
+        accent: index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]',
+      }))
+      .filter((item) => item.title || item.text)
+  }, [youth.reasons])
 
   return (
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
@@ -300,18 +318,18 @@ const YouthEducationPage = () => {
           </p>
 
           <div className='mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row'>
-            <button
-              type='button'
+            <Link
+              to='/contact#contact-form'
               className='inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
             >
               {youth.registration.contactButtonLabel}
-            </button>
-            <button
-              type='button'
+            </Link>
+            <Link
+              to='/events/programs#yearly'
               className='inline-flex h-12 items-center justify-center rounded-[12px] border border-[#2d4f9f] px-8 text-[15px] font-semibold text-[#2d4f9f] transition hover:bg-[#eef3ff] md:text-[16px]'
             >
               {youth.registration.scheduleButtonLabel}
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -323,20 +341,18 @@ const YouthEducationPage = () => {
           </h2>
 
           <div className='mt-12 grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-4'>
-            {[BookOpen, Users, GraduationCap, Heart].map((Icon, index) => (
-              <div key={youth.reasons[index].title} className='text-center'>
+            {reasonItems.map((item) => (
+              <div key={`${item.title}-${item.text}`} className='text-center'>
                 <div
-                  className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white ${
-                    index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]'
-                  }`}
+                  className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white ${item.accent}`}
                 >
-                  <Icon className='h-7 w-7 stroke-[2]' />
+                  <item.Icon className='h-7 w-7 stroke-[2]' />
                 </div>
                 <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                  {youth.reasons[index].title}
+                  {item.title}
                 </h3>
                 <p className='mx-auto mt-3 max-w-[240px] text-[15px] leading-[1.6] text-[#516075] md:text-[16px]'>
-                  {youth.reasons[index].text}
+                  {item.text}
                 </p>
               </div>
             ))}

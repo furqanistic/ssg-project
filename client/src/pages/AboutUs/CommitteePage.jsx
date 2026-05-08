@@ -1,5 +1,6 @@
 import React from 'react'
 import { Mail, Phone } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import AboutPageHero from '@/components/about/AboutPageHero'
@@ -81,12 +82,12 @@ const CommitteePage = () => {
             <p className='mx-auto mt-5 max-w-[900px] text-[17px] leading-[1.6] text-[#5a677a] md:text-[18px]'>
               {committee.ctaDescription}
             </p>
-            <button
-              type='button'
+            <Link
+              to='/contact#contact-form'
               className='mt-9 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
             >
               {committee.ctaButtonLabel}
-            </button>
+            </Link>
           </div>
         </div>
       </section>

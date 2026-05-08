@@ -40,10 +40,13 @@ const getConfiguredServiceLinks = (t, youthServices = {}, language = 'en') => {
     : []
 
   const links = configuredLinks
-    .map((link) => ({
-      label: readLocalizedDisplayValue(link?.label, language),
-      to: typeof link?.to === 'string' ? link.to.trim() : '',
-    }))
+    .map((link) => {
+      const to = readLocalizedDisplayValue(link?.to, language)
+      return {
+        label: readLocalizedDisplayValue(link?.label, language),
+        to: typeof to === 'string' ? to.trim() : '',
+      }
+    })
     .filter((link) => link.label && link.to)
 
   if (links.length > 0) {

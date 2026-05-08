@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const educationIcons = [GraduationCap, GraduationCap, Users]
 const ctaIcons = [Users, Heart]
 
-const EducationCard = ({ title, description, icon: Icon, accent, ctaLabel }) => {
+const EducationCard = ({ title, description, icon: Icon, accent, ctaLabel, to }) => {
   return (
     <article className='rounded-[16px] border border-[#d8dce4] bg-white px-6 py-7 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
       <div
@@ -20,13 +20,13 @@ const EducationCard = ({ title, description, icon: Icon, accent, ctaLabel }) => 
       <p className='mt-3 max-w-[32ch] text-[15px] leading-[1.5] text-[#5a677a] md:text-[16px]'>
         {description}
       </p>
-      <button
-        type='button'
+      <Link
+        to={to}
         className='mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[#f6ab3c] transition hover:text-[#eb9e2a]'
       >
         {ctaLabel}
         <ArrowRight className='h-4 w-4' />
-      </button>
+      </Link>
     </article>
   )
 }
@@ -58,10 +58,17 @@ const YouthEducationSection = () => {
 
   const educationCards = useMemo(() => {
     const cards = t('home.youthSection.cards', { returnObjects: true })
+    const cardLinks = [
+      '/youth-education#gurmukhi-class',
+      '/youth-education#german-class',
+      '/youth-education#camps-workshops',
+    ]
+
     return cards.map((card, index) => ({
       ...card,
       icon: educationIcons[index],
       accent: index % 2 === 1 ? 'bg-[#2d4f9f] text-white' : 'bg-[#f6ab3c] text-white',
+      to: cardLinks[index] || '/youth-education',
     }))
   }, [t])
 

@@ -13,6 +13,14 @@ const readLocalizedValue = (value, language = 'en', fallback = '') => {
   return fallback
 }
 
+const normalizeServiceImages = (value) => {
+  if (!Array.isArray(value)) return []
+  return value
+    .map((item) => (typeof item === 'string' ? item.trim() : ''))
+    .filter(Boolean)
+    .slice(0, 8)
+}
+
 const ServiceDetailPage = () => {
   const location = useLocation()
   const { data: content } = useSiteContentQuery()
@@ -23,12 +31,18 @@ const ServiceDetailPage = () => {
   const service = useMemo(() => {
     const links = content?.services?.youthEducation?.navbar?.additionalLinks
     if (!Array.isArray(links)) return null
-    return links.find((link) => link?.to?.replace(/\/+$/, '') === servicePath) ?? null
+    return links.find((link) => {
+      const linkPath = readLocalizedValue(link?.to, language)
+      return linkPath.replace(/\/+$/, '') === servicePath
+    }) ?? null
   }, [content?.services?.youthEducation?.navbar?.additionalLinks, servicePath])
 
   const title = readLocalizedValue(service?.pageTitle, language, readLocalizedValue(service?.label, language))
   const subtitle = readLocalizedValue(service?.pageSubtitle, language)
   const body = readLocalizedValue(service?.pageContent, language)
+  const serviceImages = normalizeServiceImages(service?.pageImages)
+  const imageGridClass =
+    serviceImages.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
 
   return (
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
@@ -86,6 +100,26 @@ const ServiceDetailPage = () => {
             </>
           )}
         </div>
+
+        {service && serviceImages.length > 0 ? (
+          <div className='mx-auto mt-12 w-full max-w-[96rem] md:mt-14'>
+            <div className={`grid gap-5 md:gap-6 ${imageGridClass}`}>
+              {serviceImages.map((imageUrl, index) => (
+                <div
+                  key={`${imageUrl}-${index}`}
+                  className='group relative aspect-video w-full overflow-hidden rounded-[16px] border border-[#dbe1ea] bg-[#f7f9fc] shadow-[0_10px_28px_rgba(13,23,45,0.08)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_20px_36px_rgba(13,23,45,0.14)]'
+                >
+                  <img
+                    src={imageUrl}
+                    alt={`${title || 'Service'} image ${index + 1}`}
+                    loading='lazy'
+                    className='absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]'
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <SiteFooter />

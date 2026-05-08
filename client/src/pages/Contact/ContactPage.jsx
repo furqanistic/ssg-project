@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Clock3, Mail, MapPin, Phone, Users } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -6,7 +6,7 @@ import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
-const scrollTargets = ['volunteer', 'contact-form']
+const scrollTargets = ['volunteer']
 const mapEmbedUrl =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3156207235006!2d13.54695737668049!3d52.50962697205845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a849415a3c34c1%3A0x38e28ffe06a0b655!2sAlt-Biesdorf%2071%2C%2012683%20Berlin%2C%20Germany!5e0!3m2!1sen!2s!4v1777803546100!5m2!1sen!2s'
 
@@ -14,6 +14,7 @@ const ContactPage = () => {
   const location = useLocation()
   const { t } = useTranslation()
   const { data: content } = useSiteContentQuery()
+  const [showInterestOptions, setShowInterestOptions] = useState(false)
   const contact = content?.contact ?? {}
   const contactPhone = typeof contact.phone === 'string' ? contact.phone.trim() : ''
   const contactPhoneDigits = contactPhone.replace(/[^\d+]/g, '')
@@ -121,76 +122,7 @@ const ContactPage = () => {
       </section>
 
       <section className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto grid max-w-[1280px] grid-cols-1 gap-10 xl:grid-cols-[1fr_0.98fr]'>
-          <div id='contact-form'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {t('contact.sendMessage')}
-            </h2>
-
-            <form className='mt-8 space-y-6'>
-              <div>
-                <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                  {t('contact.nameLabel')}
-                </label>
-                <input
-                  type='text'
-                  placeholder={t('contact.namePlaceholder')}
-                  className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                />
-              </div>
-
-              <div>
-                <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                  {t('contact.emailLabel')}
-                </label>
-                <input
-                  type='email'
-                  placeholder={t('contact.emailPlaceholder')}
-                  className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                />
-              </div>
-
-              <div>
-                <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                  {t('contact.phoneLabel')}
-                </label>
-                <input
-                  type='text'
-                  placeholder={t('contact.phonePlaceholder')}
-                  className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                />
-              </div>
-
-              <div>
-                <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                  {t('contact.subjectLabel')}
-                </label>
-                <input
-                  type='text'
-                  placeholder={t('contact.subjectPlaceholder')}
-                  className='h-12 w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                />
-              </div>
-
-              <div>
-                <label className='mb-2 block text-[15px] font-semibold text-[#111318]'>
-                  {t('contact.messageLabel')}
-                </label>
-                <textarea
-                  placeholder={t('contact.messagePlaceholder')}
-                  className='min-h-[140px] w-full rounded-[10px] border border-[#e6e9ef] bg-[#f7f8fb] px-4 py-4 text-[15px] text-[#111318] outline-none transition focus:border-[#c9d2e4]'
-                />
-              </div>
-
-              <button
-                type='button'
-                className='inline-flex h-12 w-full items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
-              >
-                {t('common.actions.sendMessage')}
-              </button>
-            </form>
-          </div>
-
+        <div className='mx-auto max-w-[1280px]'>
           <div>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
               {t('contact.visitUs')}
@@ -301,15 +233,48 @@ const ContactPage = () => {
             <p className='mx-auto mt-4 max-w-[740px] text-[17px] leading-[1.55] text-[#516075] md:text-[18px]'>
               {t('contact.readyDesc')}
             </p>
-            <a
-              href='#contact-form'
+            <button
+              type='button'
+              onClick={() => setShowInterestOptions(true)}
               className='mt-8 inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
             >
               {t('common.actions.expressInterest')}
-            </a>
+            </button>
           </div>
         </div>
       </section>
+
+      {showInterestOptions ? (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4'>
+          <div className='w-full max-w-[360px] rounded-[16px] bg-white p-6 shadow-[0_18px_45px_rgba(16,24,40,0.25)]'>
+            <h3 className='text-[24px] font-extrabold tracking-[-0.02em] text-[#111318]'>
+              Contact Us
+            </h3>
+            <p className='mt-2 text-[15px] text-[#516075]'>Choose how you want to reach us.</p>
+            <div className='mt-6 grid grid-cols-1 gap-3'>
+              <a
+                href={contactPhoneDigits ? `tel:${contactPhoneDigits}` : '#'}
+                className='inline-flex h-11 items-center justify-center rounded-[10px] border border-[#dbe1ea] text-[15px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'
+              >
+                Call
+              </a>
+              <a
+                href={contactEmail ? `mailto:${contactEmail}` : '#'}
+                className='inline-flex h-11 items-center justify-center rounded-[10px] border border-[#dbe1ea] text-[15px] font-semibold text-[#1e3a8a] transition hover:bg-[#f7f9ff]'
+              >
+                Email
+              </a>
+              <button
+                type='button'
+                onClick={() => setShowInterestOptions(false)}
+                className='inline-flex h-11 items-center justify-center rounded-[10px] bg-[#f4f6f9] text-[15px] font-semibold text-[#111318] transition hover:bg-[#ebeff4]'
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <SiteFooter />
     </div>

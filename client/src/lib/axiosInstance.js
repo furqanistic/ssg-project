@@ -13,9 +13,8 @@ const baseURL = (
   typeof raw === 'string' && raw.trim() !== '' ? raw.trim() : DEFAULT_API_BASE_URL
 ).replace(/\/+$/, '')
 
+// Do not set a global Content-Type: FormData uploads need the runtime to set
+// multipart boundary; forcing application/json breaks /admin/content/upload-image.
 export const axiosInstance = axios.create({
   baseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 })

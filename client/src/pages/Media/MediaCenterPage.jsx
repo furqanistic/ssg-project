@@ -14,18 +14,21 @@ const defaultMediaCards = [
     icon: ImageIcon,
     gradient: 'from-[#ff7a00] to-[#ff6200]',
     buttonClass: 'bg-[#f8a744] hover:bg-[#f29c33]',
+    ctaUrl: 'https://www.instagram.com/ssgberlin_org/',
   },
   {
     id: 'videos',
     icon: Video,
     gradient: 'from-[#2c76f1] to-[#2664d4]',
     buttonClass: 'bg-[#3559a7] hover:bg-[#2f4f96]',
+    ctaUrl: 'https://www.youtube.com/channel/UCs953CyNH7x8SfZ-a2jAv6A',
   },
   {
     id: 'live-kirtan',
     icon: Radio,
     gradient: 'from-[#b33cff] to-[#932ff3]',
     buttonClass: 'bg-[#a33af1] hover:bg-[#922de1]',
+    ctaUrl: 'https://www.youtube.com/channel/UCs953CyNH7x8SfZ-a2jAv6A',
   },
 ]
 
@@ -125,7 +128,7 @@ const MediaCenterPage = () => {
               <article
                 key={card.id}
                 id={card.id}
-                className='overflow-hidden rounded-[18px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
+                className='flex h-full flex-col overflow-hidden rounded-[18px] border border-[#dbe1ea] bg-white shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
               >
                 <div
                   className={`flex h-[220px] items-center justify-center bg-gradient-to-r ${card.gradient}`}
@@ -135,19 +138,23 @@ const MediaCenterPage = () => {
                   </div>
                 </div>
 
-                <div className='px-6 py-6'>
+                <div className='flex flex-1 flex-col px-6 py-6'>
                   <h2 className='text-[20px] font-bold tracking-[-0.02em] text-[#111318] md:text-[21px]'>
                     {card.title}
                   </h2>
                   <p className='mt-4 text-[15px] leading-[1.65] text-[#516075] md:text-[16px]'>
                     {card.description}
                   </p>
-                  <button
-                    type='button'
-                    className={`mt-6 inline-flex h-10 w-full items-center justify-center rounded-[10px] text-[15px] font-semibold text-white transition ${card.buttonClass}`}
-                  >
-                    {card.buttonLabel}
-                  </button>
+                  <div className='mt-auto pt-6'>
+                    <a
+                      href={card.ctaUrl}
+                      target='_blank'
+                      rel='noreferrer'
+                      className={`inline-flex h-10 w-full items-center justify-center rounded-[10px] text-[15px] font-semibold text-white transition ${card.buttonClass}`}
+                    >
+                      {card.buttonLabel}
+                    </a>
+                  </div>
                 </div>
               </article>
             )

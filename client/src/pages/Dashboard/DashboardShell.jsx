@@ -150,6 +150,7 @@ const defaultAdditionalServiceLinks = [
     pageTitle: { en: '', de: '' },
     pageSubtitle: { en: '', de: '' },
     pageContent: { en: '', de: '' },
+    pageImages: [],
   },
 ]
 const emptyAdditionalServiceLink = {
@@ -158,6 +159,7 @@ const emptyAdditionalServiceLink = {
   pageTitle: '',
   pageSubtitle: '',
   pageContent: '',
+  pageImages: [''],
 }
 const defaultServicesNavbarLabels = {
   en: {
@@ -197,6 +199,7 @@ const defaultYouthServicesForm = {
       pageTitle: link.pageTitle.en,
       pageSubtitle: link.pageSubtitle.en,
       pageContent: link.pageContent.en,
+      pageImages: Array.isArray(link.pageImages) && link.pageImages.length > 0 ? link.pageImages : [''],
     })),
   },
   heading: '',
@@ -256,7 +259,7 @@ const defaultYouthServicesForm = {
 
 const readLocalizedEditorValue = (value, language = 'en') => {
   if (typeof value === 'string') {
-    return language === 'en' ? value : ''
+    return value
   }
   if (value && typeof value === 'object' && !Array.isArray(value)) {
     return typeof value[language] === 'string' ? value[language] : ''
@@ -1037,7 +1040,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     setModalUploadProgress(0)
   }
 
-  const { data: content, isLoading } = useSiteContentQuery()
+  const { data: content, isLoading, dataUpdatedAt } = useSiteContentQuery()
   const updateMutation = useUpdateContentSectionMutation()
   const uploadImageMutation = useUploadContentImageMutation()
   const uploadFileMutation = useUploadContentFileMutation()
@@ -1169,10 +1172,17 @@ const DashboardShell = ({ sectionKey = null }) => {
         ) || navbarDefaults.cremationFund,
         additionalLinks: navbarAdditionalLinks.map((link) => ({
           label: readLocalizedEditorValue(link?.label, servicesEditorLanguage),
-          to: typeof link?.to === 'string' ? link.to : '',
+          to:
+            typeof link?.to === 'string'
+              ? link.to
+              : readLocalizedEditorValue(link?.to, servicesEditorLanguage),
           pageTitle: readLocalizedEditorValue(link?.pageTitle, servicesEditorLanguage),
           pageSubtitle: readLocalizedEditorValue(link?.pageSubtitle, servicesEditorLanguage),
           pageContent: readLocalizedEditorValue(link?.pageContent, servicesEditorLanguage),
+          pageImages:
+            Array.isArray(link?.pageImages) && link.pageImages.length > 0
+              ? link.pageImages.map((image) => (typeof image === 'string' ? image : ''))
+              : [''],
         })),
       },
       heading: readLocalizedEditorValue(youthEducation.heading, servicesEditorLanguage),
@@ -1301,7 +1311,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       mediaUpdates: false,
       contactAddress: false,
     })
-  }, [aboutEditorLanguage, content, servicesEditorLanguage])
+  }, [aboutEditorLanguage, servicesEditorLanguage, dataUpdatedAt])
 
   const sectionLabel = useMemo(
     () => menu.find((item) => item.key === active)?.label ?? 'Content',
@@ -1769,6 +1779,18 @@ const DashboardShell = ({ sectionKey = null }) => {
     }))
   }
 
+  const patchAdditionalServiceLink = (index, patch) => {
+    setYouthServicesForm((prev) => ({
+      ...prev,
+      navbar: {
+        ...prev.navbar,
+        additionalLinks: (prev.navbar.additionalLinks ?? []).map((link, linkIndex) =>
+          linkIndex === index ? { ...link, ...patch } : link,
+        ),
+      },
+    }))
+  }
+
   const uploadYouthServicesImage = async (file, fieldPath) => {
     resetStatus()
     if (!file) {
@@ -1786,6 +1808,45 @@ const DashboardShell = ({ sectionKey = null }) => {
     } finally {
       setUploadingServicesImageField('')
     }
+  }
+
+  const uploadAdditionalServiceLinkImage = async (file, linkIndex, imageIndex) => {
+    await uploadYouthServicesImage(file, `navbar.additionalLinks.${linkIndex}.pageImages.${imageIndex}`)
+  }
+
+  const addAdditionalServiceLinkImage = (linkIndex) => {
+    setYouthServicesForm((prev) => ({
+      ...prev,
+      navbar: {
+        ...prev.navbar,
+        additionalLinks: (prev.navbar.additionalLinks ?? []).map((link, index) => {
+          if (index !== linkIndex) return link
+          return {
+            ...link,
+            pageImages: [...(Array.isArray(link.pageImages) ? link.pageImages : []), ''],
+          }
+        }),
+      },
+    }))
+  }
+
+  const removeAdditionalServiceLinkImage = (linkIndex, imageIndexToRemove) => {
+    setYouthServicesForm((prev) => ({
+      ...prev,
+      navbar: {
+        ...prev.navbar,
+        additionalLinks: (prev.navbar.additionalLinks ?? []).map((link, index) => {
+          if (index !== linkIndex) return link
+          const nextImages = (Array.isArray(link.pageImages) ? link.pageImages : []).filter(
+            (_, imageIndex) => imageIndex !== imageIndexToRemove,
+          )
+          return {
+            ...link,
+            pageImages: nextImages.length > 0 ? nextImages : [''],
+          }
+        }),
+      },
+    }))
   }
 
   const handleProfileUpdate = async () => {
@@ -2366,7 +2427,11 @@ const DashboardShell = ({ sectionKey = null }) => {
                       language,
                       link.label,
                     ),
-                    to: link.to.trim(),
+                    to: upsertLocalizedValue(
+                      existingYouth.navbar?.additionalLinks?.[index]?.to,
+                      language,
+                      link.to,
+                    ),
                     pageTitle: upsertLocalizedValue(
                       existingYouth.navbar?.additionalLinks?.[index]?.pageTitle,
                       language,
@@ -2382,8 +2447,13 @@ const DashboardShell = ({ sectionKey = null }) => {
                       language,
                       link.pageContent,
                     ),
+                    pageImages: (Array.isArray(link.pageImages) ? link.pageImages : [])
+                      .map((image) => (typeof image === 'string' ? image.trim() : ''))
+                      .filter(Boolean),
                   }))
-                  .filter((link) => localizedValueHasContent(link.label) && link.to),
+                  .filter(
+                    (link) => localizedValueHasContent(link.label) && localizedValueHasContent(link.to),
+                  ),
               },
               heading: upsertLocalizedValue(existingYouth.heading, language, youthServicesForm.heading),
               subtitle: upsertLocalizedValue(existingYouth.subtitle, language, youthServicesForm.subtitle),
@@ -3083,13 +3153,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                               </label>
                               <input
                                 type='text'
-                                value={link.to}
-                                onChange={(event) =>
-                                  updateYouthServicesField(
-                                    `navbar.additionalLinks.${index}.to`,
-                                    event.target.value,
-                                  )
-                                }
+                                value={link.to ?? ''}
+                                onChange={(event) => patchAdditionalServiceLink(index, { to: event.target.value })}
                                 className={inputClass}
                                 placeholder='/services/library'
                               />
@@ -3143,6 +3208,80 @@ const DashboardShell = ({ sectionKey = null }) => {
                                 className={textareaClass}
                                 placeholder='Describe this service. This content appears on the generated service page.'
                               />
+                            </div>
+                            <div className='md:col-span-2'>
+                              <label className='text-[11px] font-bold uppercase tracking-wider text-gray-500'>
+                                Service Images
+                              </label>
+                              <p className='mt-1 text-[12px] text-gray-500'>
+                                These images appear on the service detail page in an animated 3-per-row grid.
+                              </p>
+                              <div className='mt-2 grid grid-cols-1 gap-3 md:grid-cols-2'>
+                                {(Array.isArray(link.pageImages) && link.pageImages.length > 0
+                                  ? link.pageImages
+                                  : ['']
+                                ).map((imageUrl, imageIndex) => {
+                                  const imagePath = `navbar.additionalLinks.${index}.pageImages.${imageIndex}`
+                                  return (
+                                    <div
+                                      key={`service-link-${index}-image-${imageIndex}`}
+                                      className='rounded-[10px] border border-gray-200 bg-white p-2'
+                                    >
+                                      <label className='text-[10px] font-bold uppercase tracking-wider text-gray-500'>
+                                        Image {imageIndex + 1}
+                                      </label>
+                                      <input
+                                        type='text'
+                                        value={imageUrl}
+                                        onChange={(event) =>
+                                          updateYouthServicesField(imagePath, event.target.value)
+                                        }
+                                        className={inputClass}
+                                        placeholder='https://...'
+                                      />
+                                      <div className='mt-2'>
+                                        <label className='inline-flex cursor-pointer items-center gap-2 rounded-[8px] border border-gray-200 px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50'>
+                                          <input
+                                            type='file'
+                                            accept='image/*'
+                                            className='hidden'
+                                            onChange={(event) => {
+                                              const file = event.target.files?.[0]
+                                              if (!file) return
+                                              uploadAdditionalServiceLinkImage(file, index, imageIndex)
+                                            }}
+                                          />
+                                          <ImageIcon className='h-3.5 w-3.5' />
+                                          {uploadingServicesImageField === imagePath ? 'Uploading...' : 'Upload'}
+                                        </label>
+                                      </div>
+                                      {imageUrl ? (
+                                        <img
+                                          src={imageUrl}
+                                          alt={`Service preview ${imageIndex + 1}`}
+                                          className='mt-2 h-20 w-full rounded-[8px] border border-gray-100 object-cover'
+                                        />
+                                      ) : null}
+                                      <button
+                                        type='button'
+                                        onClick={() => removeAdditionalServiceLinkImage(index, imageIndex)}
+                                        className='mt-2 inline-flex h-8 items-center justify-center gap-1 rounded-[8px] border border-red-100 px-2 text-[11px] font-semibold text-red-600 transition hover:bg-red-50'
+                                      >
+                                        <Trash2 className='h-3.5 w-3.5' />
+                                        Remove Image
+                                      </button>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                              <button
+                                type='button'
+                                onClick={() => addAdditionalServiceLinkImage(index)}
+                                className='mt-3 inline-flex h-9 items-center justify-center gap-2 rounded-[8px] border border-gray-200 bg-white px-3 text-[12px] font-semibold text-gray-700 transition hover:bg-gray-50'
+                              >
+                                <Plus className='h-3.5 w-3.5' />
+                                Add Image
+                              </button>
                             </div>
                             <div className='md:col-span-2 flex justify-end'>
                             <button

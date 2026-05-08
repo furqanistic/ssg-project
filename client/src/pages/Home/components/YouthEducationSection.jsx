@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { ArrowRight, GraduationCap, Heart, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 const educationIcons = [GraduationCap, GraduationCap, Users]
 const ctaIcons = [Users, Heart]
@@ -30,7 +31,7 @@ const EducationCard = ({ title, description, icon: Icon, accent, ctaLabel }) => 
   )
 }
 
-const CtaCard = ({ title, description, icon: Icon, buttonLabel, buttonClass }) => {
+const CtaCard = ({ title, description, icon: Icon, buttonLabel, buttonClass, to }) => {
   return (
     <article className='rounded-[20px] bg-[rgba(255,255,255,0.12)] px-7 py-7 text-white backdrop-blur-[2px]'>
       <div className='mb-6 flex h-14 w-14 items-center justify-center rounded-[16px] bg-[#f6ab3c] text-white'>
@@ -42,12 +43,12 @@ const CtaCard = ({ title, description, icon: Icon, buttonLabel, buttonClass }) =
       <p className='mt-4 max-w-[48ch] text-[15px] leading-[1.55] text-white/92 md:text-[16px]'>
         {description}
       </p>
-      <button
-        type='button'
+      <Link
+        to={to}
         className={`mt-6 inline-flex h-11 items-center justify-center rounded-[11px] px-7 text-[15px] font-semibold transition ${buttonClass}`}
       >
         {buttonLabel}
-      </button>
+      </Link>
     </article>
   )
 }
@@ -69,6 +70,7 @@ const YouthEducationSection = () => {
     return cards.map((card, index) => ({
       ...card,
       icon: ctaIcons[index],
+      to: index === 0 ? '/contact' : '/donate',
       buttonClass:
         index === 0
           ? 'bg-white text-[#264f9e] hover:bg-white/90'

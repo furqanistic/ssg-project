@@ -140,23 +140,23 @@ const YouthEducationSection = () => {
       />
       <div className='absolute inset-0 pointer-events-none opacity-[0.015] bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' />
 
-      <div className='px-4 py-24 md:px-6 md:py-32 relative z-10'>
+      <div className='px-4 py-20 md:px-6 md:py-28 relative z-10'>
         <div className='mx-auto max-w-[1340px]'>
-          <div className='flex flex-col items-center text-center mb-24'>
+          <div className='flex flex-col items-center text-center mb-20'>
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className='inline-flex items-center gap-3 rounded-full px-5 py-2 text-[10px] font-black tracking-[0.4em] uppercase text-[#2d4f9f] ring-1 ring-[#2d4f9f]/20 bg-[#2d4f9f]/5 mb-8'
+              className='inline-flex items-center gap-3 rounded-full px-5 py-2 text-[10px] font-black tracking-[0.4em] uppercase text-[#2d4f9f] ring-1 ring-[#2d4f9f]/20 bg-[#2d4f9f]/5 mb-6'
             >
               <Sparkles className='h-3.5 w-3.5' />
               <span>Nurturing Potential</span>
             </motion.div>
-            <h2 className='text-[44px] font-black tracking-tight text-[#111318] md:text-[64px] lg:text-[76px] leading-[0.85] uppercase'>
+            <h2 className='text-[32px] font-black tracking-tight text-[#111318] md:text-[48px] lg:text-[56px] leading-[0.9] uppercase'>
               {t('home.youthSection.title')}
             </h2>
-            <div className='mt-8 h-[1px] w-24 bg-[#f6ab3c]' />
-            <p className='mt-10 text-[18px] leading-relaxed text-[#5a677a] font-medium max-w-2xl'>
+            <div className='mt-6 h-[1px] w-20 bg-[#f6ab3c]' />
+            <p className='mt-8 text-[17px] leading-relaxed text-[#5a677a] font-medium max-w-2xl'>
               {t('home.youthSection.subtitle')}
             </p>
           </div>

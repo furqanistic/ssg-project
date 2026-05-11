@@ -59,31 +59,31 @@ const MediaFooterSection = () => {
           variants={containerVariants}
         >
           {/* Refined Luxury Header */}
-          <div className='mb-20 flex flex-col md:flex-row md:items-end md:justify-between gap-10 border-b border-black/[0.05] pb-12'>
+          <div className='mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-8 border-b border-black/[0.05] pb-10'>
             <div className='max-w-xl'>
-              <motion.div variants={itemVariants} className='flex items-center gap-4 mb-6'>
+              <motion.div variants={itemVariants} className='flex items-center gap-4 mb-5'>
                 <div className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
                 <span className='text-[10px] font-black uppercase tracking-[0.5em] text-[#111318]/40'>Moments of Community</span>
               </motion.div>
-              <motion.h2 variants={itemVariants} className='text-[40px] font-black tracking-tight text-[#111318] md:text-[56px] lg:text-[64px] leading-[0.85] uppercase'>
+              <motion.h2 variants={itemVariants} className='text-[32px] font-black tracking-tight text-[#111318] md:text-[44px] lg:text-[52px] leading-[0.9] uppercase'>
                 {t('home.mediaFooter.title')}
               </motion.h2>
-              <motion.p variants={itemVariants} className='mt-8 text-[18px] text-[#5a677a] font-medium leading-relaxed max-w-lg'>
+              <motion.p variants={itemVariants} className='mt-6 text-[16px] text-[#5a677a] font-medium leading-relaxed max-w-lg'>
                 {t('home.mediaFooter.subtitle')}
               </motion.p>
             </div>
             <motion.div variants={itemVariants} className='hidden lg:block pb-2'>
-              <Sparkles className='h-14 w-14 text-[#f6ab3c]/20' />
+              <Sparkles className='h-12 w-12 text-[#f6ab3c]/20' />
             </motion.div>
           </div>
 
-          {/* Luxury Gallery Grid */}
-          <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4'>
+          {/* Luxury Gallery Grid - 2x2 on Mobile */}
+          <div className='grid grid-cols-2 gap-4 sm:gap-6 xl:grid-cols-4'>
             {mediaImages.map((image, index) => (
               <motion.div
                 key={image.alt}
                 variants={itemVariants}
-                className='group relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-[#d7dce5] ring-1 ring-black/[0.05] shadow-[0_20px_40px_-20px_rgba(0,0,0,0.1)]'
+                className='group relative aspect-[4/5] overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] bg-[#d7dce5] ring-1 ring-black/[0.05] shadow-[0_20px_40px_-20px_rgba(0,0,0,0.1)]'
               >
                 <motion.img
                   whileHover={{ scale: 1.15 }}

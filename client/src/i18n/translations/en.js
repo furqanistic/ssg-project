@@ -135,7 +135,7 @@ const en = {
       titleLine1: 'Welcome to Singh Sabha',
       titleLine2: 'Gurudwara Berlin',
       subtitle:
-        'A spiritual home for all. Experience peace, community, and devotion.',
+        'A spiritual home for all. Experience peace, community, and devotion rooted in faith and service.',
       highlights: ['Daily Prayers', 'Langar Seva', 'Community Programs'],
     },
     hukamnama: {

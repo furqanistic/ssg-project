@@ -121,7 +121,7 @@ const UpcomingEventsSection = () => {
                 </div>
 
                 {/* Content Layer: Floating Island Architecture */}
-                <div className='relative -mt-16 mx-4 p-8 bg-white rounded-[2rem] ring-1 ring-black/[0.05] shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-all duration-700 group-hover:-translate-y-2 group-hover:ring-[#f5a437]/20'>
+                <div className='relative -mt-16 mx-4 p-8 bg-white rounded-[2rem] border border-black/[0.15] shadow-[0_24px_56px_rgba(0,0,0,0.08)] transition-all duration-700 group-hover:-translate-y-2 group-hover:border-[#f5a437]/40'>
                   <div className='flex items-center gap-2 mb-4'>
                     <div className='h-[1px] w-4 bg-[#f5a437]' />
                     <span className='text-[10px] font-black uppercase tracking-widest text-[#f5a437]'>{event.date}</span>

@@ -188,7 +188,7 @@ const HeroSection = () => {
 
           <motion.div
             variants={itemVariants}
-            className="relative mx-auto hidden w-full max-w-[420px] lg:block"
+            className="relative mx-auto w-full max-w-[420px] lg:max-w-[480px]"
           >
             <div
               aria-hidden="true"
@@ -199,46 +199,20 @@ const HeroSection = () => {
               className="absolute -right-4 bottom-10 h-14 w-14 rounded-full bg-[#f6ab3c]/60 shadow-[0_18px_42px_-18px_rgba(246,171,60,0.5)]"
             />
 
-            <div className="rounded-[2.5rem] bg-white/5 p-[2px] shadow-[0_32px_80px_-48px_rgba(0,0,0,0.5)]">
-              <div className="relative overflow-hidden rounded-[calc(2.5rem-2px)] bg-gradient-to-b from-white/10 to-white/[0.04] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
+            <div className="rounded-[2rem] bg-white/5 p-[2px] shadow-[0_32px_80px_-48px_rgba(0,0,0,0.5)] sm:rounded-[2.5rem]">
+              <div className="relative overflow-hidden rounded-[calc(2rem-2px)] bg-gradient-to-b from-white/10 to-white/[0.04] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] sm:p-4 sm:rounded-[calc(2.5rem-2px)] md:p-6">
                 <div
                   aria-hidden="true"
                   className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent"
                 />
 
-                <div className="relative grid aspect-[4/5] grid-cols-6 grid-rows-6 gap-2.5">
-                  <div className="col-span-4 row-span-3 overflow-hidden rounded-[1.5rem] border border-white/12 bg-gradient-to-b from-white/10 to-white/[0.04] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                    <div className="flex h-full items-end justify-center">
-                      <div className="h-[70%] w-[65%] rounded-t-full border border-white/10 bg-gradient-to-b from-white/6 to-transparent" />
-                    </div>
-                  </div>
-
-                  <motion.div
-                    className="col-span-2 row-span-2 overflow-hidden rounded-[1.25rem] bg-gradient-to-b from-[#f6ab3c] to-[#e89420] shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
-                    animate={{
-                      boxShadow: [
-                        'inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 20px -10px rgba(246,171,60,0.4)',
-                        'inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 28px -6px rgba(246,171,60,0.6)',
-                        'inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 20px -10px rgba(246,171,60,0.4)',
-                      ],
-                    }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  />
-
-                  <div className="col-span-2 row-span-1 rounded-[1rem] border border-white/10 bg-white/[0.06]" />
-
-                  <div className="col-span-2 row-span-3 flex items-center justify-center overflow-hidden rounded-[1.5rem] border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-                    <div className="h-12 w-12 rounded-full border border-white/10 bg-white/[0.05]" />
-                  </div>
-
-                  <div className="col-span-4 row-span-3 flex items-center justify-center overflow-hidden rounded-[1.5rem] border border-white/10 bg-gradient-to-b from-white/8 to-white/[0.02] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-[1rem] border border-white/8 bg-gradient-to-b from-white/[0.04] to-transparent">
-                      <div className="h-px w-3/4 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                      <div className="h-px w-1/2 bg-gradient-to-r from-transparent via-white/12 to-transparent" />
-                      <div className="h-px w-1/3 bg-gradient-to-r from-transparent via-white/8 to-transparent" />
-                    </div>
-                  </div>
-                </div>
+                <img
+                  src="/hero-img.avif"
+                  alt="Gurudwara Sri Guru Singh Sabha Berlin"
+                  className="relative block h-auto w-full rounded-[1.25rem] object-cover shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[1.5rem]"
+                  loading="eager"
+                  style={{ aspectRatio: '4/5' }}
+                />
               </div>
             </div>
           </motion.div>

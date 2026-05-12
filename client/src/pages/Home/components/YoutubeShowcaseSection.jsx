@@ -323,7 +323,7 @@ const YoutubeShowcaseSection = () => {
               {/* Hero Video */}
               <div className='grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 items-start'>
                 <div className='lg:col-span-9'>
-                  <div className='group relative overflow-hidden rounded-xl md:rounded-[2rem] bg-gray-100 aspect-video w-full ring-1 ring-gray-900/5'>
+                  <div className='group relative overflow-hidden rounded-xl md:rounded-[2rem] bg-gray-100 aspect-video w-full border border-black/[0.15]'>
                     <img
                       src={thumbnailUrl(activeVideoId, 'maxresdefault.jpg')}
                       alt={videoMeta[activeVideoId]?.title || 'Featured'}
@@ -408,10 +408,10 @@ const YoutubeShowcaseSection = () => {
                           isActive ? 'opacity-100' : 'opacity-60 hover:opacity-100'
                         }`}
                       >
-                        <div className={`relative aspect-video w-full overflow-hidden rounded-xl md:rounded-[1.5rem] bg-gray-100 ring-1 transition-all duration-500 ${
+                        <div className={`relative aspect-video w-full overflow-hidden rounded-xl md:rounded-[1.5rem] bg-gray-100 border transition-all duration-500 ${
                           isActive
-                            ? 'ring-red-600/40'
-                            : 'ring-gray-900/5 group-hover:ring-gray-900/20'
+                            ? 'border-red-600/40'
+                            : 'border-black/[0.15] group-hover:border-black/[0.25]'
                         }`}>
                           <img
                             src={thumbnailUrl(videoId)}

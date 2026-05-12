@@ -14,7 +14,7 @@ const EducationCard = ({ title, description, icon: Icon, accent, ctaLabel, to, i
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className='group relative flex flex-col rounded-[2.5rem] bg-white p-7 ring-1 ring-black/[0.04] transition-all duration-700 hover:ring-[#f6ab3c]/40 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)]'
+      className='group relative flex flex-col rounded-[2.5rem] bg-white p-8 border border-[#f6ab3c]/30 transition-all duration-700 hover:border-[#f6ab3c]/50 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)]'
     >
       {/* Precision Structural Corner */}
       <div className='absolute top-0 right-0 h-16 w-16 opacity-[0.03] pointer-events-none'>

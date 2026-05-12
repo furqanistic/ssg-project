@@ -1,53 +1,49 @@
-import React from 'react'
+import { motion } from 'framer-motion'
 import { Download, FileText } from 'lucide-react'
-import SiteFooter from '@/components/layout/SiteFooter'
-import NavbarSection from '@/pages/Home/components/NavbarSection'
+import React from 'react'
 import AboutPageHero from '@/components/about/AboutPageHero'
+import SiteFooter from '@/components/layout/SiteFooter'
 import { useAboutUsContentQuery } from '@/hooks/useAboutUsContent'
+import NavbarSection from '@/pages/Home/components/NavbarSection'
 
-const normalizeColor = (value, fallback = '#f6ab3c') => {
-  if (typeof value !== 'string' || !value.trim()) return fallback
-  const color = value.trim()
-  if (color.startsWith('#')) return color
-  const match = color.match(/#(?:[0-9a-fA-F]{3,8})/)
-  return match ? match[0] : fallback
-}
-
-const DownloadCard = ({ title, size, accent, fileUrl, ctaLabel }) => {
+const DownloadCard = ({ title, size, fileUrl, ctaLabel }) => {
   return (
-    <article className='rounded-[16px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
+    <motion.article 
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className='group relative border-[0.5px] border-[#C5A059]/20 bg-white p-5 transition-all hover:border-[#C5A059]/50 hover:shadow-[0_12px_30px_rgb(0,0,0,0.04)]'
+    >
+      <div className="absolute left-0 top-0 h-[1.5px] w-0 bg-[#C5A059] transition-all duration-500 group-hover:w-full" />
       <div className='flex items-start gap-4'>
-        <div
-          className='flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] text-white'
-          style={{ backgroundColor: normalizeColor(accent) }}
-        >
-          <FileText className='h-5 w-5 stroke-[2]' />
+        <div className='flex h-10 w-10 shrink-0 items-center justify-center bg-[#1e3a8a] text-[#C5A059]'>
+          <FileText className='h-4.5 w-4.5 stroke-[1.5]' />
         </div>
         <div className='min-w-0'>
-          <h3 className='text-[18px] font-bold tracking-[-0.02em] text-[#111318]'>
+          <h3 className='text-[16px] font-bold tracking-tight text-[#1e3a8a] md:text-[17px]'>
             {title}
           </h3>
-          <p className='mt-1 text-[15px] text-[#7a879b]'>{size}</p>
+          <p className='mt-1 text-[13px] font-medium text-[#7a879b]'>{size}</p>
           {fileUrl ? (
             <a
               href={fileUrl}
               target='_blank'
               rel='noreferrer'
               download
-              className='mt-4 inline-flex items-center gap-2 text-[15px] font-semibold text-[#f39d2f] transition hover:text-[#ea951e]'
+              className='mt-3 inline-flex items-center gap-2 text-[14px] font-bold text-[#C5A059] transition-colors hover:text-[#1e3a8a]'
             >
-              <Download className='h-4 w-4' />
+              <Download className='h-3.5 w-3.5' />
               {ctaLabel}
             </a>
           ) : (
-            <span className='mt-4 inline-flex items-center gap-2 text-[15px] font-semibold text-[#d0a96c]'>
-              <Download className='h-4 w-4' />
+            <span className='mt-3 inline-flex items-center gap-2 text-[14px] font-bold text-[#C5A059]/50'>
+              <Download className='h-3.5 w-3.5' />
               {ctaLabel}
             </span>
           )}
         </div>
       </div>
-    </article>
+    </motion.article>
   )
 }
 
@@ -56,98 +52,140 @@ const GovernancePage = () => {
   const governance = aboutUs.governance
   const downloadLabel = governance.downloadCtaLabel || 'Download'
 
+  // Animation variants
+  const staggerContainer = {
+    animate: { transition: { staggerChildren: 0.05 } }
+  }
+
   return (
-    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-[#faf8f6] font-["Outfit",sans-serif] text-[#1a1a1a]'>
       <div className='relative'>
         <NavbarSection />
         <AboutPageHero title={governance.heroTitle} subtitle={governance.heroSubtitle} />
       </div>
 
-      <section className='px-4 py-16 md:px-6 md:py-18'>
+      <section className='px-4 py-12 md:px-6 md:py-16'>
         <div className='mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[1040px]'>
-            {governance.heroImage ? (
-              <img
-                src={governance.heroImage}
-                alt={governance.heroTitle}
-                className='mb-6 h-[260px] w-full rounded-[16px] object-cover md:h-[360px]'
-                loading='lazy'
-              />
-            ) : null}
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {governance.structureTitle}
-            </h2>
-            <div className='mt-6 space-y-3 text-[16px] leading-[1.55] text-[#1d2431] md:text-[17px]'>
-              <p>{governance.structureIntro}</p>
-              {governance.structureBlocks.map((block, index) => (
-                <div key={`${block?.title ?? 'block'}-${index}`}>
-                  <h3 className='font-bold text-[#111318]'>{block?.title ?? ''}</h3>
-                  <p>{block?.body ?? ''}</p>
+          <div className='mx-auto max-w-[1000px]'>
+            {governance.heroImage && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative mb-10 overflow-hidden rounded-[2px] border-[0.5px] border-[#C5A059]/30 bg-white p-1 shadow-xl shadow-black/5"
+              >
+                <img
+                  src={governance.heroImage}
+                  alt={governance.heroTitle}
+                  className='h-[240px] w-full object-cover grayscale transition-all duration-700 hover:grayscale-0 md:h-[380px]'
+                  loading='lazy'
+                />
+                <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
+              </motion.div>
+            )}
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <div className="mb-4 h-[1px] w-12 bg-[#C5A059]/40" />
+              <h2 className='text-[28px] font-extrabold tracking-tight text-[#1e3a8a] md:text-[34px]'>
+                {governance.structureTitle}
+              </h2>
+              <div className='mt-8 space-y-6 text-[15px] leading-relaxed text-[#516075] md:text-[16px]'>
+                <p className="text-[17px] font-medium text-[#1e3a8a]/80">{governance.structureIntro}</p>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {governance.structureBlocks.map((block, index) => (
+                    <div key={`${block?.title ?? 'block'}-${index}`} className="border-l-[2px] border-[#C5A059]/20 pl-5">
+                      <h3 className='font-bold text-[#1e3a8a]'>{block?.title ?? ''}</h3>
+                      <p className="mt-2 text-[14px]">{block?.body ?? ''}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[1280px]'>
-          <div>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {governance.documentsTitle}
-            </h2>
-            <div className='mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              {governance.documents.map((document, index) => (
-                <DownloadCard
-                  key={`${document?.title ?? 'document'}-${index}`}
-                  title={document.title}
-                  size={document.size}
-                  accent={document.accent}
-                  fileUrl={document.fileUrl}
-                  ctaLabel={downloadLabel}
-                />
-              ))}
-            </div>
-          </div>
+      {/* Documents & Reports Section */}
+      <section className='relative overflow-hidden border-t border-[#C5A059]/10 bg-white px-4 py-16 md:px-6 md:py-20'>
+        <div className="absolute inset-0 opacity-[0.03]" 
+             style={{ backgroundImage: 'radial-gradient(#C5A059 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} 
+        />
+        <div className='relative z-10 mx-auto max-w-[1280px]'>
+          <div className="space-y-16">
+            <motion.div variants={staggerContainer} initial="initial" whileInView="animate" viewport={{ once: true }}>
+              <div className="mb-6 flex items-center gap-3">
+                <h2 className='text-[24px] font-extrabold tracking-tight text-[#1e3a8a] md:text-[30px]'>
+                  {governance.documentsTitle}
+                </h2>
+                <div className="h-[1px] flex-1 bg-[#C5A059]/10" />
+              </div>
+              <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3'>
+                {governance.documents.map((document, index) => (
+                  <DownloadCard
+                    key={`${document?.title ?? 'document'}-${index}`}
+                    title={document.title}
+                    size={document.size}
+                    fileUrl={document.fileUrl}
+                    ctaLabel={downloadLabel}
+                  />
+                ))}
+              </div>
+            </motion.div>
 
-          <div className='mt-14'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {governance.reportsTitle}
-            </h2>
-            <div className='mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              {governance.reports.map((report, index) => (
-                <DownloadCard
-                  key={`${report?.title ?? 'report'}-${index}`}
-                  title={report.title}
-                  size={report.size}
-                  accent='#2d4f9f'
-                  fileUrl={report.fileUrl}
-                  ctaLabel={downloadLabel}
-                />
-              ))}
-            </div>
+            <motion.div variants={staggerContainer} initial="initial" whileInView="animate" viewport={{ once: true }}>
+              <div className="mb-6 flex items-center gap-3">
+                <h2 className='text-[24px] font-extrabold tracking-tight text-[#1e3a8a] md:text-[30px]'>
+                  {governance.reportsTitle}
+                </h2>
+                <div className="h-[1px] flex-1 bg-[#C5A059]/10" />
+              </div>
+              <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3'>
+                {governance.reports.map((report, index) => (
+                  <DownloadCard
+                    key={`${report?.title ?? 'report'}-${index}`}
+                    title={report.title}
+                    size={report.size}
+                    fileUrl={report.fileUrl}
+                    ctaLabel={downloadLabel}
+                  />
+                ))}
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section className='px-4 py-16 md:px-6 md:py-18'>
+      {/* Financial Section */}
+      <section className='px-4 py-16 md:px-6 md:py-20'>
         <div className='mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[1040px]'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
+          <div className='mx-auto max-w-[1000px]'>
+            <div className="mb-4 h-[1px] w-12 bg-[#C5A059]/40" />
+            <h2 className='text-[28px] font-extrabold tracking-tight text-[#1e3a8a] md:text-[34px]'>
               {governance.financialTitle}
             </h2>
-            <p className='mt-6 text-[16px] leading-[1.6] text-[#516075] md:text-[17px]'>
+            <p className='mt-6 text-[16px] leading-relaxed text-[#516075] md:text-[17px]'>
               {governance.financialDescription}
             </p>
 
-            <div className='mt-8 rounded-[14px] border border-[#cfe0ff] bg-[#ebf3ff] px-6 py-6'>
-              <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className='mt-10 border-[0.5px] border-[#C5A059]/30 bg-white p-8 md:p-10'
+            >
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A059]">Tax Information</span>
+              <h3 className='mt-3 text-[20px] font-bold tracking-tight text-[#1e3a8a] md:text-[22px]'>
                 {governance.taxTitle}
               </h3>
-              <p className='mt-4 text-[16px] leading-[1.6] text-[#516075] md:text-[17px]'>
+              <div className="mt-5 h-[1px] w-12 bg-[#C5A059]/20" />
+              <p className='mt-6 text-[15px] leading-relaxed text-[#516075] md:text-[16px]'>
                 {governance.taxDescription}
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>

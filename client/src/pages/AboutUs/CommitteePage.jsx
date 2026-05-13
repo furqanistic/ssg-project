@@ -10,6 +10,11 @@ import NavbarSection from '@/pages/Home/components/NavbarSection'
 const CommitteePage = () => {
   const { aboutUs } = useAboutUsContentQuery()
   const committee = aboutUs.committee
+  const committeeMembers = Array.isArray(committee.members) ? committee.members : []
+  const cleanedCtaDescription = (committee.ctaDescription || '')
+    .replace(/[🤝◆♦◊❖✦✨]/gu, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
 
   // Animation variants
   const staggerContainer = {
@@ -29,33 +34,35 @@ const CommitteePage = () => {
         <AboutPageHero title={committee.heroTitle} subtitle={committee.heroSubtitle} />
       </div>
 
-      <section className='relative overflow-hidden px-4 py-10 sm:px-5 sm:py-14 md:px-6 md:py-20'>
+      <section className='relative z-20 -mt-6 overflow-hidden px-4 pb-12 sm:px-5 md:-mt-8 md:px-6 md:pb-20'>
         {/* Subtle Grid Pattern */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
              style={{ backgroundImage: 'radial-gradient(#C5A059 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} 
         />
 
         <div className='relative z-10 mx-auto max-w-[1280px]'>
-          <motion.div 
+          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
+            <motion.div 
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className='mx-auto max-w-[800px] text-center'
-          >
+            >
             <div className="mx-auto mb-6 h-[1px] w-16 bg-[#C5A059]/40" />
             <p className='text-pretty text-[15px] font-medium leading-[1.75] text-[#516075] sm:text-[17px] md:text-[20px]'>
               {committee.intro}
             </p>
-          </motion.div>
+            </motion.div>
 
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className='mt-10 grid grid-cols-1 gap-4 sm:gap-5 md:mt-16 md:grid-cols-2 md:gap-7 lg:grid-cols-3'
-          >
-            {committee.members.map((member, index) => (
+            {committeeMembers.length > 0 ? (
+              <motion.div 
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+                className='mt-10 grid grid-cols-1 gap-4 sm:gap-5 md:mt-16 md:grid-cols-2 md:gap-7 lg:grid-cols-3'
+              >
+              {committeeMembers.map((member, index) => (
               <motion.article
                 key={`${member?.email ?? member?.name ?? 'member'}-${index}`}
                 variants={fadeIn}
@@ -107,8 +114,16 @@ const CommitteePage = () => {
                   ) : null}
                 </div>
               </motion.article>
-            ))}
-          </motion.div>
+              ))}
+              </motion.div>
+            ) : (
+              <div className='mx-auto mt-10 max-w-[720px] rounded-2xl border border-[#C5A059]/25 bg-[#f7f2eb] px-6 py-8 text-center md:mt-14 md:px-8'>
+                <p className='text-[15px] leading-relaxed text-[#516075] md:text-[16px]'>
+                  Committee members will be published here shortly.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
@@ -128,7 +143,7 @@ const CommitteePage = () => {
             </h2>
             <div className="mx-auto mt-6 h-[1px] w-16 bg-[#C5A059]/30" />
             <p className='mx-auto mt-5 text-pretty text-[15px] leading-[1.7] text-blue-50/76 sm:text-[17px] md:mt-8 md:text-[20px]'>
-              {committee.ctaDescription}
+              {cleanedCtaDescription}
             </p>
             <Link
               to='/contact#contact-form'

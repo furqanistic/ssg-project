@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { motion as Motion } from 'framer-motion'
 import {
   AlertCircle,
   Building2,
@@ -13,6 +14,24 @@ import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import { useSiteContentQuery } from '@/hooks/useContent'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
+
+const sectionReveal = {
+  hidden: { opacity: 0, y: 22 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+}
+
+const cardReveal = {
+  hidden: { opacity: 0, y: 18 },
+  visible: (index = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: index * 0.07, duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+  }),
+}
 
 const DonatePage = () => {
   const { t } = useTranslation()
@@ -98,7 +117,13 @@ const DonatePage = () => {
 
       <section className='relative z-20 -mt-6 bg-[#f7f8fb] px-4 pb-16 pt-0 md:-mt-8 md:px-6 md:pb-20'>
         <div className='mx-auto max-w-[1200px]'>
-          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
+          <Motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-80px' }}
+            variants={sectionReveal}
+            className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'
+          >
             <div className='text-center'>
               <span className='inline-flex items-center rounded-full border border-[#2d4f9f]/15 bg-[#2d4f9f]/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2d4f9f]'>
                 Donation Methods
@@ -129,7 +154,14 @@ const DonatePage = () => {
 
           {donationsOpen ? (
             <div className='mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2'>
-              <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] p-6 shadow-[0_24px_50px_-18px_rgba(13,23,45,0.12)] md:p-7'>
+              <Motion.article
+                initial='hidden'
+                whileInView='visible'
+                viewport={{ once: true, margin: '-40px' }}
+                variants={cardReveal}
+                custom={0}
+                className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] p-6 shadow-[0_24px_50px_-18px_rgba(13,23,45,0.12)] md:p-7'
+              >
                 <h3 className='text-[22px] font-bold text-[#111318]'>{t('donate.bankTransfer')}</h3>
                 <p className='mt-2 text-[14px] text-[#65748b]'>Fastest way to support the Gurudwara directly.</p>
 
@@ -173,9 +205,16 @@ const DonatePage = () => {
                   <Copy className='h-4 w-4' />
                   {copiedField === 'all-bank' ? 'All Details Copied' : 'Copy All Bank Details'}
                 </button>
-              </article>
+              </Motion.article>
 
-              <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] p-6 shadow-[0_24px_50px_-18px_rgba(13,23,45,0.12)] md:p-7'>
+              <Motion.article
+                initial='hidden'
+                whileInView='visible'
+                viewport={{ once: true, margin: '-40px' }}
+                variants={cardReveal}
+                custom={1}
+                className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] p-6 shadow-[0_24px_50px_-18px_rgba(13,23,45,0.12)] md:p-7'
+              >
                 <h3 className='text-[22px] font-bold text-[#111318]'>{t('donate.inPerson')}</h3>
                 <p className='mt-2 text-[14px] text-[#65748b]'>
                   {donateDetails.inPersonDescription}
@@ -197,16 +236,22 @@ const DonatePage = () => {
                   <Copy className='h-4 w-4' />
                   {copiedField === 'in-person' ? 'Copied' : 'Copy In-Person Details'}
                 </button>
-              </article>
+              </Motion.article>
             </div>
           ) : null}
-          </div>
+          </Motion.div>
         </div>
       </section>
 
       <section className='bg-white px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[860px] rounded-[20px] border border-[#bfd6fb] bg-gradient-to-br from-[#eef6ff] to-[#f7fbff] px-6 py-8 shadow-[0_20px_50px_-24px_rgba(45,87,168,0.45)] md:px-8'>
+          <Motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-80px' }}
+            variants={sectionReveal}
+            className='mx-auto max-w-[860px] rounded-[20px] border border-[#bfd6fb] bg-gradient-to-br from-[#eef6ff] to-[#f7fbff] px-6 py-8 shadow-[0_20px_50px_-24px_rgba(45,87,168,0.45)] md:px-8'
+          >
             <div className='flex items-start gap-4'>
               <CheckCircle2 className='mt-0.5 h-8 w-8 shrink-0 text-[#2d57a8]' />
               <div>
@@ -221,7 +266,7 @@ const DonatePage = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </Motion.div>
 
           <div className='mt-16 text-center'>
             <span className='inline-flex items-center rounded-full border border-[#f6ab3c]/30 bg-[#fff7ea] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#d18b26]'>
@@ -234,7 +279,14 @@ const DonatePage = () => {
 
           {donationsOpen ? (
             <div className='mx-auto mt-10 grid max-w-[1120px] grid-cols-1 gap-6 lg:grid-cols-3'>
-            <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'>
+            <Motion.article
+              initial='hidden'
+              whileInView='visible'
+              viewport={{ once: true, margin: '-40px' }}
+              variants={cardReveal}
+              custom={0}
+              className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'
+            >
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
                 {t('donate.bankTransfer')}
               </h3>
@@ -258,9 +310,16 @@ const DonatePage = () => {
                   {donateDetails.bic}
                 </p>
               </div>
-            </article>
+            </Motion.article>
 
-            <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'>
+            <Motion.article
+              initial='hidden'
+              whileInView='visible'
+              viewport={{ once: true, margin: '-40px' }}
+              variants={cardReveal}
+              custom={1}
+              className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'
+            >
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
                 {t('donate.inPerson')}
               </h3>
@@ -270,9 +329,16 @@ const DonatePage = () => {
               <p className='mt-5 text-[16px] text-[#516075]'>
                 {donateDetails.officeHours}
               </p>
-            </article>
+            </Motion.article>
 
-            <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'>
+            <Motion.article
+              initial='hidden'
+              whileInView='visible'
+              viewport={{ once: true, margin: '-40px' }}
+              variants={cardReveal}
+              custom={2}
+              className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'
+            >
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
                 {t('donate.monthlyDonor')}
               </h3>
@@ -285,7 +351,7 @@ const DonatePage = () => {
               >
                 {t('common.actions.learnMoreButton')}
               </button>
-            </article>
+            </Motion.article>
             </div>
           ) : (
             <div className='mx-auto mt-10 max-w-[900px] rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-8 text-center shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
@@ -312,12 +378,17 @@ const DonatePage = () => {
           </div>
 
           <div className='mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4'>
-            {impactItems.map((item) => {
+            {impactItems.map((item, index) => {
               const ImpactIcon = item.icon
 
               return (
-                <article
+                <Motion.article
                   key={item.title}
+                  initial='hidden'
+                  whileInView='visible'
+                  viewport={{ once: true, margin: '-30px' }}
+                  variants={cardReveal}
+                  custom={index}
                   className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-8 text-center shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_55px_-20px_rgba(13,23,45,0.2)]'
                 >
                   <div
@@ -332,7 +403,7 @@ const DonatePage = () => {
                   <p className='mt-4 text-[16px] leading-[1.45] text-[#516075]'>
                     {item.description}
                   </p>
-                </article>
+                </Motion.article>
               )
             })}
           </div>

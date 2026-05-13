@@ -12,9 +12,8 @@ const DownloadCard = ({ title, size, fileUrl, ctaLabel }) => {
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className='group relative overflow-hidden rounded-lg border border-[#f6ab3c]/18 bg-white/94 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1 hover:border-[#f6ab3c]/50 hover:bg-white hover:shadow-[0_24px_60px_rgba(22,32,51,0.09)] sm:p-6'
+      className='group relative overflow-hidden rounded-[1.2rem] border border-[#f6ab3c]/18 bg-white/96 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1 hover:border-[#f6ab3c]/50 hover:bg-white hover:shadow-[0_24px_60px_rgba(22,32,51,0.09)] sm:p-6'
     >
-      <div className="absolute left-0 top-0 h-[3px] w-full bg-gradient-to-r from-[#f6ab3c] via-[#d8bd7d] to-transparent opacity-75" />
       <div className='flex items-start gap-4 sm:gap-5'>
         <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#071544] text-[#f6ab3c] shadow-[0_10px_25px_rgba(16,42,98,0.18)] transition-transform duration-500 group-hover:scale-105 sm:h-12 sm:w-12'>
           <FileText className='h-5 w-5 stroke-[1.5]' />
@@ -23,20 +22,22 @@ const DownloadCard = ({ title, size, fileUrl, ctaLabel }) => {
           <h3 className='text-pretty text-[16px] font-bold tracking-normal text-[#071544] md:text-[18px]'>
             {title}
           </h3>
-          <p className='mt-1 text-[13px] font-medium tracking-wide text-[#7a879b]'>{size}</p>
+          <div className='mt-2 inline-flex items-center rounded-full border border-[#071544]/10 bg-[#f8f9fb] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#607089]'>
+            {size}
+          </div>
           {fileUrl ? (
             <a
               href={fileUrl}
               target='_blank'
               rel='noreferrer'
               download
-              className='mt-4 inline-flex items-center gap-2.5 text-[14px] font-bold text-[#f6ab3c] transition-all hover:text-[#071544]'
+              className='mt-4 inline-flex min-h-10 items-center justify-center gap-2.5 rounded-full border border-[#f6ab3c] bg-[#f6ab3c] px-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#071544] transition-all hover:border-[#ef9f22] hover:bg-[#ef9f22]'
             >
               <Download className='h-4 w-4' />
-              <span className="border-b border-[#f6ab3c]/30 group-hover:border-[#071544]">{ctaLabel}</span>
+              <span>{ctaLabel}</span>
             </a>
           ) : (
-            <span className='mt-4 inline-flex items-center gap-2.5 text-[14px] font-bold text-[#f6ab3c]/40'>
+            <span className='mt-4 inline-flex min-h-10 items-center justify-center gap-2.5 rounded-full border border-[#071544]/12 bg-[#f8f9fb] px-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#7a879b]'>
               <Download className='h-4 w-4' />
               {ctaLabel} (Coming Soon)
             </span>
@@ -49,8 +50,13 @@ const DownloadCard = ({ title, size, fileUrl, ctaLabel }) => {
 
 const GovernancePage = () => {
   const { aboutUs } = useAboutUsContentQuery()
-  const governance = aboutUs.governance
+  const governance = aboutUs?.governance ?? {}
   const downloadLabel = governance.downloadCtaLabel || 'Download'
+  const structureBlocks = Array.isArray(governance.structureBlocks) ? governance.structureBlocks : []
+  const documents = Array.isArray(governance.documents) ? governance.documents : []
+  const reports = Array.isArray(governance.reports) ? governance.reports : []
+  const docsCount = documents.length
+  const reportsCount = reports.length
 
   // Animation variants
   const staggerContainer = {
@@ -92,7 +98,10 @@ const GovernancePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <div className="mb-6 h-[1px] w-16 bg-[#f6ab3c]/40" />
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#2d4f9f]/12 bg-[#2d4f9f]/5 px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-[#2d4f9f]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#f6ab3c]" />
+                Governance Structure
+              </div>
               <h2 className='text-balance text-[28px] font-extrabold tracking-normal text-[#071544] md:text-[42px]'>
                 {governance.structureTitle}
               </h2>
@@ -101,15 +110,18 @@ const GovernancePage = () => {
                   {governance.structureIntro}
                 </p>
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-8">
-                  {governance.structureBlocks.map((block, index) => (
-                    <motion.div 
+                  {structureBlocks.map((block, index) => (
+                    <motion.div
                       key={`${block?.title ?? 'block'}-${index}`}
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: index * 0.1 }}
-                      className="group relative rounded-lg border border-[#f6ab3c]/14 bg-white/72 p-5 shadow-[0_12px_35px_rgba(22,32,51,0.04)] transition-all hover:border-[#f6ab3c]/45 hover:bg-white sm:p-6 md:border-l-[3px] md:pl-8"
+                      className="group relative rounded-[1.2rem] border border-[#f6ab3c]/14 bg-white p-5 shadow-[0_12px_35px_rgba(22,32,51,0.04)] transition-all hover:-translate-y-1 hover:border-[#f6ab3c]/45 hover:shadow-[0_20px_45px_rgba(22,32,51,0.08)] sm:p-6"
                     >
+                      <div className="mb-3 inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-[#071544] px-2 text-[11px] font-bold text-[#f6ab3c]">
+                        {index + 1}
+                      </div>
                       <h3 className='text-pretty text-[18px] font-bold text-[#071544] md:text-[20px]'>
                         {block?.title ?? ''}
                       </h3>
@@ -145,8 +157,13 @@ const GovernancePage = () => {
                 </h2>
                 <div className="h-[1px] flex-1 bg-[#f6ab3c]/20" />
               </div>
-              <div className='grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3'>
-                {governance.documents.map((document, index) => (
+              <div className='mb-5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95]'>
+                <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#071544] px-2 text-white'>{docsCount}</span>
+                Available Documents
+              </div>
+              <div className='rounded-[1.8rem] border border-[#f6ab3c]/14 bg-[#fffdf9] p-4 sm:p-6 md:p-8'>
+                <div className='grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3'>
+                {documents.map((document, index) => (
                   <DownloadCard
                     key={`${document?.title ?? 'document'}-${index}`}
                     title={document.title}
@@ -155,6 +172,7 @@ const GovernancePage = () => {
                     ctaLabel={downloadLabel}
                   />
                 ))}
+                </div>
               </div>
             </motion.div>
 
@@ -168,8 +186,13 @@ const GovernancePage = () => {
                 </h2>
                 <div className="h-[1px] flex-1 bg-[#f6ab3c]/20" />
               </div>
-              <div className='grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3'>
-                {governance.reports.map((report, index) => (
+              <div className='mb-5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95]'>
+                <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2d4f9f] px-2 text-white'>{reportsCount}</span>
+                Published Reports
+              </div>
+              <div className='rounded-[1.8rem] border border-[#2d4f9f]/12 bg-[#f8faff] p-4 sm:p-6 md:p-8'>
+                <div className='grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3'>
+                {reports.map((report, index) => (
                   <DownloadCard
                     key={`${report?.title ?? 'report'}-${index}`}
                     title={report.title}
@@ -178,6 +201,7 @@ const GovernancePage = () => {
                     ctaLabel={downloadLabel}
                   />
                 ))}
+                </div>
               </div>
             </motion.div>
           </div>
@@ -185,10 +209,13 @@ const GovernancePage = () => {
       </section>
 
       {/* Financial Section */}
-      <section className='relative px-4 py-12 sm:px-5 sm:py-16 md:px-6 md:py-24'>
+      <section className='relative overflow-hidden bg-[#fafafa] px-4 pb-12 sm:px-5 md:px-6 md:pb-16'>
         <div className='mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[1000px]'>
-            <div className="mb-6 h-[1px] w-16 bg-[#f6ab3c]/40" />
+          <div className='mx-auto max-w-[1000px] rounded-[2rem] border border-[#071544]/10 bg-white p-6 shadow-[0_24px_70px_rgba(22,32,51,0.06)] sm:p-8 md:p-12'>
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#2d4f9f]/12 bg-[#2d4f9f]/5 px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-[#2d4f9f]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f6ab3c]" />
+              Financial Transparency
+            </div>
             <h2 className='text-balance text-[28px] font-extrabold tracking-normal text-[#071544] md:text-[42px]'>
               {governance.financialTitle}
             </h2>
@@ -196,15 +223,12 @@ const GovernancePage = () => {
               {governance.financialDescription}
             </p>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className='group relative mt-9 overflow-hidden rounded-lg border border-[#f6ab3c]/25 bg-white p-5 shadow-[0_24px_70px_rgba(22,32,51,0.08)] sm:p-8 md:mt-16 md:p-14'
+              className='group relative mt-9 overflow-hidden rounded-[1.4rem] border border-[#f6ab3c]/25 bg-[#fffdf9] p-5 shadow-[0_24px_70px_rgba(22,32,51,0.08)] sm:p-8 md:mt-14 md:p-12'
             >
-              <div className="absolute left-0 top-0 h-[4px] w-full bg-[#f6ab3c]/10" />
-              <div className="absolute left-0 top-0 h-[4px] w-0 bg-[#f6ab3c] transition-all duration-1000 ease-out group-hover:w-full" />
-              
               <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#f6ab3c]">Tax Information</span>
               <h3 className='mt-4 text-pretty text-[22px] font-bold tracking-normal text-[#071544] md:text-[28px]'>
                 {governance.taxTitle}

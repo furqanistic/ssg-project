@@ -64,10 +64,11 @@ const GovernancePage = () => {
         <AboutPageHero title={governance.heroTitle} subtitle={governance.heroSubtitle} />
       </div>
 
-      <section className='relative overflow-hidden px-4 py-10 sm:px-5 sm:py-14 md:px-6 md:py-20'>
+      <section className='relative z-20 -mt-6 overflow-hidden px-4 pb-12 sm:px-5 md:-mt-8 md:px-6 md:pb-20'>
         <div className='pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(197,160,89,0.08)_1px,transparent_1px),linear-gradient(180deg,rgba(30,58,138,0.045)_1px,transparent_1px)] bg-[size:44px_44px] opacity-50' />
         <div className='mx-auto max-w-[1280px]'>
-          <div className='relative mx-auto max-w-[1000px]'>
+          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
+            <div className='relative mx-auto max-w-[1000px]'>
             {governance.heroImage && (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
@@ -86,7 +87,7 @@ const GovernancePage = () => {
               </motion.div>
             )}
 
-            <motion.div
+              <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -119,7 +120,8 @@ const GovernancePage = () => {
                   ))}
                 </div>
               </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>

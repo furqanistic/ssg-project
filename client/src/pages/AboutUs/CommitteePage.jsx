@@ -7,6 +7,16 @@ import SiteFooter from '@/components/layout/SiteFooter'
 import { useAboutUsContentQuery } from '@/hooks/useAboutUsContent'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
+const getAvatarUrl = (name = 'Member') =>
+  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=071544&color=f6ab3c&size=220&bold=true&format=png`
+
+const roleBadgeStyles = [
+  'border-[#f6ab3c]/35 bg-[#fff6e9] text-[#b96d00]',
+  'border-[#2d4f9f]/30 bg-[#eef3ff] text-[#2d4f9f]',
+  'border-[#14b8a6]/30 bg-[#eafcf8] text-[#0f766e]',
+  'border-[#a855f7]/25 bg-[#f6efff] text-[#7e22ce]',
+]
+
 const CommitteePage = () => {
   const { aboutUs } = useAboutUsContentQuery()
   const committee = aboutUs?.committee ?? {}
@@ -66,53 +76,80 @@ const CommitteePage = () => {
               <motion.article
                 key={`${member?.email ?? member?.name ?? 'member'}-${index}`}
                 variants={fadeIn}
-                className='group relative overflow-hidden rounded-lg border border-[#f6ab3c]/18 bg-white/94 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1 hover:border-[#f6ab3c]/50 hover:bg-white hover:shadow-[0_24px_60px_rgba(22,32,51,0.09)] sm:p-7 md:p-8'
+                className='group relative overflow-hidden rounded-[1.4rem] border border-[#f6ab3c]/20 bg-white/98 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1.5 hover:border-[#f6ab3c]/45 hover:shadow-[0_28px_70px_rgba(22,32,51,0.10)] sm:p-7 md:p-8'
               >
-                <div className="absolute left-0 top-0 h-[3px] w-full bg-gradient-to-r from-[#f6ab3c] via-[#d8bd7d] to-transparent opacity-75" />
+                {(() => {
+                  const roleBadgeClass = roleBadgeStyles[index % roleBadgeStyles.length]
+                  const hasEmail = Boolean(member?.email)
+                  const hasPhone = Boolean(member?.phone)
+                  return (
+                    <>
+                <div className="absolute left-0 top-0 h-[3px] w-full bg-gradient-to-r from-[#f6ab3c] via-[#d8bd7d] to-transparent opacity-80" />
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f6ab3c]/[0.06] blur-2xl transition-opacity duration-500 group-hover:opacity-100 opacity-0" />
                 
                 <div className='mb-6 flex flex-col items-center text-center md:mb-8'>
                   <div className='relative mb-5 md:mb-6'>
-                    <div className='absolute -inset-3 rounded-full border border-[#f6ab3c]/10 transition-transform duration-700 group-hover:scale-110' />
-                    {member.image ? (
-                      <div className="relative h-[94px] w-[94px] overflow-hidden rounded-full shadow-[0_12px_32px_rgba(22,32,51,0.12)] sm:h-[110px] sm:w-[110px]">
-                        <img
-                          src={member.image}
-                          alt={member.name}
-                          className='h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0'
-                          loading='lazy'
-                        />
-                      </div>
-                    ) : (
-                      <div className='flex h-[94px] w-[94px] items-center justify-center rounded-full bg-[#071544] text-[28px] font-bold tracking-normal text-[#f6ab3c] shadow-[0_12px_32px_rgba(16,42,98,0.18)] transition-transform duration-700 group-hover:scale-105 sm:h-[110px] sm:w-[110px] sm:text-[32px]'>
-                        {member.initials}
-                      </div>
-                    )}
+                    <div className='absolute -inset-3 rounded-full border border-[#f6ab3c]/12 transition-transform duration-700 group-hover:scale-110' />
+                    <div className="relative h-[94px] w-[94px] overflow-hidden rounded-full border-2 border-white shadow-[0_14px_34px_rgba(22,32,51,0.18)] sm:h-[110px] sm:w-[110px]">
+                      <img
+                        src={member.image || getAvatarUrl(member.name || member.initials)}
+                        alt={member.name}
+                        className='h-full w-full object-cover transition-all duration-700 group-hover:scale-110'
+                        loading='lazy'
+                      />
+                    </div>
                   </div>
 
                   <h2 className='text-pretty text-[19px] font-bold tracking-normal text-[#071544] md:text-[22px]'>
                     {member.name}
                   </h2>
-                  <p className='mt-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#f6ab3c] sm:text-[12px] sm:tracking-[0.2em]'>
+                  <p className={`mt-2 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.18em] ${roleBadgeClass}`}>
                     {member.role}
                   </p>
                 </div>
 
-                <div className='space-y-3 border-t border-[#f6ab3c]/15 pt-5 md:space-y-4 md:pt-6'>
+                <div className='space-y-3 border-t border-[#f6ab3c]/18 pt-5 md:space-y-4 md:pt-6'>
                   <div className='flex items-center gap-4 text-[14px] text-[#516075] group/item'>
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fafafa] text-[#f6ab3c] transition-colors group-hover/item:bg-[#071544] group-hover/item:text-white">
                       <Mail className='h-3.5 w-3.5' />
                     </div>
-                    <span className="min-w-0 break-words font-medium leading-snug">{member.email}</span>
+                    {hasEmail ? (
+                      <a href={`mailto:${member.email}`} className="min-w-0 break-all font-medium leading-snug transition-colors hover:text-[#071544]">
+                        {member.email}
+                      </a>
+                    ) : (
+                      <span className="min-w-0 break-all font-medium leading-snug text-[#7b8698]">Email available on request</span>
+                    )}
                   </div>
-                  {member.phone ? (
+                  {hasPhone ? (
                     <div className='flex items-center gap-4 text-[14px] text-[#516075] group/item'>
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fafafa] text-[#f6ab3c] transition-colors group-hover/item:bg-[#071544] group-hover/item:text-white">
                         <Phone className='h-3.5 w-3.5' />
                       </div>
-                      <span className="font-medium">{member.phone}</span>
+                      <a href={`tel:${member.phone}`} className="font-medium transition-colors hover:text-[#071544]">{member.phone}</a>
                     </div>
                   ) : null}
                 </div>
+
+                <div className='mt-5 flex gap-2 border-t border-[#f6ab3c]/12 pt-4'>
+                  <a
+                    href={hasEmail ? `mailto:${member.email}` : '/contact#contact-form'}
+                    className='inline-flex flex-1 items-center justify-center rounded-full border border-[#f6ab3c] bg-[#f6ab3c] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#071544] transition-all hover:bg-[#ef9f22] hover:border-[#ef9f22]'
+                  >
+                    {hasEmail ? 'Send Email' : 'Contact'}
+                  </a>
+                  {hasPhone ? (
+                    <a
+                      href={`tel:${member.phone}`}
+                      className='inline-flex flex-1 items-center justify-center rounded-full border border-[#071544]/18 bg-[#071544] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#0b2367]'
+                    >
+                      Call
+                    </a>
+                  ) : null}
+                </div>
+                    </>
+                  )
+                })()}
               </motion.article>
               ))}
               </motion.div>

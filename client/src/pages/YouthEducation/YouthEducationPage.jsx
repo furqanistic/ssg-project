@@ -1,13 +1,16 @@
 import React, { useEffect, useMemo } from 'react'
 import {
+  ArrowRight,
   BookOpen,
   CalendarDays,
   GraduationCap,
   Heart,
+  Sparkles,
   Users,
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useSiteContentQuery } from '@/hooks/useContent'
@@ -23,12 +26,66 @@ const readLocalizedValue = (value, language = 'en', fallback = '') => {
   if (typeof value === 'string') {
     return value || fallback
   }
-
   if (value && typeof value === 'object' && !Array.isArray(value)) {
     return value[language] || value.en || fallback
   }
-
   return fallback
+}
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+  },
+}
+
+const SectionLabel = ({ children, light = false }) => (
+  <div className={`mb-4 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.25em] ${light ? 'text-white/40' : 'text-[#071544]/40'} md:mb-5`}>
+    <span className={`h-px w-6 ${light ? 'bg-white/20' : 'bg-[#f6ab3c]/30'}`} />
+    {children}
+  </div>
+)
+
+const ProgramCard = ({ title, description, icon: Icon, accent, scheduleDay, scheduleTime, scheduleLocation, index }) => {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ delay: index * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.08] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
+    >
+      <div className='flex items-start justify-between'>
+        <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
+          <Icon className='h-7 w-7' />
+        </div>
+        <span className='text-[12px] font-bold tracking-[0.2em] text-[#071544]/20'>
+          0{index + 1}
+        </span>
+      </div>
+      
+      <div className='mt-10'>
+        <h3 className='text-xl font-semibold tracking-tight text-[#071544] transition-colors duration-300 group-hover:text-[#f6ab3c] md:text-2xl'>
+          {title}
+        </h3>
+        <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
+          {description}
+        </p>
+      </div>
+
+      <div className='mt-10 pt-6 border-t border-[#071544]/05'>
+        <div className='flex items-start gap-4'>
+          <CalendarDays className='mt-1 h-4 w-4 shrink-0 text-[#f6ab3c]' />
+          <div className='space-y-1'>
+            <p className='text-[13px] font-bold uppercase tracking-widest text-[#071544]'>{scheduleDay}</p>
+            <p className='text-[14px] font-light text-[#5a677a]'>{scheduleTime} &middot; {scheduleLocation}</p>
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  )
 }
 
 const YouthEducationPage = () => {
@@ -43,17 +100,11 @@ const YouthEducationPage = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
-
     const target = document.getElementById(hash)
-    if (!target) {
-      return
-    }
-
+    if (!target) return
     requestAnimationFrame(() => {
       const navbarOffset = 88
-      const top =
-        target.getBoundingClientRect().top + window.scrollY - navbarOffset
-
+      const top = target.getBoundingClientRect().top + window.scrollY - navbarOffset
       window.scrollTo({ top, behavior: 'smooth' })
     })
   }, [location.hash])
@@ -131,234 +182,277 @@ const YouthEducationPage = () => {
         Icon,
         title: youth.reasons[index]?.title || '',
         text: youth.reasons[index]?.text || '',
-        accent: index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]',
+        accent: index % 2 === 0 ? 'bg-[#f6ab3c] text-white' : 'bg-[#2d4f9f] text-white',
       }))
       .filter((item) => item.title || item.text)
   }, [youth.reasons])
 
   return (
-    <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
+    <div className='min-h-screen bg-[#fafafa] font-["Outfit",sans-serif] text-[#071544] selection:bg-[#f6ab3c]/30'>
       <div className='relative'>
         <NavbarSection />
-        <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
-          <div className='mx-auto max-w-[1280px]'>
-            <div className='mx-auto max-w-[1040px]'>
-              <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
+
+        {/* Hero Section - Synchronized Architectural Style */}
+        <section className='relative isolate overflow-hidden bg-[#071544] pt-[100px] pb-10 md:pt-[140px] md:pb-20'>
+          {/* Subtle Geometric Grid */}
+          <div className='absolute inset-0 z-0 opacity-[0.05]' 
+               style={{ backgroundImage: 'linear-gradient(#fff 0.5px, transparent 0.5px), linear-gradient(90deg, #fff 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} />
+          
+          <div className='container relative z-10 mx-auto px-5'>
+            <div className='mx-auto max-w-4xl text-center'>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className='mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[#f6ab3c]/80'
+              >
+                <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]/60' />
+                Youth Development & Culture
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className='text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'
+              >
                 {youth.heading}
-              </h1>
-              <p className='mt-3 max-w-[880px] text-[17px] text-white/90 md:text-[18px]'>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+              >
                 {youth.subtitle}
-              </p>
+              </motion.p>
+            </div>
+          </div>
+        </section>
+
+        {/* Overlapping Content Container */}
+        <section id='education-content' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-20'>
+          <div className='container mx-auto max-w-[1200px]'>
+            <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
+              
+              {/* Internal Intro Block */}
+              <div className='border-b border-[#071544]/[0.03] pb-10 md:pb-12'>
+                <div className='max-w-3xl'>
+                  <SectionLabel>Overview</SectionLabel>
+                  <p className='text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                    {youth.intro}
+                  </p>
+                </div>
+              </div>
+
+              <div className='space-y-4 md:space-y-6'>
+                {/* Gurmukhi Section */}
+                <motion.section
+                  id='gurmukhi-class'
+                  initial='hidden'
+                  whileInView='visible'
+                  viewport={{ once: true, margin: '-80px' }}
+                  variants={sectionVariants}
+                  className='py-12 md:py-16'
+                >
+                  <div className='mb-10 md:mb-14'>
+                    <SectionLabel>Gurmukhi</SectionLabel>
+                    <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
+                      {youth.gurmukhi.title}
+                    </h2>
+                    <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                      {youth.gurmukhi.description}
+                    </p>
+                  </div>
+
+                  <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+                    {youth.gurmukhi.levels.map((level, index) => (
+                      <ProgramCard
+                        key={`${level.title}-${index}`}
+                        {...level}
+                        icon={BookOpen}
+                        scheduleDay={youth.gurmukhi.scheduleDay}
+                        scheduleTime={youth.gurmukhi.scheduleTime}
+                        scheduleLocation={youth.gurmukhi.scheduleLocation}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </motion.section>
+
+                {/* German Section */}
+                <motion.section
+                  id='german-class'
+                  initial='hidden'
+                  whileInView='visible'
+                  viewport={{ once: true, margin: '-80px' }}
+                  variants={sectionVariants}
+                  className='rounded-2xl bg-[#f8f9fa] p-6 md:rounded-3xl md:p-10'
+                >
+                  <div className='mb-10 md:mb-14'>
+                    <SectionLabel>German Support</SectionLabel>
+                    <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
+                      {youth.german.title}
+                    </h2>
+                    <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                      {youth.german.description}
+                    </p>
+                  </div>
+
+                  <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+                    {youth.german.tracks.map((track, index) => (
+                      <ProgramCard
+                        key={`${track.title}-${index}`}
+                        {...track}
+                        icon={GraduationCap}
+                        scheduleDay={youth.german.scheduleDay}
+                        scheduleTime={youth.german.scheduleTime}
+                        scheduleLocation={youth.german.scheduleLocation}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </motion.section>
+
+                {/* Enrichment Section */}
+                <motion.section
+                  id='camps-workshops'
+                  initial='hidden'
+                  whileInView='visible'
+                  viewport={{ once: true, margin: '-80px' }}
+                  variants={sectionVariants}
+                  className='py-12 md:py-16'
+                >
+                  <div className='mb-10 md:mb-14'>
+                    <SectionLabel>Enrichment</SectionLabel>
+                    <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
+                      {youth.camps.title}
+                    </h2>
+                    <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                      {youth.camps.subtitle}
+                    </p>
+                  </div>
+
+                  <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+                    {youth.camps.cards.map((card, index) => (
+                      <motion.article
+                        key={`${card.title}-${index}`}
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-40px' }}
+                        transition={{ delay: index * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                        className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.08] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
+                      >
+                        <div className='flex items-start justify-between'>
+                          <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
+                            <Sparkles className='h-7 w-7' />
+                          </div>
+                          <span className='text-[12px] font-bold tracking-[0.2em] text-[#071544]/20'>
+                            0{index + 1}
+                          </span>
+                        </div>
+                        
+                        <div className='mt-10'>
+                          <h3 className='text-xl font-semibold tracking-tight text-[#071544] transition-colors duration-300 group-hover:text-[#f6ab3c] md:text-2xl'>
+                            {card.title}
+                          </h3>
+                          <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
+                            {card.description}
+                          </p>
+                        </div>
+
+                        <div className='mt-10 pt-6 border-t border-[#071544]/05'>
+                          <div className='flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#f6ab3c]'>
+                            <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
+                            {card.time}
+                          </div>
+                        </div>
+                      </motion.article>
+                    ))}
+                  </div>
+                </motion.section>
+
+                {/* Registration Section */}
+                <motion.section
+                  id='registration'
+                  initial='hidden'
+                  whileInView='visible'
+                  viewport={{ once: true, margin: '-80px' }}
+                  variants={sectionVariants}
+                  className='rounded-2xl bg-[#071544] p-8 md:rounded-3xl md:p-16 relative overflow-hidden'
+                >
+                  {/* Internal Grid Motif */}
+                  <div className='absolute inset-0 z-0 opacity-[0.05]' 
+                       style={{ backgroundImage: 'linear-gradient(#fff 0.5px, transparent 0.5px), linear-gradient(90deg, #fff 0.5px, transparent 0.5px)', backgroundSize: '60px 60px' }} />
+
+                  <div className='relative z-10 mx-auto max-w-2xl text-center'>
+                    <SectionLabel light>Registration</SectionLabel>
+                    <h2 className='text-3xl font-semibold tracking-tight text-white md:text-5xl'>
+                      {youth.registration.title}
+                    </h2>
+                    <p className='mx-auto mt-6 text-[15px] font-light leading-relaxed text-white/60 md:text-lg'>
+                      {youth.registration.description}
+                    </p>
+                    <div className='mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row'>
+                      <Link
+                        to='/contact#contact-form'
+                        className='group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[#f6ab3c] px-8 text-[11px] font-bold uppercase tracking-widest text-white transition-all duration-500 hover:bg-[#f6ab3c]/90 active:scale-[0.98]'
+                      >
+                        {youth.registration.contactButtonLabel}
+                        <ArrowRight className='h-4 w-4 transition-transform duration-500 group-hover:translate-x-1' />
+                      </Link>
+                      <Link
+                        to='/events/programs#yearly'
+                        className='group inline-flex h-12 items-center justify-center gap-3 rounded-full border border-white/20 bg-white/5 px-8 text-[11px] font-bold uppercase tracking-widest text-white/90 transition-all duration-500 hover:border-white/40 hover:bg-white/10 active:scale-[0.98]'
+                      >
+                        {youth.registration.scheduleButtonLabel}
+                      </Link>
+                    </div>
+                  </div>
+                </motion.section>
+
+                {/* Why Choose Us Section */}
+                <motion.section
+                  initial='hidden'
+                  whileInView='visible'
+                  viewport={{ once: true, margin: '-80px' }}
+                  variants={sectionVariants}
+                  className='py-12 md:py-16'
+                >
+                  <div className='mb-10 md:mb-14'>
+                    <SectionLabel>Impact</SectionLabel>
+                    <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
+                      {youth.whyEnrollTitle}
+                    </h2>
+                  </div>
+
+                  <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>
+                    {reasonItems.map((item, index) => (
+                      <motion.div
+                        key={`${item.title}-${item.text}`}
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.05 }}
+                        className='group flex flex-col items-start text-left'
+                      >
+                        <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
+                          <item.Icon className='h-6 w-6' />
+                        </div>
+                        <h3 className='mt-6 text-xl font-semibold tracking-tight text-[#071544]'>
+                          {item.title}
+                        </h3>
+                        <p className='mt-3 text-[15px] font-light leading-relaxed text-[#5a677a]'>
+                          {item.text}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.section>
+              </div>
             </div>
           </div>
         </section>
       </div>
-
-      <section className='px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[900px] text-center'>
-            <p className='text-[17px] leading-[1.65] text-[#516075] md:text-[18px]'>
-              {youth.intro}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id='gurmukhi-class' className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-10 xl:grid-cols-[1.05fr_0.95fr]'>
-          <div>
-            <div className='mb-7 flex h-16 w-16 items-center justify-center rounded-[16px] bg-[#f6ab3c] text-white'>
-              <BookOpen className='h-7 w-7 stroke-[2]' />
-            </div>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {youth.gurmukhi.title}
-            </h2>
-            <p className='mt-6 max-w-[34ch] text-[16px] leading-[1.7] text-[#516075] md:text-[17px]'>
-              {youth.gurmukhi.description}
-            </p>
-
-            <div className='mt-7 space-y-5 text-[16px] leading-[1.55] text-[#516075] md:text-[17px]'>
-              {youth.gurmukhi.levels.map((level, index) => (
-                <div key={`${level.title}-${index}`} className='flex items-start gap-3'>
-                  <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#f39d2f]' />
-                  <div>
-                    <h3 className='font-bold text-[#111318]'>{level.title}</h3>
-                    <p className='mt-1'>{level.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className='mt-8 max-w-[600px] rounded-[16px] border border-[#cfe0ff] bg-[#ebf3ff] px-6 py-6'>
-              <div className='flex items-start gap-3'>
-                <CalendarDays className='mt-1 h-5 w-5 text-[#f39d2f]' />
-                <div>
-                  <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                    {youth.gurmukhi.scheduleTitle}
-                  </h3>
-                  <p className='mt-4 text-[15px] font-bold leading-[1.6] text-[#4f5f77] md:text-[16px]'>
-                    {youth.gurmukhi.scheduleDay}
-                    <br />
-                    <span className='font-normal'>{youth.gurmukhi.scheduleTime}</span>
-                    <br />
-                    <span className='font-normal'>{youth.gurmukhi.scheduleLocation}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className='overflow-hidden rounded-[22px] shadow-[0_18px_40px_rgba(13,23,45,0.08)]'>
-            <img
-              src={youth.gurmukhi.image}
-              alt='Children in class'
-              className='h-full w-full object-cover'
-              loading='lazy'
-            />
-          </div>
-        </div>
-      </section>
-
-      <section id='german-class' className='px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-10 xl:grid-cols-[0.95fr_1.05fr]'>
-          <div className='overflow-hidden rounded-[22px] shadow-[0_18px_40px_rgba(13,23,45,0.08)]'>
-            <img
-              src={youth.german.image}
-              alt='German language class'
-              className='h-full w-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <div>
-            <div className='mb-7 flex h-16 w-16 items-center justify-center rounded-[16px] bg-[#2d4f9f] text-white'>
-              <GraduationCap className='h-7 w-7 stroke-[2]' />
-            </div>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {youth.german.title}
-            </h2>
-            <p className='mt-6 max-w-[36ch] text-[16px] leading-[1.7] text-[#516075] md:text-[17px]'>
-              {youth.german.description}
-            </p>
-
-            <div className='mt-7 space-y-5 text-[16px] leading-[1.55] text-[#516075] md:text-[17px]'>
-              {youth.german.tracks.map((track, index) => (
-                <div key={`${track.title}-${index}`} className='flex items-start gap-3'>
-                  <span className='mt-2 h-2.5 w-2.5 rounded-full bg-[#2d4f9f]' />
-                  <div>
-                    <h3 className='font-bold text-[#111318]'>{track.title}</h3>
-                    <p className='mt-1'>{track.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className='mt-8 max-w-[600px] rounded-[16px] border border-[#f4c58c] bg-[#fff6ea] px-6 py-6'>
-              <div className='flex items-start gap-3'>
-                <CalendarDays className='mt-1 h-5 w-5 text-[#2d4f9f]' />
-                <div>
-                  <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                    {youth.german.scheduleTitle}
-                  </h3>
-                  <p className='mt-4 text-[15px] font-bold leading-[1.6] text-[#4f5f77] md:text-[16px]'>
-                    {youth.german.scheduleDay}
-                    <br />
-                    <span className='font-normal'>{youth.german.scheduleTime}</span>
-                    <br />
-                    <span className='font-normal'>{youth.german.scheduleLocation}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id='camps-workshops' className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[1280px]'>
-          <div className='text-center'>
-            <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-[16px] bg-[#f6ab3c] text-white'>
-              <Users className='h-7 w-7 stroke-[2]' />
-            </div>
-            <h2 className='mt-7 text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-              {youth.camps.title}
-            </h2>
-            <p className='mx-auto mt-4 max-w-[760px] text-[16px] leading-[1.65] text-[#516075] md:text-[17px]'>
-              {youth.camps.subtitle}
-            </p>
-          </div>
-
-          <div className='mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-            {youth.camps.cards.map((card, index) => (
-              <article
-                key={`${card.title}-${index}`}
-                className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-6 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
-              >
-                <h3 className='text-[20px] font-bold tracking-[-0.02em] text-[#111318]'>
-                  {card.title}
-                </h3>
-                <p className='mt-5 text-[15px] leading-[1.65] text-[#516075] md:text-[16px]'>
-                  {card.description}
-                </p>
-                <p className='mt-6 text-[15px] font-semibold text-[#f39d2f] md:text-[16px]'>
-                  {card.time}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id='registration' className='px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[1280px] text-center'>
-          <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-            {youth.registration.title}
-          </h2>
-          <p className='mx-auto mt-5 max-w-[820px] text-[16px] leading-[1.65] text-[#516075] md:text-[17px]'>
-            {youth.registration.description}
-          </p>
-
-          <div className='mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row'>
-            <Link
-              to='/contact#contact-form'
-              className='inline-flex h-12 items-center justify-center rounded-[12px] bg-[#f6ab3c] px-8 text-[15px] font-semibold text-white transition hover:bg-[#f0a12c] md:text-[16px]'
-            >
-              {youth.registration.contactButtonLabel}
-            </Link>
-            <Link
-              to='/events/programs#yearly'
-              className='inline-flex h-12 items-center justify-center rounded-[12px] border border-[#2d4f9f] px-8 text-[15px] font-semibold text-[#2d4f9f] transition hover:bg-[#eef3ff] md:text-[16px]'
-            >
-              {youth.registration.scheduleButtonLabel}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className='bg-[#f4f6f9] px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[1280px]'>
-          <h2 className='text-center text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[38px]'>
-            {youth.whyEnrollTitle}
-          </h2>
-
-          <div className='mt-12 grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-4'>
-            {reasonItems.map((item) => (
-              <div key={`${item.title}-${item.text}`} className='text-center'>
-                <div
-                  className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white ${item.accent}`}
-                >
-                  <item.Icon className='h-7 w-7 stroke-[2]' />
-                </div>
-                <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                  {item.title}
-                </h3>
-                <p className='mx-auto mt-3 max-w-[240px] text-[15px] leading-[1.6] text-[#516075] md:text-[16px]'>
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <SiteFooter />
     </div>

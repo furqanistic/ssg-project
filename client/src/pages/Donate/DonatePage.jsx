@@ -115,7 +115,7 @@ const DonatePage = () => {
         </section>
       </div>
 
-      <section className='relative z-20 -mt-6 bg-[#f7f8fb] px-4 pb-16 pt-0 md:-mt-8 md:px-6 md:pb-20'>
+      <section className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-20'>
         <div className='mx-auto max-w-[1200px]'>
           <Motion.div
             initial='hidden'

@@ -1,7 +1,19 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import fallbackHukamnama from '../../../data/hukamnama-fallback.json'
+
+const API_URL = 'https://api.gurbaninow.com/v2/hukamnama/today'
+
+const shuffleFallback = (arr) => {
+  const copy = [...arr]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy[0]
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -9,7 +21,7 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.15,
+      delayChildren: 0.25,
     },
   },
 }
@@ -20,7 +32,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.8,
+      duration: 0.9,
       ease: [0.16, 1, 0.3, 1],
     },
   },
@@ -28,159 +40,226 @@ const itemVariants = {
 
 const HukamnamaSection = () => {
   const { t } = useTranslation()
+  const [hukamnama, setHukamnama] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const fetchHukamnama = async () => {
+      try {
+        const res = await fetch(API_URL)
+        if (!res.ok) throw new Error('API unavailable')
+        const data = await res.json()
+        if (!cancelled) {
+          setHukamnama(data)
+          setLoading(false)
+        }
+      } catch {
+        if (!cancelled) {
+          setHukamnama(shuffleFallback(fallbackHukamnama))
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchHukamnama()
+    return () => { cancelled = true }
+  }, [])
+
+  const isApiFormat = hukamnama && 'hukamnamainfo' in hukamnama
+
+  const gurmukhiLines = useMemo(() => {
+    if (!hukamnama) return []
+    if (isApiFormat) {
+      return hukamnama.hukamnama.slice(1).map((item) => item.line.gurmukhi.unicode)
+    }
+    const lines = hukamnama.gurmukhi
+    return lines.slice(1)
+  }, [hukamnama, isApiFormat])
+
+  const headingLine = useMemo(() => {
+    if (!hukamnama) return ''
+    if (isApiFormat) {
+      return hukamnama.hukamnama[0]?.line?.gurmukhi?.unicode || ''
+    }
+    return hukamnama.gurmukhi?.[0] || ''
+  }, [hukamnama, isApiFormat])
+
+  const transliteration = useMemo(() => {
+    if (!hukamnama) return ''
+    if (isApiFormat) {
+      return hukamnama.hukamnama
+        .map((item) => item.line.transliteration?.english?.text || '')
+        .filter(Boolean)
+        .join(' ')
+    }
+    return hukamnama.transliteration?.en || ''
+  }, [hukamnama, isApiFormat])
+
+  const translationText = useMemo(() => {
+    if (!hukamnama) return ''
+    if (isApiFormat) {
+      return hukamnama.hukamnama
+        .map((item) => item.line.translation?.english?.default || '')
+        .filter(Boolean)
+        .join(' ')
+    }
+    return hukamnama.translation?.en?.description || ''
+  }, [hukamnama, isApiFormat])
+
+  const raag = isApiFormat
+    ? hukamnama?.hukamnamainfo?.raag?.english || ''
+    : hukamnama?.source?.raag || ''
+
+  const page = isApiFormat
+    ? hukamnama?.hukamnamainfo?.pageno || ''
+    : hukamnama?.source?.page || ''
+
+  const writer = isApiFormat
+    ? hukamnama?.hukamnamainfo?.writer?.english || ''
+    : hukamnama?.source?.writer || ''
+
+  if (loading) {
+    return (
+      <section className='relative bg-[#071544] px-6 py-12 md:px-10 md:py-16 overflow-hidden'>
+        <div className='mx-auto w-full max-w-[1400px]'>
+          <div className='flex flex-col md:flex-row gap-6'>
+            <div className='flex-1 space-y-4'>
+              <div className='h-5 w-40 rounded-full bg-white/5 animate-pulse' />
+              <div className='h-14 w-full rounded-2xl bg-white/5 animate-pulse' />
+              <div className='h-10 w-3/4 rounded-2xl bg-white/5 animate-pulse' />
+              <div className='h-10 w-2/3 rounded-2xl bg-white/5 animate-pulse' />
+            </div>
+            <div className='w-full md:w-80 space-y-4'>
+              <div className='h-28 rounded-2xl bg-white/5 animate-pulse' />
+              <div className='h-28 rounded-2xl bg-white/5 animate-pulse' />
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#faf8f5] px-4 py-20 sm:px-6 sm:py-28 lg:py-36">
-      {/* Grain noise overlay — high-end-visual-design §4C, design-taste-frontend §5 */}
+    <section className='relative isolate overflow-hidden bg-[#071544] px-6 py-12 md:px-10 md:py-16'>
       <div
         aria-hidden="true"
-        className="fixed inset-0 z-50 pointer-events-none opacity-[0.025]"
+        className="absolute inset-0 opacity-[0.08]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '128px 128px',
+          backgroundImage:
+            'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
+          backgroundSize: '32px 32px',
+          maskImage: 'radial-gradient(ellipse at 50% 50%, white 0%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 50%, white 0%, transparent 75%)',
         }}
       />
 
-      {/* Ambient glow orbs — high-end-visual-design §4A */}
-      <div aria-hidden="true" className="pointer-events-none absolute -top-40 right-0 h-[500px] w-[500px] rounded-full bg-[#1e3a8a]/[0.03] blur-[120px]" />
-      <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 left-0 h-[400px] w-[400px] rounded-full bg-[#f6ab3c]/[0.04] blur-[100px]" />
-
-      {/* Hairline grid */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage: 'radial-gradient(#111318 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
+        className="pointer-events-none absolute -top-40 right-0 h-[400px] w-[400px] rounded-full bg-[#f6ab3c]/[0.04] blur-[120px]"
+      />
+
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent"
       />
 
       <motion.div
-        className="relative z-10 mx-auto w-full max-w-[1100px]"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
+        viewport={{ once: true, margin: '-80px' }}
         variants={containerVariants}
+        className="relative mx-auto w-full max-w-[1400px]"
       >
-        {/* Eyebrow badge — high-end-visual-design §4C */}
-        <div className="mb-8 flex flex-col items-center md:mb-12">
-          <motion.div
-            variants={itemVariants}
-            className="inline-flex items-center gap-2 rounded-full border border-[#1e3a8a]/15 bg-[#1e3a8a]/5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#1e3a8a] shadow-[inset_0_1px_0_rgba(30,58,138,0.06)]"
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1e3a8a] opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#1e3a8a]" />
-            </span>
+        <motion.div variants={itemVariants} className="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white/70">
+            <span className="h-1 w-1 rounded-full bg-[#f6ab3c]" />
             {t('home.hukamnama.title')}
-          </motion.div>
-        </div>
+          </div>
 
-        <div className="grid grid-cols-1 items-start gap-4 md:gap-6 lg:grid-cols-12">
-          {/* Primary card — Double-Bezel (high-end-visual-design §4A) */}
-          <motion.div variants={itemVariants} className="lg:col-span-12">
-            <div className="rounded-[2.25rem] bg-black/[0.04] p-[3px] shadow-[0_4px_24px_-12px_rgba(0,0,0,0.06)]">
-              <div className="relative overflow-hidden rounded-[calc(2.25rem-3px)] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
-                <div className="p-8 md:p-12 lg:p-16">
-                  {/* Geometric detail — only on md+ */}
-                  <div className="pointer-events-none absolute right-0 top-0 hidden p-6 opacity-[0.04] md:block">
-                    <svg width="80" height="80" viewBox="0 0 100 100" fill="none" stroke="#1e3a8a">
-                      <circle cx="50" cy="50" r="48" strokeWidth="0.4" />
-                      <circle cx="50" cy="50" r="36" strokeWidth="0.4" />
-                      <circle cx="50" cy="50" r="24" strokeWidth="0.4" />
-                      <line x1="50" y1="2" x2="50" y2="98" strokeWidth="0.3" />
-                      <line x1="2" y1="50" x2="98" y2="50" strokeWidth="0.3" />
-                    </svg>
-                  </div>
+          <div className="flex items-center gap-3">
+            {raag && (
+              <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/35">
+                {raag}
+              </span>
+            )}
+            {writer && (
+              <>
+                <span className="h-2.5 w-px bg-white/8" />
+                <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/35">
+                  {writer}
+                </span>
+              </>
+            )}
+            {page && (
+              <>
+                <span className="h-2.5 w-px bg-white/8" />
+                <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/35">
+                  ANG {page}
+                </span>
+              </>
+            )}
+          </div>
+        </motion.div>
 
-                  {/* Pulse micro-interaction — design-taste-frontend §4, fixing-motion-performance §1 (small surface, compositor only) */}
-                  <motion.div
-                    animate={{ opacity: [0.12, 0.28, 0.12], scale: [1, 1.06, 1] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                    className="pointer-events-none absolute -bottom-6 -right-6 h-32 w-32 rounded-full border border-[#1e3a8a]/[0.06] md:h-40 md:w-40"
-                  />
+        {/* Asymmetrical grid: Gurmukhi left, translations right */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_360px] gap-4 md:gap-6">
+          {/* Left: Gurmukhi */}
+          <motion.div variants={itemVariants}>
+            <div className="h-full rounded-2xl border border-white/8 bg-white/[0.03] p-8 md:p-10 lg:p-12 shadow-[0_20px_40px_-30px_rgba(0,0,0,0.5)]">
+              {headingLine && (
+                <p className="text-[15px] font-medium leading-relaxed text-white/55 md:text-[17px] lg:text-[19px]">
+                  {headingLine}
+                </p>
+              )}
 
-                  <div className="relative flex flex-col items-center gap-6 md:flex-row md:gap-12 lg:gap-16">
-                    {/* Vertical accent */}
-                    <div className="hidden h-16 w-[3px] shrink-0 rounded-full bg-[#1e3a8a]/15 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] md:block lg:h-20" />
-
-                    <div className="flex-1 text-center md:text-left">
-                      <p className="text-2xl font-black leading-tight tracking-tight text-[#111318] md:text-4xl lg:text-5xl">
-                        ਸਲੋਕ ਮਹਲਾ ੩ ॥
-                      </p>
-                      <div className="mx-auto my-5 h-px w-12 bg-[#1e3a8a]/15 md:mx-0 md:my-6 md:w-14" />
-                      <p className="text-lg font-medium leading-relaxed text-[#111318]/65 md:text-2xl lg:text-3xl">
-                        ਸਭਨਾ ਕਾ ਦਾਤਾ ਏਕੁ hai ਦੂਜਾ ਨਾਹੀ ਕੋਇ ॥
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div className="mt-5 space-y-2">
+                {gurmukhiLines.map((line, i) => (
+                  <p
+                    key={i}
+                    className="text-[26px] font-medium leading-[1.35] tracking-tight text-white sm:text-[32px] md:text-[38px] lg:text-[46px]"
+                  >
+                    {line}
+                  </p>
+                ))}
               </div>
             </div>
           </motion.div>
 
-          {/* Secondary cards — both use Double-Bezel (high-end-visual-design §4A) */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:col-span-12">
-            {/* Transliteration card */}
-            <motion.div variants={itemVariants} className="group">
-              <div className="rounded-[1.75rem] bg-black/[0.04] p-[2px] shadow-[0_4px_20px_-12px_rgba(0,0,0,0.04)] transition-shadow duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:shadow-[0_8px_32px_-16px_rgba(0,0,0,0.1)]">
-                <div className="rounded-[calc(1.75rem-2px)] bg-[#f4f2ee] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-0.5 md:p-8">
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#1e3a8a]/40">
-                    {t('home.hukamnama.transliteration')}
-                  </span>
-                  <p className="mt-3 text-sm italic leading-relaxed text-[#48566d] md:text-base">
-                    Salok Mehalā 3 ||
-                    <br />
-                    <span className="text-[#16191f]/70">Sabhnā kā dātā ek hai, dūjā nāhī ko-i ||</span>
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Translation card */}
-            <motion.div variants={itemVariants} className="group">
-              <div className="rounded-[1.75rem] bg-[#1e3a8a]/20 p-[2px] shadow-[0_4px_20px_-12px_rgba(0,0,0,0.06)] transition-shadow duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:shadow-[0_8px_32px_-16px_rgba(30,58,138,0.2)]">
-                <div className="relative overflow-hidden rounded-[calc(1.75rem-2px)] bg-[#1e3a8a] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
-                  <div className="p-6 md:p-8">
-                    {/* Pulse ring — replacing continuous rotate (fixing-motion-performance §1.1) */}
-                    <motion.div
-                      animate={{ scale: [1, 1.08, 1] }}
-                      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                      className="pointer-events-none absolute -right-10 -bottom-10 h-28 w-28 rounded-full border border-white/8 md:h-36 md:w-36"
-                    />
-
-                    <div className="relative z-10">
-                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">
-                        {t('home.hukamnama.translation')}
-                      </span>
-                      <p className="mt-3 text-sm font-medium leading-relaxed text-white md:text-base">
-                        {t('home.hukamnama.translatedLine')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* CTA — Button-in-Button (high-end-visual-design §4B, design-taste-frontend §4 Magnetic Micro-physics) */}
-          <motion.div
-            variants={itemVariants}
-            className="flex justify-center lg:col-span-12 lg:mt-2"
-          >
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.96 }}
-              className="group relative flex items-center gap-3 rounded-full bg-[#f6ab3c] pl-6 pr-1.5 py-1.5 text-sm font-black uppercase tracking-[0.02em] text-white shadow-[0_12px_32px_-16px_rgba(240,152,22,0.5)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#ef9f24] hover:shadow-[0_16px_40px_-16px_rgba(240,152,22,0.7)] md:pl-8 md:pr-2 md:py-2 md:text-base"
-            >
-              <span className="relative z-10">{t('common.actions.viewFullHukamnama')}</span>
-              <span className="relative z-10 grid h-9 w-9 place-items-center rounded-full bg-white/20 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45 group-hover:scale-110 md:h-10 md:w-10">
-                <ArrowRight className="h-4 w-4 text-white md:h-5 md:w-5" strokeWidth={2.5} />
+          {/* Right: Transliteration + Translation stacked */}
+          <motion.div variants={itemVariants} className="flex flex-col gap-4">
+            <div className="flex-1 rounded-2xl border border-white/8 bg-white/[0.03] p-6 transition-all duration-500 hover:bg-white/[0.05] md:p-7">
+              <span className="text-[8px] font-medium uppercase tracking-[0.22em] text-[#f6ab3c]/50">
+                {t('home.hukamnama.transliteration')}
               </span>
-            </motion.button>
+              <p className="mt-2 text-[13px] font-light leading-relaxed text-white/55 md:text-[14px]">
+                {transliteration}
+              </p>
+            </div>
+
+            <div className="flex-1 rounded-2xl border border-[#f6ab3c]/12 bg-[#f6ab3c]/[0.03] p-6 transition-all duration-500 hover:bg-[#f6ab3c]/[0.05] md:p-7">
+              <span className="text-[8px] font-medium uppercase tracking-[0.22em] text-[#f6ab3c]/50">
+                {t('home.hukamnama.translation')}
+              </span>
+              <p className="mt-2 text-[13px] font-light leading-relaxed text-white/60 md:text-[14px]">
+                {translationText}
+              </p>
+            </div>
           </motion.div>
         </div>
+
+        {/* CTA */}
+        <motion.div variants={itemVariants} className="mt-6 flex justify-center md:justify-start">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            className="group inline-flex h-[40px] items-center justify-center gap-2.5 rounded-full bg-[#f09816] px-6 text-[12px] font-medium text-white transition-all duration-500 hover:bg-[#f1a52e] md:h-[44px] md:px-7 md:text-[13px]"
+          >
+            <span>{t('common.actions.viewFullHukamnama')}</span>
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-0.5" strokeWidth={2} />
+          </motion.button>
+        </motion.div>
       </motion.div>
     </section>
   )

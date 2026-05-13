@@ -132,8 +132,9 @@ const de = {
   },
   home: {
     hero: {
-      titleLine1: 'Willkommen bei Singh Sabha',
-      titleLine2: 'Gurudwara Berlin',
+      titleLine1: 'Willkommen bei',
+      titleLine2: 'Singh Sabha',
+      titleLine3: 'Gurudwara Berlin',
       subtitle:
         'Ein spirituelles Zuhause für alle. Erleben Sie Frieden, Gemeinschaft und Hingabe, verwurzelt in Glaube und Dienst.',
       highlights: ['Tägliche Gebete', 'Langar Seva', 'Gemeinschaftsprogramme'],

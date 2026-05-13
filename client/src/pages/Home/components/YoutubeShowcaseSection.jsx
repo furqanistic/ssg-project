@@ -88,6 +88,7 @@ const YoutubeShowcaseSection = () => {
 
   const [videoIds, setVideoIds] = useState([])
   const [activeVideoId, setActiveVideoId] = useState(FALLBACK_VIDEO_IDS[0])
+  const [playingVideoId, setPlayingVideoId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [videoMeta, setVideoMeta] = useState({})
   const [imgLoaded, setImgLoaded] = useState({})
@@ -255,26 +256,22 @@ const YoutubeShowcaseSection = () => {
   }, [resolvedVideoIds, videoMeta])
 
   return (
-    <section className='relative bg-gray-50 px-4 py-12 md:px-6 md:py-16 lg:py-20 overflow-hidden'>
+    <section className='relative bg-white px-5 py-12 md:px-8 md:py-16 overflow-hidden'>
       <div className='relative mx-auto w-full max-w-[1280px]'>
 
-        {/* Header */}
-        <div className='flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-8 mb-8 md:mb-12'>
+        <div className='flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-6 mb-6 md:mb-8'>
           <div className='md:col-span-8'>
-            <div className='inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 md:px-3 md:py-1 text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase text-red-600 ring-1 ring-red-600/10 bg-red-50'>
-              <Youtube className='h-2.5 w-2.5 md:h-3 md:w-3' />
+            <div className='inline-flex items-center gap-2 rounded-full border border-[#f6ab3c]/20 bg-[#f6ab3c]/6 px-2.5 py-1'>
+              <Youtube className='h-2.5 w-2.5 md:h-3 md:w-3 text-[#f6ab3c]' />
               <span className='flex items-center gap-1.5'>
-                <span className='relative flex h-1.5 w-1.5 md:h-2 md:w-2'>
-                  <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-red-600 opacity-75' />
-                  <span className='relative inline-flex h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-red-600' />
-                </span>
-                BROADCASTS
+                <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
+                <span className='text-[9px] font-medium uppercase tracking-[0.2em] text-[#f6ab3c]'>BROADCASTS</span>
               </span>
             </div>
-            <h2 className='mt-3 md:mt-5 text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900'>
+            <h2 className='mt-3 text-2xl font-medium leading-[1.08] tracking-tighter text-[#111318] sm:text-3xl md:text-4xl'>
               Latest Kirtan & Streams
             </h2>
-            <p className='mt-2 md:mt-4 text-sm md:text-lg leading-relaxed text-gray-500 max-w-2xl'>
+            <p className='mt-1.5 max-w-2xl text-[14px] font-light leading-[1.5] text-[#5a677a] md:text-[15px]'>
               Watch recent uploads and join us live on our official YouTube channel.
             </p>
           </div>
@@ -282,16 +279,16 @@ const YoutubeShowcaseSection = () => {
           <div className='md:col-span-4 flex items-end md:justify-end'>
             <motion.a
               whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.97 }}
               href={CHANNEL_URL}
               target='_blank'
               rel='noreferrer'
-              className='group inline-flex items-center gap-3 md:gap-5 rounded-full bg-gray-900 pl-4 md:pl-6 pr-1.5 md:pr-2 py-1.5 md:py-2 text-[11px] md:text-[13px] font-bold text-white transition-all duration-700 ease-[0.32,0.72,0,1] hover:bg-gray-800'
+              className='group inline-flex h-[40px] items-center gap-2.5 rounded-full bg-[#f09816] pl-4 pr-1.5 text-[10px] font-medium text-white transition-all duration-500 hover:bg-[#f1a52e] md:h-[44px] md:pl-5 md:pr-2 md:text-[11px]'
             >
               VISIT CHANNEL
-              <div className='flex h-7 w-7 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/10 transition-all duration-700 group-hover:rotate-12 group-hover:bg-white/20'>
-                <ExternalLink className='h-3 w-3 md:h-4 md:w-4 text-white' />
-              </div>
+              <span className='grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white/15 transition-transform duration-500 group-hover:scale-110 md:h-7 md:w-7'>
+                <ExternalLink className='h-2.5 w-2.5 md:h-3 md:w-3' />
+              </span>
             </motion.a>
           </div>
         </div>
@@ -299,10 +296,10 @@ const YoutubeShowcaseSection = () => {
         <div className='relative'>
 
           {isLoading ? (
-            <div className='grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3'>
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className='overflow-hidden rounded-xl md:rounded-2xl border border-gray-100 bg-white p-3 md:p-4'>
-                  <div className='relative aspect-video w-full overflow-hidden rounded-lg md:rounded-xl bg-gray-100'>
+                <div key={index} className='overflow-hidden rounded-2xl border border-[#111318]/8 bg-white/50 p-3'>
+                  <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-[#111318]/5'>
                     <div className='absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent' />
                   </div>
                 </div>
@@ -311,91 +308,100 @@ const YoutubeShowcaseSection = () => {
           ) : null}
 
           {!isLoading && resolvedVideoIds.length === 0 ? (
-            <div className='flex flex-col items-center justify-center py-16 md:py-20 text-center'>
-              <Youtube className='h-8 w-8 md:h-12 md:w-12 text-gray-300 mb-3 md:mb-4' />
-              <p className='text-sm md:text-base text-gray-400 font-medium'>No videos available at the moment.</p>
+            <div className='flex flex-col items-center justify-center py-12 text-center'>
+              <Youtube className='h-8 w-8 text-[#111318]/15 mb-2' />
+              <p className='text-[14px] font-medium text-[#5a677a]'>No videos available at the moment.</p>
             </div>
           ) : null}
 
           {!isLoading && activeVideoId && resolvedVideoIds.length > 0 ? (
-            <div className='flex flex-col gap-6 md:gap-10'>
+            <div className='flex flex-col gap-6 md:gap-8'>
 
-              {/* Hero Video */}
-              <div className='grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 items-start'>
-                <div className='lg:col-span-9'>
-                  <div className='group relative overflow-hidden rounded-xl md:rounded-[2rem] bg-gray-100 aspect-video w-full border border-black/[0.15]'>
-                    <img
-                      src={thumbnailUrl(activeVideoId, 'maxresdefault.jpg')}
-                      alt={videoMeta[activeVideoId]?.title || 'Featured'}
-                      loading='lazy'
-                      onLoad={() => setImgLoaded((p) => ({ ...p, [activeVideoId]: true }))}
-                      className={`h-full w-full object-cover transition-all duration-1000 group-hover:scale-105 ${
-                        imgLoaded[activeVideoId] ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    />
-                    <div className='absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700' />
+              <div className='grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 items-start'>
+                <div className='lg:col-span-8'>
+                  {playingVideoId === activeVideoId ? (
+                    <div className='relative overflow-hidden rounded-2xl border border-[#111318]/10 aspect-video'>
+                      <iframe
+                        src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&rel=0`}
+                        title={videoMeta[activeVideoId]?.title || 'YouTube video player'}
+                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                        allowFullScreen
+                        className='absolute inset-0 h-full w-full'
+                      />
+                    </div>
+                  ) : (
+                    <div className='group relative overflow-hidden rounded-2xl bg-[#111318]/5 border border-[#111318]/10'>
+                      <img
+                        src={thumbnailUrl(activeVideoId, 'maxresdefault.jpg')}
+                        alt={videoMeta[activeVideoId]?.title || 'Featured'}
+                        loading='lazy'
+                        onLoad={() => setImgLoaded((p) => ({ ...p, [activeVideoId]: true }))}
+                        className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.03] ${
+                          imgLoaded[activeVideoId] ? 'opacity-100' : 'opacity-0'
+                        }`}
+                      />
+                      <div className='absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700' />
 
-                    <a
-                      href={`https://www.youtube.com/watch?v=${activeVideoId}`}
-                      target='_blank'
-                      rel='noreferrer'
-                      className='absolute inset-0 flex items-center justify-center'
-                    >
-                      <div className='flex h-14 w-14 md:h-20 md:w-20 items-center justify-center rounded-full bg-white text-black transition-all duration-700 group-hover:scale-110 active:scale-95 ring-1 ring-gray-900/5'>
-                        <Play className='ml-0.5 md:ml-1 h-5 w-5 md:h-8 md:w-8 fill-current text-red-600' />
-                      </div>
-                    </a>
-                  </div>
+                      <button
+                        type='button'
+                        onClick={() => setPlayingVideoId(activeVideoId)}
+                        className='absolute inset-0 flex items-center justify-center'
+                      >
+                        <div className='flex h-14 w-14 items-center justify-center rounded-full bg-white/90 transition-all duration-500 hover:scale-110 active:scale-95 md:h-16 md:w-16'>
+                          <Play className='ml-0.5 h-5 w-5 fill-[#f09816] text-[#f09816] md:h-6 md:w-6' />
+                        </div>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                <div className='lg:col-span-3 flex flex-col gap-3 md:gap-5 lg:pt-4'>
+                <div className='lg:col-span-4 flex flex-col gap-3 lg:pt-3'>
                   <div>
-                    <span className='text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]'>NOW PLAYING</span>
-                    <h3 className='mt-2 md:mt-3 text-base md:text-xl font-bold text-gray-900 leading-tight line-clamp-3'>
+                    <span className='text-[9px] font-medium uppercase tracking-[0.2em] text-[#5a677a]/70'>NOW PLAYING</span>
+                    <h3 className='mt-1.5 text-base font-medium leading-tight text-[#111318] line-clamp-3 md:text-lg'>
                       {videoMeta[activeVideoId]?.title || 'Latest video'}
                     </h3>
-                    <p className='mt-2 md:mt-3 text-[11px] md:text-xs text-gray-500 font-medium'>
+                    <p className='mt-1 text-[11px] font-medium text-[#5a677a]'>
                       {videoMeta[activeVideoId]?.authorName || 'Singh Sabha Gurdwara'}
                     </p>
                   </div>
-                  <div className='h-[2px] w-8 md:w-10 bg-red-600' />
+                  <div className='h-px w-6 bg-[#f6ab3c]' />
                   <a
                     href={`https://www.youtube.com/watch?v=${activeVideoId}`}
                     target='_blank'
                     rel='noreferrer'
-                    className='group inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-[12px] font-bold text-gray-900 uppercase tracking-widest hover:text-red-600 transition-colors'
+                    className='group inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.15em] text-[#f09816] transition-colors duration-500 hover:text-[#f1a52e]'
                   >
                     WATCH ON YOUTUBE
-                    <ExternalLink className='h-3 w-3 md:h-3.5 md:w-3.5 transition-all group-hover:translate-x-1' />
+                    <ExternalLink className='h-2.5 w-2.5 transition-transform duration-500 group-hover:translate-x-1' />
                   </a>
                 </div>
               </div>
 
-              {/* Slider */}
-              <div className='pt-6 md:pt-10 border-t border-gray-200/60'>
-                <div className='flex items-center justify-between mb-4 md:mb-6'>
-                  <h4 className='text-sm md:text-base font-bold text-gray-900 tracking-wide'>RECENT BROADCASTS</h4>
-                  <div className='flex items-center gap-1.5 md:gap-2'>
+              <div className='pt-6 border-t border-[#111318]/8 md:pt-8'>
+                <div className='flex items-center justify-between mb-3 md:mb-4'>
+                  <h4 className='text-[10px] font-medium uppercase tracking-[0.2em] text-[#5a677a]/80'>RECENT BROADCASTS</h4>
+                  <div className='flex items-center gap-1.5'>
                     <button
                       type='button'
                       onClick={() => scrollSlider('left')}
-                      className='inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full ring-1 ring-gray-900/10 bg-white text-gray-600 transition-all hover:bg-gray-900 hover:text-white active:scale-95'
+                      className='inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#111318]/10 bg-white text-[#5a677a] transition-all duration-500 hover:border-[#f6ab3c]/30 hover:text-[#f09816] active:scale-[0.95] md:h-9 md:w-9'
                     >
-                      <ChevronLeft className='h-4 w-4 md:h-5 md:w-5' />
+                      <ChevronLeft className='h-3.5 w-3.5 md:h-4 md:w-4' />
                     </button>
                     <button
                       type='button'
                       onClick={() => scrollSlider('right')}
-                      className='inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full ring-1 ring-gray-900/10 bg-white text-gray-600 transition-all hover:bg-gray-900 hover:text-white active:scale-95'
+                      className='inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#111318]/10 bg-white text-[#5a677a] transition-all duration-500 hover:border-[#f6ab3c]/30 hover:text-[#f09816] active:scale-[0.95] md:h-9 md:w-9'
                     >
-                      <ChevronRight className='h-4 w-4 md:h-5 md:w-5' />
+                      <ChevronRight className='h-3.5 w-3.5 md:h-4 md:w-4' />
                     </button>
                   </div>
                 </div>
 
                 <div
                   ref={sliderRef}
-                  className='flex gap-3 md:gap-6 overflow-x-auto pb-4 md:pb-6 px-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth'
+                  className='flex gap-3 md:gap-4 overflow-x-auto pb-2 md:pb-4 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth'
                 >
                   {resolvedVideoIds.map((videoId, index) => {
                     const isActive = videoId === activeVideoId
@@ -403,15 +409,18 @@ const YoutubeShowcaseSection = () => {
                       <button
                         key={videoId}
                         type='button'
-                        onClick={() => setActiveVideoId(videoId)}
-                        className={`group flex flex-col w-[200px] sm:w-[260px] md:w-[320px] shrink-0 snap-start gap-2 md:gap-4 text-left transition-all duration-500 ${
-                          isActive ? 'opacity-100' : 'opacity-60 hover:opacity-100'
+                        onClick={() => {
+                          setActiveVideoId(videoId)
+                          setPlayingVideoId(videoId)
+                        }}
+                        className={`group flex flex-col w-[200px] sm:w-[240px] md:w-[300px] shrink-0 snap-start gap-2 md:gap-3 text-left transition-all duration-500 ${
+                          isActive ? 'opacity-100' : 'opacity-50 hover:opacity-100'
                         }`}
                       >
-                        <div className={`relative aspect-video w-full overflow-hidden rounded-xl md:rounded-[1.5rem] bg-gray-100 border transition-all duration-500 ${
+                        <div className={`relative aspect-video w-full overflow-hidden rounded-xl bg-[#111318]/5 border transition-all duration-500 md:rounded-2xl ${
                           isActive
-                            ? 'border-red-600/40'
-                            : 'border-black/[0.15] group-hover:border-black/[0.25]'
+                            ? 'border-[#f6ab3c]/40'
+                            : 'border-[#111318]/8 group-hover:border-[#111318]/15'
                         }`}>
                           <img
                             src={thumbnailUrl(videoId)}
@@ -421,24 +430,24 @@ const YoutubeShowcaseSection = () => {
                           />
 
                           {isActive && (
-                            <div className='absolute top-2 left-2 md:top-3 md:left-3 rounded-full bg-red-600 px-1.5 py-0.5 md:px-2.5 md:py-0.5 text-[8px] md:text-[9px] font-bold text-white uppercase tracking-wider'>
+                            <div className='absolute top-2 left-2 rounded-full border border-[#f6ab3c]/20 bg-[#f6ab3c]/10 px-2 py-0.5 text-[7px] font-medium uppercase tracking-[0.15em] text-[#f09816] md:top-2.5 md:left-2.5 md:text-[8px]'>
                               Now Playing
                             </div>
                           )}
 
-                          <div className={`absolute bottom-2 right-2 md:bottom-3 md:right-3 flex h-7 w-7 md:h-10 md:w-10 items-center justify-center rounded-full bg-white text-black transition-all duration-500 group-hover:opacity-100 group-hover:scale-110 ${
+                          <div className={`absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110 md:bottom-2.5 md:right-2.5 md:h-8 md:w-8 ${
                             isActive ? 'opacity-100 scale-110' : 'opacity-0'
                           }`}>
-                            <Play className='ml-0.5 h-3 w-3 md:h-4 md:w-4 fill-current text-red-600' />
+                            <Play className='ml-0.5 h-2.5 w-2.5 fill-[#f09816] text-[#f09816] md:h-3 md:w-3' />
                           </div>
                         </div>
-                        <div className='flex flex-col px-0.5 md:px-1'>
-                          <p className={`line-clamp-2 text-xs md:text-[15px] font-bold leading-snug transition-colors ${
-                            isActive ? 'text-red-600' : 'text-gray-900 group-hover:text-red-600'
+                        <div className='flex flex-col px-0.5'>
+                          <p className={`line-clamp-2 text-[12px] font-medium leading-snug transition-colors duration-500 md:text-[14px] ${
+                            isActive ? 'text-[#f09816]' : 'text-[#111318] group-hover:text-[#f09816]'
                           }`}>
                             {videoMeta[videoId]?.title || `Recent Video ${index + 1}`}
                           </p>
-                          <p className='mt-1 md:mt-2 text-[9px] md:text-[11px] font-medium text-gray-400 uppercase tracking-wide'>
+                          <p className='mt-0.5 text-[9px] font-medium uppercase tracking-[0.15em] text-[#5a677a]/60 md:text-[10px]'>
                             {videoMeta[videoId]?.authorName || 'YouTube'}
                           </p>
                         </div>

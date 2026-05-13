@@ -1,18 +1,9 @@
 import React from 'react'
-import { ArrowRight, CalendarDays, Clock3, MapPin, Sparkles } from 'lucide-react'
+import { ArrowRight, CalendarDays, Clock3, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useEventsContentQuery } from '@/hooks/useEventsContent'
-import { motion, useScroll, useTransform } from 'framer-motion'
-
-const MagneticIcon = ({ icon: Icon }) => (
-  <motion.div
-    whileHover={{ scale: 1.3, rotate: 15 }}
-    className='flex h-8 w-8 items-center justify-center rounded-xl bg-[#f5a437]/10'
-  >
-    <Icon className='h-4 w-4 text-[#f5a437]' />
-  </motion.div>
-)
+import { motion } from 'framer-motion'
 
 const UpcomingEventsSection = () => {
   const { t } = useTranslation()
@@ -22,148 +13,124 @@ const UpcomingEventsSection = () => {
   const formatDescription = (text) => {
     if (!text) return null
     const parts = text.split(/([⌚◇🔸\u{1F538}])/gu)
-    return parts.map((part, index) => {
-      if (part === '⌚') return <Clock3 key={index} className='inline h-3.5 w-3.5 mx-1 text-[#f5a437] animate-pulse' />
-      if (part === '◇' || part === '🔸' || part === '\u{1F538}') return <Sparkles key={index} className='inline h-3.5 w-3.5 mx-1 text-[#f5a437]' />
+    return parts.map((part) => {
+      if (part === '⌚' || part === '◇' || part === '🔸' || part === '\u{1F538}') return null
       return part
-    })
+    }).filter(Boolean).join('')
   }
 
   return (
-    <section className='relative bg-[#f2f2f2] px-4 py-20 md:px-6 md:py-28 overflow-hidden'>
-      {/* Structural Hairline Grid */}
-      <div className='absolute inset-0 pointer-events-none'>
-        <div className='absolute top-0 left-1/4 h-full w-[1px] bg-black/[0.03]' />
-        <div className='absolute top-0 left-2/4 h-full w-[1px] bg-black/[0.03]' />
-        <div className='absolute top-0 left-3/4 h-full w-[1px] bg-black/[0.03]' />
-        <div className='absolute top-1/4 left-0 w-full h-[1px] bg-black/[0.03]' />
-        <div className='absolute top-3/4 left-0 w-full h-[1px] bg-black/[0.03]' />
-      </div>
+    <section className='relative overflow-hidden bg-white px-6 py-14 md:px-10 md:py-18 lg:py-20'>
+      {/* Dot grid */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 1px 1px, rgba(17,19,24,0.15) 1px, transparent 0)',
+          backgroundSize: '32px 32px',
+          maskImage: 'radial-gradient(ellipse at 50% 30%, white 0%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 30%, white 0%, transparent 70%)',
+        }}
+      />
 
-      <div className='mx-auto w-full max-w-[1280px] relative z-10'>
-        
-        {/* Editorial Premium Header */}
-        <div className='mb-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end'>
-          <div className='lg:col-span-9'>
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className='flex items-center gap-3 mb-6'
-            >
-              <div className='h-2 w-2 rounded-full bg-[#f5a437] animate-ping' />
-              <span className='text-[11px] font-black uppercase tracking-[0.5em] text-[#111318]/50'>Spiritual Engagements</span>
-            </motion.div>
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className='text-[36px] font-black tracking-tight text-[#111318] md:text-[44px] lg:text-[52px] leading-[1] uppercase'
-            >
+      <div className='relative mx-auto w-full max-w-[1400px]'>
+        {/* Header */}
+        <div className='flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 md:mb-12'>
+          <div className='max-w-[700px]'>
+            <div className='inline-flex items-center gap-2 rounded-full border border-[#111318]/8 bg-[#111318]/[0.03] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.22em] text-[#111318]/60'>
+              <span className='h-1 w-1 rounded-full bg-[#f6ab3c]' />
+              Spiritual Engagements
+            </div>
+            <h2 className='mt-4 text-[32px] font-medium leading-[1.06] tracking-tighter text-[#111318] sm:text-[40px] md:text-[48px] lg:text-[56px]'>
               {t('home.events.title')}
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className='mt-5 text-[16px] leading-relaxed text-[#5b687a] max-w-lg font-medium border-l-2 border-[#f5a437] pl-5'
-            >
+            </h2>
+            <p className='mt-2 max-w-lg text-[15px] font-light leading-relaxed text-[#5a677a] md:text-[16px]'>
               {t('home.events.subtitle')}
-            </motion.p>
+            </p>
           </div>
-
-          <div className='lg:col-span-3 flex lg:justify-end'>
-            <Link
-              to='/events/programs#all'
-              className='group relative flex h-12 items-center gap-3 rounded-full bg-[#111318] pl-6 pr-1.5 py-1.5 text-[12px] font-bold text-white transition-all duration-700 hover:pr-4'
-            >
-              EXPLORE ALL
-              <div className='flex h-9 w-9 items-center justify-center rounded-full bg-[#f5a437] transition-transform group-hover:rotate-45'>
-                <ArrowRight className='h-4 w-4 text-[#111318]' />
-              </div>
-            </Link>
-          </div>
+          <Link
+            to='/events/programs#all'
+            className='group inline-flex h-[42px] items-center gap-2.5 rounded-full bg-[#f09816] px-5 text-[12px] font-medium text-white transition-all duration-500 hover:bg-[#f1a52e] md:h-[46px] md:px-6 md:text-[13px] shrink-0'
+          >
+            EXPLORE ALL
+            <ArrowRight className='h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-0.5' strokeWidth={2} />
+          </Link>
         </div>
 
-        {/* Staggered Premium Grid */}
-        <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
+        {/* Event cards */}
+        <div className='grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-3'>
           {featuredEvents.length > 0 ? (
             featuredEvents.map((event, index) => (
               <motion.article
                 key={event.id}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                className='group relative flex flex-col transition-all duration-500'
+                transition={{ delay: index * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className='group relative flex flex-col rounded-2xl border border-[#111318]/8 bg-white overflow-hidden transition-all duration-500 hover:bg-[#faf8f5]'
               >
-                {/* Visual Anchor: Precision Image Layer */}
-                <div className='relative aspect-[16/11] w-full overflow-hidden rounded-[2.5rem] bg-[#9ca7ba] ring-1 ring-black/[0.08]'>
-                  {event.image ? (
-                    <motion.img
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 1.5, ease: [0.32, 0.72, 0, 1] }}
+                {/* Image */}
+                {event.image ? (
+                  <div className='relative aspect-[16/9] overflow-hidden'>
+                    <img
                       src={event.image}
                       alt={event.title}
-                      className='h-full w-full object-cover'
+                      className='h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.03]'
                       loading='lazy'
                     />
-                  ) : null}
-                  <div className='absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors duration-700' />
-                  
-                  {/* Floating Date Badge - Premium Precision */}
-                  <div className='absolute top-5 left-5'>
-                    <div className='bg-white/95 px-4 py-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-black/5 flex flex-col items-center min-w-[50px]'>
-                      <span className='text-[10px] font-black text-[#f5a437] uppercase tracking-tighter'>SSG</span>
-                      <span className='text-[14px] font-black text-[#111318] leading-none mt-0.5'>{event.date.split(' ')[0]}</span>
+                    <div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent' />
+                    <div className='absolute bottom-3 left-3'>
+                      <span className='rounded-full border border-white/15 bg-white/80 px-2.5 py-0.5 text-[8px] font-medium uppercase tracking-[0.15em] text-[#111318]/70'>
+                        {event.date}
+                      </span>
                     </div>
                   </div>
-                </div>
-
-                {/* Content Layer: Floating Island Architecture */}
-                <div className='relative -mt-16 mx-4 p-8 bg-white rounded-[2rem] border border-black/[0.15] shadow-[0_24px_56px_rgba(0,0,0,0.08)] transition-all duration-700 group-hover:-translate-y-2 group-hover:border-[#f5a437]/40'>
-                  <div className='flex items-center gap-2 mb-4'>
-                    <div className='h-[1px] w-4 bg-[#f5a437]' />
-                    <span className='text-[10px] font-black uppercase tracking-widest text-[#f5a437]'>{event.date}</span>
+                ) : (
+                  <div className='aspect-[16/9] flex items-center justify-center bg-[#111318]/[0.02]'>
+                    <CalendarDays className='h-8 w-8 text-[#111318]/10' strokeWidth={1} />
                   </div>
+                )}
 
-                  <h3 className='text-[22px] font-black text-[#111318] leading-tight mb-6 transition-colors group-hover:text-[#f5a437]'>
+                {/* Content */}
+                <div className='flex flex-1 flex-col p-6 md:p-7'>
+                  <h3 className='text-[17px] font-medium leading-tight text-[#111318] transition-colors duration-500 group-hover:text-[#f6ab3c] md:text-[19px]'>
                     {event.title}
                   </h3>
 
-                  <div className='flex flex-col gap-3 mb-8'>
-                    <div className='flex items-center gap-3 text-[12px] font-bold text-[#5a677a]'>
-                      <MagneticIcon icon={Clock3} />
+                  <div className='mt-4 flex flex-col gap-2'>
+                    <div className='flex items-center gap-2.5 text-[12px] font-medium text-[#5a677a]'>
+                      <Clock3 className='h-3.5 w-3.5 text-[#f6ab3c]/50' strokeWidth={1.5} />
                       <span>{event.time}</span>
                     </div>
-                    <div className='flex items-center gap-3 text-[12px] font-bold text-[#5a677a]'>
-                      <MagneticIcon icon={MapPin} />
+                    <div className='flex items-center gap-2.5 text-[12px] font-medium text-[#5a677a]'>
+                      <MapPin className='h-3.5 w-3.5 text-[#f6ab3c]/50' strokeWidth={1.5} />
                       <span>{event.location}</span>
                     </div>
                   </div>
 
-                  <p className='text-[14px] leading-relaxed text-[#5a677a] font-medium'>
-                    {formatDescription(event.description)}
-                  </p>
+                  {event.description && (
+                    <p className='mt-4 text-[13px] font-light leading-relaxed text-[#5a677a]/80 line-clamp-2 md:text-[14px]'>
+                      {formatDescription(event.description)}
+                    </p>
+                  )}
 
-                  <div className='mt-10 pt-6 border-t border-black/[0.03] flex items-center justify-between'>
-                    <Link 
+                  <div className='mt-auto pt-5'>
+                    <Link
                       to='/events/programs'
-                      className='group/btn relative flex items-center gap-2 rounded-full bg-[#111318] pl-4 pr-1 py-1 text-[10px] font-black tracking-[0.05em] text-white transition-all duration-500 hover:bg-[#222] active:scale-[0.95]'
+                      className='group/btn inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-[#f09816] transition-colors duration-500 hover:text-[#f1a52e]'
                     >
                       Discovery
-                      <div className='flex h-6 w-6 items-center justify-center rounded-full bg-[#f5a437] text-[#111318] transition-transform group-hover/btn:rotate-45'>
-                        <ArrowRight className='h-3 w-3' />
-                      </div>
+                      <ArrowRight className='h-3 w-3 transition-transform duration-500 group-hover/btn:translate-x-0.5' strokeWidth={2} />
                     </Link>
                   </div>
                 </div>
               </motion.article>
             ))
           ) : (
-            <div className='lg:col-span-3 rounded-[3rem] border-2 border-dashed border-black/5 bg-white/50 px-6 py-20 text-center'>
-              <Sparkles className='h-12 w-12 text-[#f5a437]/20 mx-auto mb-6' />
-              <p className='text-[16px] font-black text-[#111318]/40 uppercase tracking-widest'>No Upcoming Sessions</p>
+            <div className='lg:col-span-3 rounded-2xl border border-[#111318]/8 bg-[#111318]/[0.02] px-6 py-16 text-center'>
+              <CalendarDays className='h-8 w-8 text-[#111318]/10 mx-auto mb-4' strokeWidth={1} />
+              <p className='text-[14px] font-medium text-[#111318]/40 uppercase tracking-[0.15em]'>No Upcoming Sessions</p>
             </div>
           )}
         </div>

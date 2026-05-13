@@ -3,46 +3,49 @@ import React from 'react'
 
 const AboutPageHero = ({ title, subtitle, className = '' }) => {
   return (
-    <section 
-      className={`relative isolate overflow-hidden bg-[#102a62] px-4 pb-10 pt-[150px] text-white sm:px-5 sm:pt-[154px] md:px-6 md:pb-16 md:pt-32 ${className}`}
-      style={{ fontFamily: "'Outfit', sans-serif" }}
+    <section
+      className={`relative isolate overflow-hidden bg-[#071544] px-6 pb-8 pt-[118px] text-white md:px-10 md:pb-10 md:pt-32 ${className}`}
     >
-      <div className='absolute inset-0 z-0 bg-[linear-gradient(135deg,#102a62_0%,#1e3a8a_44%,#071936_100%)]' />
-      <div className='absolute inset-0 z-0 opacity-[0.14]'>
-        <div
-          className='absolute inset-0 h-full w-full'
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, rgba(197,160,89,0.55) 1px, transparent 1px), linear-gradient(to bottom, rgba(197,160,89,0.45) 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
-        />
-        <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.18),transparent_42%)]' />
-      </div>
+      {/* Dot grid */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
+          backgroundSize: '32px 32px',
+        }}
+      />
 
-      <div className='absolute left-3 top-5 hidden h-[calc(100%-2.5rem)] w-[1px] bg-gradient-to-b from-transparent via-[#C5A059]/35 to-transparent sm:block' />
-      <div className='absolute right-3 top-5 hidden h-[calc(100%-2.5rem)] w-[1px] bg-gradient-to-b from-transparent via-[#C5A059]/35 to-transparent sm:block' />
+      {/* Amber glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-40 right-0 h-[400px] w-[400px] rounded-full bg-[#f6ab3c]/[0.04] blur-[120px]"
+      />
 
-      <div className='relative z-10 mx-auto max-w-[1280px]'>
-        <div className='mx-auto max-w-[940px] text-center'>
+      {/* Top border */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent"
+      />
+
+      <div className='relative z-10 mx-auto max-w-[1400px]'>
+        <div className='mx-auto max-w-[800px] text-center'>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className='mb-3 flex items-center justify-center gap-2.5 sm:gap-3'
+            className='mb-4 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white/70'
           >
-            <div className='h-[1px] w-4 bg-[#C5A059]/60 sm:w-7' />
-            <span className='text-[9px] font-bold uppercase tracking-[0.24em] text-[#C5A059] sm:text-[10px] sm:tracking-[0.34em]'>
-              Institutional Legacy
-            </span>
-            <div className='h-[1px] w-4 bg-[#C5A059]/60 sm:w-7' />
+            <span className='h-1 w-1 rounded-full bg-[#f6ab3c]' />
+            Institutional Legacy
           </motion.div>
 
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className='text-balance text-[clamp(2rem,10vw,3rem)] font-extrabold leading-[1.05] tracking-normal sm:text-[clamp(2.75rem,7vw,4.25rem)] md:leading-[1.02]'
+            className='text-balance text-4xl font-medium leading-[1.05] tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl'
           >
             {title}
           </motion.h1>
@@ -52,18 +55,16 @@ const AboutPageHero = ({ title, subtitle, className = '' }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className='mx-auto mt-4 flex flex-col items-center sm:mt-6'
+              className='mx-auto mt-5 flex flex-col items-center'
             >
-              <div className='mb-4 h-6 w-[1px] bg-gradient-to-b from-[#C5A059] to-transparent sm:mb-5 sm:h-8' />
-              <p className='max-w-[640px] text-pretty text-[13.5px] font-light leading-[1.65] text-blue-50/82 sm:text-[15px] md:text-[17px]'>
+              <div className='mb-4 h-5 w-px bg-gradient-to-b from-[#f6ab3c]/50 to-transparent' />
+              <p className='max-w-[600px] text-pretty text-[15px] font-light leading-[1.65] text-white/60 sm:text-[16px] md:text-[17px]'>
                 {subtitle}
               </p>
             </motion.div>
           )}
         </div>
       </div>
-
-      <div className='absolute bottom-0 left-0 h-[1px] w-full bg-gradient-to-r from-transparent via-[#C5A059]/30 to-transparent' />
     </section>
   )
 }

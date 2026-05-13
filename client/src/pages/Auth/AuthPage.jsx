@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react'
-import AboutPageHero from '@/components/about/AboutPageHero'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useLoginMutation } from '@/hooks/useAuthQueries'
@@ -60,15 +59,24 @@ const AuthPage = () => {
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif] text-[#121521]'>
       <div className='relative'>
         <NavbarSection />
-        <AboutPageHero
-          title={t('auth.heading')}
-          subtitle={t('auth.subtitle')}
-          eyebrowText='Dashboard Access'
-          compact
-        />
+        <section className='border-b border-[#e8edf6] bg-white px-4 pb-7 pt-24 md:px-6 md:pb-8 md:pt-28'>
+          <div className='mx-auto max-w-[1280px]'>
+            <div className='mx-auto max-w-[640px] text-center'>
+              <span className='inline-flex items-center rounded-full border border-[#dbe4f3] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#3a538a]'>
+                Dashboard Access
+              </span>
+              <h1 className='mt-3 text-[38px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[44px]'>
+                {t('auth.heading')}
+              </h1>
+              <p className='mt-2 text-[16px] text-[#66758f] md:text-[17px]'>
+                {t('auth.subtitle')}
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <section className='bg-[#f7f8fb] px-4 py-16 md:px-6 md:py-18'>
+      <section className='bg-white px-4 py-12 md:px-6 md:py-14'>
         <div className='mx-auto max-w-[1280px]'>
           <article className='mx-auto max-w-[640px] rounded-[24px] border border-[#d8e0ee] bg-white p-6 shadow-[0_24px_50px_-22px_rgba(7,21,68,0.22)] md:p-9'>
               <div className='mb-6 flex items-center justify-between border-b border-[#ebf0f8] pb-5'>

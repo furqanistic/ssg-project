@@ -70,7 +70,7 @@ const ProgramsPage = () => {
       <NavbarSection />
 
       {/* Hero Section - Refined & Flat */}
-      <section className='relative isolate overflow-hidden bg-[#071544] pt-[100px] pb-10 md:pt-[140px] md:pb-20'>
+      <section className='relative isolate overflow-hidden bg-[#071544] pt-[136px] pb-10 md:pt-[140px] md:pb-20'>
         {/* Subtle Architectural Grid */}
         <div className='absolute inset-0 z-0 opacity-[0.05]' 
              style={{ backgroundImage: 'linear-gradient(#fff 0.5px, transparent 0.5px), linear-gradient(90deg, #fff 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} />
@@ -287,3 +287,4 @@ const ProgramsPage = () => {
 }
 
 export default ProgramsPage
+

@@ -99,16 +99,19 @@ const DonatePage = () => {
       <section className='relative z-20 -mt-6 bg-[#f7f8fb] px-4 pb-16 pt-0 md:-mt-8 md:px-6 md:pb-20'>
         <div className='mx-auto max-w-[1200px]'>
           <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
-          <div className='text-center'>
-            <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
-              {t('donate.makeDonation')}
-            </h2>
-            <p className='mx-auto mt-3 max-w-[760px] text-[16px] text-[#5a6880] md:text-[17px]'>
-              {donationsOpen
-                ? 'Use the details below for direct transfer or in-person contribution.'
-                : 'Donations are currently closed. Details will be available soon.'}
-            </p>
-          </div>
+            <div className='text-center'>
+              <span className='inline-flex items-center rounded-full border border-[#2d4f9f]/15 bg-[#2d4f9f]/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2d4f9f]'>
+                Donation Methods
+              </span>
+              <h2 className='mt-4 text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
+                {t('donate.makeDonation')}
+              </h2>
+              <p className='mx-auto mt-3 max-w-[760px] text-[16px] text-[#5a6880] md:text-[17px]'>
+                {donationsOpen
+                  ? 'Use the details below for direct transfer or in-person contribution.'
+                  : 'Donations are currently closed. Details will be available soon.'}
+              </p>
+            </div>
 
           {!donationsOpen ? (
             <article className='mx-auto mt-10 max-w-[900px] rounded-[20px] border border-[#f3c77c] bg-[#fff8ec] p-6 md:p-8'>
@@ -126,53 +129,53 @@ const DonatePage = () => {
 
           {donationsOpen ? (
             <div className='mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2'>
-              <article className='rounded-[20px] border border-[#dbe1ea] bg-white p-6 shadow-[0_2px_8px_rgba(13,23,45,0.04)] md:p-7'>
-              <h3 className='text-[22px] font-bold text-[#111318]'>{t('donate.bankTransfer')}</h3>
-              <p className='mt-2 text-[14px] text-[#65748b]'>Fastest way to support the Gurudwara directly.</p>
+              <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] p-6 shadow-[0_24px_50px_-18px_rgba(13,23,45,0.12)] md:p-7'>
+                <h3 className='text-[22px] font-bold text-[#111318]'>{t('donate.bankTransfer')}</h3>
+                <p className='mt-2 text-[14px] text-[#65748b]'>Fastest way to support the Gurudwara directly.</p>
 
-              <div className='mt-6 space-y-3'>
-                {[
-                  { label: t('donate.bank'), value: donateDetails.bankName, key: 'bank' },
-                  { label: t('donate.accountHolder'), value: donateDetails.accountHolder, key: 'holder' },
-                  { label: t('donate.iban'), value: donateDetails.iban, key: 'iban' },
-                  { label: t('donate.bic'), value: donateDetails.bic, key: 'bic' },
-                ].map((row) => (
-                  <div
-                    key={row.key}
-                    className='flex items-center justify-between gap-3 rounded-[12px] border border-[#e4e9f1] bg-[#f9fbff] px-4 py-3'
-                  >
-                    <div className='min-w-0'>
-                      <p className='text-[11px] font-bold uppercase tracking-wide text-[#64748b]'>{row.label}</p>
-                      <p className='truncate text-[14px] font-semibold text-[#1f2937]'>{row.value}</p>
-                    </div>
-                    <button
-                      type='button'
-                      onClick={() => handleCopy(row.value, row.key)}
-                      className='inline-flex h-8 items-center gap-1.5 rounded-[9px] border border-[#cfd8e6] bg-white px-3 text-[12px] font-semibold text-[#2a4f9f] transition hover:bg-[#f2f6ff]'
+                <div className='mt-6 space-y-3'>
+                  {[
+                    { label: t('donate.bank'), value: donateDetails.bankName, key: 'bank' },
+                    { label: t('donate.accountHolder'), value: donateDetails.accountHolder, key: 'holder' },
+                    { label: t('donate.iban'), value: donateDetails.iban, key: 'iban' },
+                    { label: t('donate.bic'), value: donateDetails.bic, key: 'bic' },
+                  ].map((row) => (
+                    <div
+                      key={row.key}
+                      className='flex items-center justify-between gap-3 rounded-[12px] border border-[#dbe4f1] bg-white px-4 py-3'
                     >
-                      <Copy className='h-3.5 w-3.5' />
-                      {copiedField === row.key ? 'Copied' : 'Copy'}
-                    </button>
-                  </div>
-                ))}
-              </div>
+                      <div className='min-w-0'>
+                        <p className='text-[11px] font-bold uppercase tracking-wide text-[#64748b]'>{row.label}</p>
+                        <p className='truncate text-[14px] font-semibold text-[#1f2937]'>{row.value}</p>
+                      </div>
+                      <button
+                        type='button'
+                        onClick={() => handleCopy(row.value, row.key)}
+                        className='inline-flex h-8 items-center gap-1.5 rounded-[9px] border border-[#cfd8e6] bg-[#f7f9ff] px-3 text-[12px] font-semibold text-[#2a4f9f] transition hover:bg-[#eef3ff]'
+                      >
+                        <Copy className='h-3.5 w-3.5' />
+                        {copiedField === row.key ? 'Copied' : 'Copy'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
 
-              <button
-                type='button'
-                onClick={() =>
-                  handleCopy(
-                    `Bank: ${donateDetails.bankName}\nAccount Holder: ${donateDetails.accountHolder}\nIBAN: ${donateDetails.iban}\nBIC: ${donateDetails.bic}`,
-                    'all-bank',
-                  )
-                }
-                className='mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-[10px] bg-[#2d4f9f] px-5 text-[13px] font-semibold text-white transition hover:bg-[#24438d]'
-              >
-                <Copy className='h-4 w-4' />
-                {copiedField === 'all-bank' ? 'All Details Copied' : 'Copy All Bank Details'}
-              </button>
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleCopy(
+                      `Bank: ${donateDetails.bankName}\nAccount Holder: ${donateDetails.accountHolder}\nIBAN: ${donateDetails.iban}\nBIC: ${donateDetails.bic}`,
+                      'all-bank',
+                    )
+                  }
+                  className='mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-[10px] bg-[#2d4f9f] px-5 text-[13px] font-semibold text-white transition hover:bg-[#24438d]'
+                >
+                  <Copy className='h-4 w-4' />
+                  {copiedField === 'all-bank' ? 'All Details Copied' : 'Copy All Bank Details'}
+                </button>
               </article>
 
-              <article className='rounded-[20px] border border-[#dbe1ea] bg-white p-6 shadow-[0_2px_8px_rgba(13,23,45,0.04)] md:p-7'>
+              <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] p-6 shadow-[0_24px_50px_-18px_rgba(13,23,45,0.12)] md:p-7'>
                 <h3 className='text-[22px] font-bold text-[#111318]'>{t('donate.inPerson')}</h3>
                 <p className='mt-2 text-[14px] text-[#65748b]'>
                   {donateDetails.inPersonDescription}
@@ -203,7 +206,7 @@ const DonatePage = () => {
 
       <section className='bg-white px-4 py-16 md:px-6 md:py-18'>
         <div className='mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[860px] rounded-[18px] border border-[#bfd6fb] bg-[#eef6ff] px-6 py-8 md:px-8'>
+          <div className='mx-auto max-w-[860px] rounded-[20px] border border-[#bfd6fb] bg-gradient-to-br from-[#eef6ff] to-[#f7fbff] px-6 py-8 shadow-[0_20px_50px_-24px_rgba(45,87,168,0.45)] md:px-8'>
             <div className='flex items-start gap-4'>
               <CheckCircle2 className='mt-0.5 h-8 w-8 shrink-0 text-[#2d57a8]' />
               <div>
@@ -221,6 +224,9 @@ const DonatePage = () => {
           </div>
 
           <div className='mt-16 text-center'>
+            <span className='inline-flex items-center rounded-full border border-[#f6ab3c]/30 bg-[#fff7ea] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#d18b26]'>
+              Flexible Options
+            </span>
             <h2 className='text-[36px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
               {t('donate.otherWays')}
             </h2>
@@ -228,7 +234,7 @@ const DonatePage = () => {
 
           {donationsOpen ? (
             <div className='mx-auto mt-10 grid max-w-[1120px] grid-cols-1 gap-6 lg:grid-cols-3'>
-            <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-7 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
+            <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'>
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
                 {t('donate.bankTransfer')}
               </h3>
@@ -254,7 +260,7 @@ const DonatePage = () => {
               </div>
             </article>
 
-            <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-7 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
+            <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'>
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
                 {t('donate.inPerson')}
               </h3>
@@ -266,7 +272,7 @@ const DonatePage = () => {
               </p>
             </article>
 
-            <article className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-7 shadow-[0_1px_2px_rgba(13,23,45,0.02)]'>
+            <article className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-7 shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)]'>
               <h3 className='text-[18px] font-bold text-[#111318] md:text-[19px]'>
                 {t('donate.monthlyDonor')}
               </h3>
@@ -297,31 +303,38 @@ const DonatePage = () => {
       <section className='bg-white px-4 pb-16 md:px-6 md:pb-18'>
         <div className='mx-auto max-w-[1280px]'>
           <div className='text-center'>
+            <span className='inline-flex items-center rounded-full border border-[#2d4f9f]/15 bg-[#2d4f9f]/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#2d4f9f]'>
+              Community Impact
+            </span>
             <h2 className='text-[36px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
               {t('donate.impactTitle')}
             </h2>
           </div>
 
           <div className='mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4'>
-            {impactItems.map(({ title, description, icon: Icon, iconBg }) => (
-              <article
-                key={title}
-                className='rounded-[18px] border border-[#dbe1ea] bg-white px-6 py-8 text-center shadow-[0_1px_2px_rgba(13,23,45,0.02)]'
-              >
-                <div
-                  className='mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white'
-                  style={{ backgroundColor: iconBg }}
+            {impactItems.map((item) => {
+              const ImpactIcon = item.icon
+
+              return (
+                <article
+                  key={item.title}
+                  className='rounded-[20px] border border-[#dbe1ea] bg-gradient-to-br from-white to-[#f9fbff] px-6 py-8 text-center shadow-[0_24px_50px_-22px_rgba(13,23,45,0.16)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_55px_-20px_rgba(13,23,45,0.2)]'
                 >
-                  <Icon className='h-7 w-7 stroke-[2]' />
-                </div>
-                <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
-                  {title}
-                </h3>
-                <p className='mt-4 text-[16px] leading-[1.45] text-[#516075]'>
-                  {description}
-                </p>
-              </article>
-            ))}
+                  <div
+                    className='mx-auto flex h-16 w-16 items-center justify-center rounded-full text-white'
+                    style={{ backgroundColor: item.iconBg }}
+                  >
+                    <ImpactIcon className='h-7 w-7 stroke-[2]' />
+                  </div>
+                  <h3 className='mt-6 text-[18px] font-bold text-[#111318] md:text-[19px]'>
+                    {item.title}
+                  </h3>
+                  <p className='mt-4 text-[16px] leading-[1.45] text-[#516075]'>
+                    {item.description}
+                  </p>
+                </article>
+              )
+            })}
           </div>
         </div>
       </section>

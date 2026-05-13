@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { BookOpen, Globe, Heart, Users, Target, Compass } from 'lucide-react'
+import { BookOpen, Globe, Heart, Users, Target, Compass, ArrowUpRight, ChevronRight } from 'lucide-react'
 import React from 'react'
 import AboutPageHero from '@/components/about/AboutPageHero'
 import SiteFooter from '@/components/layout/SiteFooter'
@@ -8,138 +8,317 @@ import NavbarSection from '@/pages/Home/components/NavbarSection'
 
 const missionIcons = [Target, Heart, Users, BookOpen, Globe, Compass]
 
+const stagger = {
+  animate: { transition: { staggerChildren: 0.08 } },
+}
+
+const fadeUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
+}
+
 const MissionPage = () => {
   const { aboutUs } = useAboutUsContentQuery()
-  const mission = aboutUs.mission
-
-  // Animation variants
-  const staggerContainer = {
-    animate: { transition: { staggerChildren: 0.1 } }
-  }
-
-  const fadeIn = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-  }
+  const mission = aboutUs?.mission ?? {}
+  const missionCards = Array.isArray(mission.cards) ? mission.cards : []
+  const coreValues = Array.isArray(mission.coreValues) ? mission.coreValues : []
 
   return (
-    <div className='min-h-screen bg-[#fafafa] font-["Outfit",sans-serif] text-[#071544] selection:bg-[#f6ab3c]/30'>
+    <div className='min-h-screen bg-[#f8f7f5] font-["Outfit",sans-serif] selection:bg-[#f6ab3c]/30'>
       <div className='relative'>
         <NavbarSection />
         <AboutPageHero title={mission.heroTitle} subtitle={mission.heroDescription} />
       </div>
 
+      {/* ─── OVERLAPPING WHITE CONTAINER ─── */}
       <section className='relative z-20 -mt-6 overflow-hidden px-4 pb-12 sm:px-5 md:-mt-8 md:px-6 md:pb-20'>
-        <div className='pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(246,171,60,0.08)_1px,transparent_1px),linear-gradient(180deg,rgba(7,21,68,0.045)_1px,transparent_1px)] bg-[size:44px_44px] opacity-50' />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(246,171,60,0.08)_1px,transparent_1px),linear-gradient(180deg,rgba(7,21,68,0.045)_1px,transparent_1px)] bg-[size:44px_44px] opacity-50" />
         <div className='mx-auto max-w-[1280px]'>
-          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
-            <div className='relative mx-auto grid max-w-[1040px] grid-cols-1 gap-5 sm:gap-7 md:grid-cols-2'>
-            {mission.heroImage && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className='md:col-span-2'
-              >
-                <div className="relative overflow-hidden rounded-lg border border-[#f6ab3c]/25 bg-white p-1.5 shadow-[0_24px_80px_rgba(22,32,51,0.11)]">
-                  <img
-                    src={mission.heroImage}
-                    alt={mission.heroTitle}
-                    className='h-[220px] w-full rounded-[5px] object-cover grayscale transition-all duration-1000 hover:scale-[1.02] hover:grayscale-0 sm:h-[300px] md:h-[460px]'
-                    loading='lazy'
-                  />
-                  <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
-                </div>
-              </motion.div>
-            )}
+          <div className='rounded-[2.5rem] border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:p-10'>
+            <div className='mx-auto max-w-[1040px]'>
+              {mission.heroImage && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                  className='mb-8 md:mb-12'
+                >
+                  <div className="overflow-hidden rounded-[1.75rem] border border-[#f6ab3c]/25 bg-white p-1.5 shadow-[0_24px_80px_rgba(22,32,51,0.11)]">
+                    <img
+                      src={mission.heroImage}
+                      alt={mission.heroTitle}
+                      className='h-[200px] w-full rounded-[calc(1.75rem-1.5px)] object-cover transition-all duration-700 hover:scale-[1.02] sm:h-[280px] md:h-[420px]'
+                      loading='lazy'
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
+                  </div>
+                </motion.div>
+              )}
 
-              <motion.div 
-              variants={staggerContainer}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              className="mt-3 grid grid-cols-1 gap-4 sm:gap-5 md:col-span-2 md:mt-8 md:grid-cols-2 md:gap-6"
-            >
-              {mission.cards.map(({ title, description: cardDescription }, index) => {
-                const Icon = missionIcons[index % missionIcons.length]
-                return (
-                  <motion.article
-                    key={`${title ?? 'mission-card'}-${index}`}
-                    variants={fadeIn}
-                    className='group relative overflow-hidden rounded-lg border border-[#f6ab3c]/18 bg-white/92 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1 hover:border-[#f6ab3c]/50 hover:bg-white hover:shadow-[0_24px_60px_rgba(22,32,51,0.09)] sm:p-7 md:p-8'
+              {/* Mission Intro */}
+              <div className="mb-10 border-b border-[#071544]/[0.04] pb-10 md:mb-14 md:pb-14">
+                <div className="max-w-3xl">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#2d4f9f]/12 bg-[#2d4f9f]/5 px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-[#2d4f9f]"
                   >
-                    <div className="absolute left-0 top-0 h-[3px] w-full bg-gradient-to-r from-[#f6ab3c] via-[#d8bd7d] to-transparent opacity-75" />
-                    
-                    <div className='mb-5 flex h-10 w-10 items-center justify-center rounded-md bg-[#071544] text-[#f6ab3c] shadow-[0_10px_25px_rgba(16,42,98,0.18)] transition-transform duration-500 group-hover:scale-105 sm:mb-6'>
-                      <Icon className='h-5 w-5 stroke-[1.5]' />
-                    </div>
-                    <h2 className='text-pretty text-[19px] font-bold tracking-normal text-[#071544] md:text-[24px]'>
-                      {title}
-                    </h2>
-                    <div className="mt-3 h-[1px] w-10 bg-[#f6ab3c]/40 transition-all duration-500 group-hover:w-20" />
-                    <p className='mt-4 text-pretty text-[14px] leading-[1.7] text-[#516075] sm:text-[15px] md:mt-6 md:text-[16px]'>
-                      {cardDescription}
-                    </p>
-                  </motion.article>
-                )
-              })}
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#f6ab3c]" />
+                    Our Mission
+                  </motion.div>
+                  <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-[30px] font-medium leading-[1.06] tracking-tighter text-[#071544] sm:text-[40px] md:text-[52px]"
+                  >
+                    {mission.title}
+                  </motion.h2>
+                  {mission.description && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                      className="mt-5 max-w-[640px] text-[15px] font-light leading-relaxed text-[#5a677a] md:text-[17px]"
+                    >
+                      {mission.description}
+                    </motion.p>
+                  )}
+                </div>
+              </div>
+
+              {/* Mission Cards — Bento Grid */}
+              <motion.div
+                variants={stagger}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, margin: '-60px' }}
+                className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6"
+              >
+                {missionCards.map(({ title, description: cardDescription }, index) => {
+                  const Icon = missionIcons[index % missionIcons.length]
+                  const isWide = index === 0
+                  const accent = index % 2 === 0
+                    ? 'border-[#f6ab3c]/30 hover:border-[#f6ab3c]/50'
+                    : 'border-[#2d4f9f]/25 hover:border-[#2d4f9f]/45'
+                  const iconBg = index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]'
+
+                  return (
+                    <motion.article
+                      key={`${title ?? 'card'}-${index}`}
+                      variants={fadeUp}
+                      className={`group ${isWide ? 'sm:col-span-2' : ''}`}
+                    >
+                      <div className={`rounded-[2rem] border ${accent} bg-white/[0.02] p-[1px] transition-all duration-700 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.08)]`}>
+                        <div className="relative flex flex-col rounded-[calc(2rem-1px)] bg-white p-5 sm:p-7 md:p-8">
+                          <div className="absolute top-0 right-0 h-14 w-14 opacity-[0.02] pointer-events-none">
+                            <svg viewBox="0 0 100 100" className="h-full w-full rotate-90">
+                              <path d="M100 0 L100 100 L0 100" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                            </svg>
+                          </div>
+
+                          <div className="flex items-start justify-between mb-5">
+                            <div className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl ${iconBg} text-white shadow-[0_8px_18px_-5px_rgba(0,0,0,0.1)] ring-1 ring-inset ring-white/20 transition-all duration-700 group-hover:scale-110 group-hover:-rotate-3`}>
+                              <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[2]" />
+                            </div>
+                            <span className="text-[10px] font-black text-[#111318]/10 select-none tracking-wider">0{index + 1}</span>
+                          </div>
+
+                          <h3 className="text-[18px] sm:text-[21px] font-medium tracking-tight text-[#071544] leading-tight transition-colors duration-500 group-hover:text-[#f6ab3c]">
+                            {title}
+                          </h3>
+
+                          <div className="mt-3 h-[1px] w-8 bg-[#f6ab3c]/30 transition-all duration-500 group-hover:w-16" />
+
+                          <p className="mt-4 flex-1 text-[13px] font-light leading-relaxed text-[#5a677a] sm:text-[14px]">
+                            {cardDescription}
+                          </p>
+
+                          <div className="mt-6 pt-4 border-t border-[#071544]/[0.04]">
+                            <span className="group/btn inline-flex items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[#5a677a] transition-colors duration-500 group-hover:text-[#f6ab3c]">
+                              Discover more
+                              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#f6ab3c]/10 text-[#f6ab3c] transition-all duration-500 group-hover/btn:bg-[#f6ab3c] group-hover/btn:text-white group-hover:translate-x-0.5">
+                                <ChevronRight className="h-3 w-3 stroke-[2.5]" />
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.article>
+                  )
+                })}
               </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Core Values Section */}
-      <section className='relative overflow-hidden border-t border-[#f6ab3c]/15 bg-white px-4 py-12 sm:px-5 sm:py-16 md:px-6 md:py-24'>
-        {/* Subtle Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-             style={{ backgroundImage: 'radial-gradient(#f6ab3c 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} 
+      {/* ─── IMPACT DIVIDER ─── */}
+      <section className="relative overflow-hidden bg-[#071544]">
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
         />
-        <div className='relative z-10 mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[900px]'>
-            <motion.div 
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="relative mx-auto max-w-[1000px] px-6 py-14 text-center lg:px-10 lg:py-20">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center justify-center gap-4 mb-5">
+              <div className="h-[1px] w-10 bg-[#f6ab3c]/40" />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#f6ab3c]/60">Our Compass</span>
+              <div className="h-[1px] w-10 bg-[#f6ab3c]/40" />
+            </div>
+            <p className="max-w-[560px] mx-auto text-lg font-light leading-relaxed text-white/60 italic md:text-xl">
+              &ldquo;Every initiative is rooted in community, powered by tradition, and driven toward a better tomorrow.&rdquo;
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ─── CORE VALUES — LUXURY BENTO ─── */}
+      <section className="relative overflow-hidden bg-white">
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#2d4f9f]/25 to-transparent" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-60 top-1/3 h-[500px] w-[500px] rounded-full bg-[#2d4f9f]/[0.03] blur-[150px]" />
+
+        <div className="mx-auto max-w-[1280px] px-6 py-16 lg:px-10 lg:py-24">
+          <div className="flex flex-col items-center text-center mb-12 lg:mb-16">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 rounded-full border border-[#2d4f9f]/12 bg-[#2d4f9f]/5 px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-[#2d4f9f] mb-5"
+            >
+              <Compass className="h-3 w-3" />
+              Principles & Ethics
+            </motion.div>
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-            className="mb-10 text-center md:mb-16"
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[28px] font-medium tracking-tighter text-[#071544] sm:text-[38px] md:text-[48px] lg:text-[56px] max-w-[700px]"
             >
-              <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#f6ab3c]">
-                Principles & Ethics
-              </span>
-              <h2 className='mt-3 text-balance text-[28px] font-extrabold tracking-normal text-[#071544] md:text-[46px]'>
-                {mission.coreValuesTitle}
-              </h2>
-              <div className="mx-auto mt-6 h-[1px] w-16 bg-[#f6ab3c]/40" />
-            </motion.div>
+              {mission.coreValuesTitle}
+            </motion.h2>
+          </div>
 
-            <motion.div 
-              variants={staggerContainer}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              className='space-y-4 md:space-y-6'
-            >
-              {mission.coreValues.map((value, index) => (
+          <motion.div
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
+          >
+            {coreValues.map((value, index) => {
+              const accentColor = index % 2 === 0 ? 'border-[#f6ab3c]/25 hover:border-[#f6ab3c]/45' : 'border-[#2d4f9f]/20 hover:border-[#2d4f9f]/40'
+              const dotColor = index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]'
+
+              return (
                 <motion.article
-                  key={`${value?.title ?? 'core-value'}-${index}`}
-                  variants={fadeIn}
-                  className='group relative flex flex-col gap-4 rounded-lg border border-[#f6ab3c]/15 bg-[#fafafa] p-5 shadow-[0_12px_35px_rgba(22,32,51,0.04)] transition-all duration-500 hover:border-[#f6ab3c]/40 hover:bg-white hover:shadow-[0_18px_45px_rgba(22,32,51,0.07)] sm:p-7 md:flex-row md:items-start md:gap-6 md:p-8'
+                  key={`${value?.title ?? 'value'}-${index}`}
+                  variants={fadeUp}
+                  className="group"
                 >
-                  <div className="flex shrink-0 items-center gap-4 md:w-56 md:flex-col md:items-start md:gap-3">
-                    <span className="text-[12px] font-bold text-[#f6ab3c]/50 tracking-widest italic">0{index + 1}</span>
-                    <h3 className='text-pretty text-[18px] font-bold tracking-normal text-[#071544] md:text-[22px]'>
-                      {value.title}
-                    </h3>
+                  <div className={`h-full rounded-[2rem] border ${accentColor} p-[1px] transition-all duration-700 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.06)]`}>
+                    <div className="relative flex h-full flex-col rounded-[calc(2rem-1px)] bg-white p-5 sm:p-7 md:p-8">
+                      <div className="absolute top-0 right-0 h-14 w-14 opacity-[0.02] pointer-events-none">
+                        <svg viewBox="0 0 100 100" className="h-full w-full rotate-90">
+                          <path d="M100 0 L100 100 L0 100" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                        </svg>
+                      </div>
+
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className={`h-2 w-2 rounded-full ${dotColor} transition-transform duration-500 group-hover:scale-125`} />
+                        <span className="text-[10px] font-black text-[#111318]/20 select-none tracking-wider">0{index + 1}</span>
+                      </div>
+
+                      <h3 className="text-[17px] sm:text-[19px] font-medium tracking-tight text-[#071544] leading-tight transition-colors duration-500 group-hover:text-[#2d4f9f]">
+                        {value.title}
+                      </h3>
+
+                      <div className="mt-3 h-[1px] w-6 bg-[#2d4f9f]/25 transition-all duration-500 group-hover:w-10" />
+
+                      <p className="mt-3 flex-1 text-[13px] font-light leading-relaxed text-[#5a677a] sm:text-[14px]">
+                        {value.description}
+                      </p>
+
+                      <div className="mt-5 pt-3 border-t border-[#071544]/[0.04]">
+                        <span className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#5a677a]/50">Core value</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="hidden h-14 w-[1px] bg-[#f6ab3c]/20 md:block" />
-                  <p className='text-pretty text-[14px] leading-[1.7] text-[#516075] sm:text-[15px] md:text-[17px]'>
-                    {value.description}
-                  </p>
                 </motion.article>
-              ))}
-            </motion.div>
+              )
+            })}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ─── CTA SECTION ─── */}
+      <section className="relative overflow-hidden bg-[#f8f7f5] px-4 pb-12 sm:px-5 md:px-6 md:pb-16">
+        <div className="relative mx-auto max-w-[1280px]">
+          <div className="relative overflow-hidden rounded-[2rem] bg-[#071544] px-6 py-20 text-center lg:px-10 lg:py-28">
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.08]"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundSize: '80px 80px',
+          }}
+        />
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)',
+            backgroundSize: '32px 32px',
+            maskImage: 'radial-gradient(ellipse at 50% 40%, white 0%, transparent 70%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at 50% 40%, white 0%, transparent 70%)',
+          }}
+        />
+        <div aria-hidden="true" className="pointer-events-none absolute -top-40 right-0 h-[400px] w-[400px] rounded-full bg-[#f6ab3c]/[0.04] blur-[120px]" />
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+        <div className="relative mx-auto max-w-[900px]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-[1px] w-10 bg-white/20" />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Join Us</span>
+              <div className="h-[1px] w-10 bg-white/20" />
+            </div>
+            <h2 className="text-[30px] font-medium leading-[1.06] tracking-tighter text-white sm:text-[38px] md:text-[48px]">
+              Become Part of Our Mission
+            </h2>
+            <p className="mx-auto mt-4 max-w-[520px] text-[15px] font-light leading-relaxed text-white/55 md:text-[16px]">
+              Whether you want to volunteer, donate, or simply learn more — every hand makes a difference.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a
+                href="/contact"
+                className="group inline-flex h-[50px] items-center justify-center gap-3 rounded-full bg-[#f6ab3c] px-8 text-[13px] font-medium text-white transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#f1a52e] active:scale-[0.97] md:h-[54px] md:px-9"
+              >
+                Contact Us
+                <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
+              </a>
+              <a
+                href="/donate"
+                className="group inline-flex h-[50px] items-center justify-center gap-3 rounded-full border border-white/20 bg-white/[0.04] px-8 text-[13px] font-medium text-white/85 backdrop-blur-sm transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-[#f6ab3c]/50 hover:text-white active:scale-[0.97] md:h-[54px] md:px-9"
+              >
+                Support Our Work
+              </a>
+            </div>
+          </motion.div>
+        </div>
           </div>
         </div>
       </section>
@@ -150,4 +329,3 @@ const MissionPage = () => {
 }
 
 export default MissionPage
-

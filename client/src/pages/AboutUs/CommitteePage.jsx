@@ -9,7 +9,7 @@ import NavbarSection from '@/pages/Home/components/NavbarSection'
 
 const CommitteePage = () => {
   const { aboutUs } = useAboutUsContentQuery()
-  const committee = aboutUs.committee
+  const committee = aboutUs?.committee ?? {}
   const committeeMembers = Array.isArray(committee.members) ? committee.members : []
   const cleanedCtaDescription = (committee.ctaDescription || '')
     .replace(/[🤝◆♦◊❖✦✨]/gu, '')
@@ -128,13 +128,13 @@ const CommitteePage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className='relative overflow-hidden bg-[#071544] px-4 py-12 text-white sm:px-5 sm:py-16 md:px-6 md:py-24'>
-        <div className='absolute inset-0 bg-[linear-gradient(135deg,#071544_0%,#071544_48%,#071936_100%)]' />
-        <div className="absolute inset-0 opacity-[0.08]" 
-             style={{ backgroundImage: 'radial-gradient(#f6ab3c 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} 
-        />
-        <div className='relative z-10 mx-auto max-w-[1280px]'>
-          <div className='mx-auto max-w-[800px] text-center'>
+      <section className='relative overflow-hidden bg-[#fafafa] px-4 pb-12 text-white sm:px-5 md:px-6 md:pb-16'>
+        <div className='relative mx-auto max-w-[1280px] overflow-hidden rounded-[2rem] bg-[#071544] px-6 py-20 text-center lg:px-10 lg:py-28'>
+          <div className='absolute inset-0 bg-[linear-gradient(135deg,#071544_0%,#071544_48%,#071936_100%)]' />
+          <div className="absolute inset-0 opacity-[0.08]" 
+               style={{ backgroundImage: 'radial-gradient(#f6ab3c 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} 
+          />
+          <div className='relative z-10 mx-auto max-w-[800px] text-center'>
             <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-[#f6ab3c]">
               Get In Touch
             </span>
@@ -162,4 +162,3 @@ const CommitteePage = () => {
 }
 
 export default CommitteePage
-

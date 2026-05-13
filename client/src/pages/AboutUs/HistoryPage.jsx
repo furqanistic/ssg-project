@@ -38,7 +38,7 @@ const HistoryPage = () => {
         <NavbarSection />
 
         {/* Hero Section - Synchronized Architectural Style */}
-        <section className='relative isolate overflow-hidden bg-[#071544] pt-[100px] pb-10 md:pt-[140px] md:pb-24'>
+        <section className='relative isolate overflow-hidden bg-[#071544] pt-[136px] pb-10 md:pt-[152px] md:pb-20'>
           {/* Subtle Geometric Grid */}
           <div className='absolute inset-0 z-0 opacity-[0.05]' 
                style={{ backgroundImage: 'linear-gradient(#fff 0.5px, transparent 0.5px), linear-gradient(90deg, #fff 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} />
@@ -75,51 +75,53 @@ const HistoryPage = () => {
         </section>
 
         {/* Overlapping Content Container */}
-        <section id='history-content' className='relative z-20 -mt-8 px-4 pb-16 md:-mt-12 md:px-6 md:pb-24'>
-          <div className='container mx-auto max-w-[1100px]'>
-            {/* Featured Image - Premium Frame */}
-            {history.heroImage && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className='relative overflow-hidden rounded-[2.5rem] border border-[#071544]/05 bg-white shadow-[0_40px_80px_-16px_rgba(7,21,68,0.12)]'
-              >
-                <img
-                  src={history.heroImage}
-                  alt={history.heroTitle}
-                  className='aspect-[21/9] w-full object-cover grayscale-[0.2] transition-all duration-700 hover:grayscale-0 hover:scale-[1.02]'
-                  loading='lazy'
-                />
-                <div className='absolute inset-0 bg-gradient-to-t from-[#071544]/40 via-transparent to-transparent pointer-events-none' />
-              </motion.div>
-            )}
+        <section id='history-content' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-24'>
+          <div className='container mx-auto max-w-[1200px]'>
+            <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
+              {/* Featured Image - Premium Frame */}
+              {history.heroImage && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className='relative overflow-hidden rounded-[2rem] border border-[#071544]/05 bg-white shadow-[0_40px_80px_-16px_rgba(7,21,68,0.12)]'
+                >
+                  <img
+                    src={history.heroImage}
+                    alt={history.heroTitle}
+                    className='aspect-[21/9] w-full object-cover grayscale-[0.2] transition-all duration-700 hover:grayscale-0 hover:scale-[1.02]'
+                    loading='lazy'
+                  />
+                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-t from-[#071544]/40 via-transparent to-transparent' />
+                </motion.div>
+              )}
 
-            {/* Core History Narrative */}
-            <div className='mt-12 grid grid-cols-1 gap-6 md:mt-20 md:grid-cols-2 md:gap-10'>
-              {featuredSections.map((section, index) => {
-                const Icon = historyIcons[index % historyIcons.length]
-                return (
-                  <motion.article
-                    key={index}
-                    initial='hidden'
-                    whileInView='visible'
-                    viewport={{ once: true }}
-                    variants={sectionVariants}
-                    className='group flex flex-col rounded-[2rem] border border-[#071544]/05 bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:shadow-[0_24px_48px_-12px_rgba(7,21,68,0.04)] md:p-12'
-                  >
-                    <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
-                      <Icon className='h-7 w-7' />
-                    </div>
-                    <h2 className='mt-8 text-2xl font-semibold tracking-tight text-[#071544] md:text-3xl'>
-                      {section?.title}
-                    </h2>
-                    <p className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
-                      {section?.body}
-                    </p>
-                  </motion.article>
-                )
-              })}
+              {/* Core History Narrative */}
+              <div className='mt-10 grid grid-cols-1 gap-6 md:mt-14 md:grid-cols-2 md:gap-10'>
+                {featuredSections.map((section, index) => {
+                  const Icon = historyIcons[index % historyIcons.length]
+                  return (
+                    <motion.article
+                      key={index}
+                      initial='hidden'
+                      whileInView='visible'
+                      viewport={{ once: true }}
+                      variants={sectionVariants}
+                      className='group flex flex-col rounded-[2rem] border border-[#071544]/05 bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:shadow-[0_24px_48px_-12px_rgba(7,21,68,0.04)] md:p-12'
+                    >
+                      <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
+                        <Icon className='h-7 w-7' />
+                      </div>
+                      <h2 className='mt-8 text-2xl font-semibold tracking-tight text-[#071544] md:text-3xl'>
+                        {section?.title}
+                      </h2>
+                      <p className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                        {section?.body}
+                      </p>
+                    </motion.article>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </section>

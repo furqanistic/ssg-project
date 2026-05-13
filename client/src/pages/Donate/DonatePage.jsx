@@ -8,6 +8,7 @@ import {
   Heart,
   Users,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SiteFooter from '@/components/layout/SiteFooter'
 import { useSiteContentQuery } from '@/hooks/useContent'
@@ -68,13 +69,26 @@ const DonatePage = () => {
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif]'>
       <div className='relative'>
         <NavbarSection />
-        <section className='bg-[#3567c4] px-4 pb-14 pt-28 text-white md:px-6 md:pb-16 md:pt-34'>
-          <div className='mx-auto max-w-[1280px]'>
-            <div className='mx-auto max-w-[1040px]'>
-              <h1 className='text-[38px] font-extrabold tracking-[-0.03em] md:text-[44px]'>
+        <section className='relative isolate overflow-hidden bg-[#071544] pb-10 pt-[136px] md:pb-20 md:pt-[140px]'>
+          <div
+            className='absolute inset-0 z-0 opacity-[0.05]'
+            style={{
+              backgroundImage:
+                'linear-gradient(#fff 0.5px, transparent 0.5px), linear-gradient(90deg, #fff 0.5px, transparent 0.5px)',
+              backgroundSize: '40px 40px',
+            }}
+          />
+
+          <div className='container relative z-10 mx-auto px-5'>
+            <div className='mx-auto max-w-4xl text-center text-white'>
+              <div className='mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[#f6ab3c]/80'>
+                <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]/60' />
+                Community Donation Support
+              </div>
+              <h1 className='text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'>
                 {t('donate.heading')}
               </h1>
-              <p className='mt-3 max-w-[860px] text-[17px] text-white/90 md:text-[18px]'>
+              <p className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'>
                 {t('donate.subtitle')}
               </p>
             </div>
@@ -82,8 +96,9 @@ const DonatePage = () => {
         </section>
       </div>
 
-      <section className='bg-[#f7f8fb] px-4 py-16 md:px-6 md:py-18'>
-        <div className='mx-auto max-w-[1100px]'>
+      <section className='relative z-20 -mt-6 bg-[#f7f8fb] px-4 pb-16 pt-0 md:-mt-8 md:px-6 md:pb-20'>
+        <div className='mx-auto max-w-[1200px]'>
+          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
           <div className='text-center'>
             <h2 className='text-[34px] font-extrabold tracking-[-0.03em] text-[#111318] md:text-[40px]'>
               {t('donate.makeDonation')}
@@ -182,6 +197,7 @@ const DonatePage = () => {
               </article>
             </div>
           ) : null}
+          </div>
         </div>
       </section>
 
@@ -310,17 +326,39 @@ const DonatePage = () => {
         </div>
       </section>
 
-      <section className='bg-[#3567c4] px-4 py-18 text-white md:px-6 md:py-20'>
-        <div className='mx-auto max-w-[1280px] text-center'>
-          <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-white/30 bg-white/8'>
-            <Heart className='h-8 w-8 stroke-[2]' />
+      <section className='relative overflow-hidden bg-[#fafafa] px-4 pb-12 text-white sm:px-5 md:px-6 md:pb-16'>
+        <div className='relative mx-auto max-w-[1280px] overflow-hidden rounded-[2rem] bg-[#071544] px-6 py-20 text-center lg:px-10 lg:py-28'>
+          <div className='absolute inset-0 bg-[linear-gradient(135deg,#071544_0%,#071544_48%,#071936_100%)]' />
+          <div
+            className='absolute inset-0 opacity-[0.08]'
+            style={{
+              backgroundImage: 'radial-gradient(#f6ab3c 0.5px, transparent 0.5px)',
+              backgroundSize: '40px 40px',
+            }}
+          />
+
+          <div className='relative z-10 mx-auto max-w-[860px] text-center'>
+            <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-white/20 bg-white/5'>
+              <Heart className='h-8 w-8 stroke-[2] text-[#f6ab3c]' />
+            </div>
+            <span className='mt-6 inline-block text-[11px] font-bold uppercase tracking-[0.4em] text-[#f6ab3c]'>
+              Donation Support
+            </span>
+            <h2 className='mt-4 text-balance text-[28px] font-extrabold tracking-normal md:mt-6 md:text-[46px]'>
+              {t('donate.thankYouTitle')}
+            </h2>
+            <div className='mx-auto mt-6 h-[1px] w-16 bg-[#f6ab3c]/30' />
+            <p className='mx-auto mt-5 text-pretty text-[15px] leading-[1.7] text-white/75 sm:text-[17px] md:mt-8 md:text-[20px]'>
+              {t('donate.thankYouDesc')}
+            </p>
+            <Link
+              to='/contact#contact-form'
+              className='group mt-8 inline-flex min-h-12 items-center justify-center gap-3 rounded-md border border-[#f6ab3c] bg-[#f6ab3c] px-7 py-3 text-[14px] font-bold text-[#071544] transition-all hover:bg-transparent hover:text-[#f6ab3c] sm:px-10 sm:text-[16px] md:mt-12'
+            >
+              {t('common.actions.learnMoreButton')}
+              <div className='h-[1px] w-5 bg-[#071544] transition-all duration-500 group-hover:w-8 group-hover:bg-[#f6ab3c] sm:w-6 sm:group-hover:w-10' />
+            </Link>
           </div>
-          <h2 className='mt-6 text-[36px] font-extrabold tracking-[-0.03em] md:text-[40px]'>
-            {t('donate.thankYouTitle')}
-          </h2>
-          <p className='mx-auto mt-5 max-w-[860px] text-[17px] leading-[1.6] text-white/92 md:text-[18px]'>
-            {t('donate.thankYouDesc')}
-          </p>
         </div>
       </section>
 

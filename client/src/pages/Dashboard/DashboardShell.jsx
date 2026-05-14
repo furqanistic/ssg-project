@@ -1,3 +1,4 @@
+// File: client/src/pages/Dashboard/DashboardShell.jsx
 import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -76,6 +77,10 @@ const cleanPairRows = (rows = []) =>
   rows
     .map((row) => ({ label: row.label.trim(), value: row.value.trim() }))
     .filter((row) => row.label || row.value)
+const cleanFaqRows = (rows = []) =>
+  rows
+    .map((row) => ({ question: row.question.trim(), answer: row.answer.trim() }))
+    .filter((row) => row.question || row.answer)
 const normalizeColorValue = (value, fallback = '#2d4f9f') => {
   const input = typeof value === 'string' ? value.trim() : ''
   if (!input) return fallback
@@ -124,6 +129,7 @@ const emptyMediaUpdate = {
 }
 
 const emptyPair = { label: '', value: '' }
+const emptyFaq = { question: '', answer: '' }
 const defaultDonateForm = {
   bankName: '',
   accountHolder: '',
@@ -910,12 +916,15 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [success, setSuccess] = useState('')
 
   const [visitorsForm, setVisitorsForm] = useState({
+    guideTitle: '',
+    guideBody: '',
     rules: [],
     daily: [],
     langar: [],
     sundaySpecial: '',
     address: [],
     reach: [],
+    faq: [],
   })
 
   const [eventsRows, setEventsRows] = useState([])
@@ -952,6 +961,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     langar: emptyPair,
     address: '',
     reach: '',
+    faq: emptyFaq,
   })
   const [visitorEditing, setVisitorEditing] = useState({
     rule: null,
@@ -959,6 +969,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     langar: null,
     address: null,
     reach: null,
+    faq: null,
   })
 
   const [contactAddressDraft, setContactAddressDraft] = useState('')
@@ -969,6 +980,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     visitorsLangar: false,
     visitorsAddress: false,
     visitorsReach: false,
+    visitorsFaq: false,
     events: false,
     mediaCards: false,
     mediaUpdates: false,
@@ -1013,6 +1025,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const visitorLangarFormRef = useRef(null)
   const visitorAddressFormRef = useRef(null)
   const visitorReachFormRef = useRef(null)
+  const visitorFaqFormRef = useRef(null)
   const eventFormRef = useRef(null)
   const mediaCardFormRef = useRef(null)
   const mediaUpdateFormRef = useRef(null)
@@ -1061,12 +1074,18 @@ const DashboardShell = ({ sectionKey = null }) => {
     }
 
     setVisitorsForm({
+      guideTitle: content.visitors?.guide?.title ?? '',
+      guideBody: content.visitors?.guide?.body ?? '',
       rules: toTextRows(content.visitors?.rulesEtiquette),
       daily: toPairRows(content.visitors?.openingTimings?.dailySchedule),
       langar: toPairRows(content.visitors?.openingTimings?.langarSchedule),
       sundaySpecial: content.visitors?.openingTimings?.sundaySpecial ?? '',
       address: toTextRows(content.visitors?.location?.addressLines),
       reach: toTextRows(content.visitors?.location?.howToReach),
+      faq: (content.visitors?.faq ?? []).map((item) => ({
+        question: item?.question ?? '',
+        answer: item?.answer ?? '',
+      })),
     })
 
     setEventsRows(
@@ -1290,6 +1309,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       langar: emptyPair,
       address: '',
       reach: '',
+      faq: emptyFaq,
     })
     setVisitorEditing({
       rule: null,
@@ -1297,6 +1317,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       langar: null,
       address: null,
       reach: null,
+      faq: null,
     })
     setContactAddressDraft('')
     setEditingContactAddressIndex(null)
@@ -1306,12 +1327,13 @@ const DashboardShell = ({ sectionKey = null }) => {
       visitorsLangar: false,
       visitorsAddress: false,
       visitorsReach: false,
+      visitorsFaq: false,
       events: false,
       mediaCards: false,
       mediaUpdates: false,
       contactAddress: false,
     })
-  }, [aboutEditorLanguage, servicesEditorLanguage, dataUpdatedAt])
+  }, [aboutEditorLanguage, content, servicesEditorLanguage, dataUpdatedAt])
 
   const sectionLabel = useMemo(
     () => menu.find((item) => item.key === active)?.label ?? 'Content',
@@ -1387,6 +1409,24 @@ const DashboardShell = ({ sectionKey = null }) => {
     setError('')
     setSuccess('')
   }
+
+  const buildVisitorsPayload = (form = visitorsForm) => ({
+    guide: {
+      title: form.guideTitle.trim(),
+      body: form.guideBody.trim(),
+    },
+    rulesEtiquette: cleanTextRows(form.rules),
+    openingTimings: {
+      dailySchedule: cleanPairRows(form.daily),
+      langarSchedule: cleanPairRows(form.langar),
+      sundaySpecial: form.sundaySpecial.trim(),
+    },
+    location: {
+      addressLines: cleanTextRows(form.address),
+      howToReach: cleanTextRows(form.reach),
+    },
+    faq: cleanFaqRows(form.faq),
+  })
 
   const isUnauthorizedRequestError = (requestError) => {
     if (requestError?.status === 401) {
@@ -1611,6 +1651,24 @@ const DashboardShell = ({ sectionKey = null }) => {
     setVisitorEditing((prev) => ({ ...prev, [editKey]: null }))
   }
 
+  const upsertVisitorsFaq = () => {
+    resetStatus()
+    const question = visitorDrafts.faq.question.trim()
+    const answer = visitorDrafts.faq.answer.trim()
+
+    if (!question && !answer) {
+      setError('Please enter a question or answer before adding.')
+      return
+    }
+
+    setVisitorsForm((prev) => ({
+      ...prev,
+      faq: replaceOrAppend(prev.faq, visitorEditing.faq, { question, answer }),
+    }))
+    setVisitorDrafts((prev) => ({ ...prev, faq: emptyFaq }))
+    setVisitorEditing((prev) => ({ ...prev, faq: null }))
+  }
+
   const removeVisitorsRow = (field, index, editKey, draftReset) => {
     setVisitorsForm((prev) => ({
       ...prev,
@@ -1620,6 +1678,18 @@ const DashboardShell = ({ sectionKey = null }) => {
     if (visitorEditing[editKey] === index) {
       setVisitorEditing((prev) => ({ ...prev, [editKey]: null }))
       setVisitorDrafts((prev) => ({ ...prev, [draftReset.key]: draftReset.value }))
+    }
+  }
+
+  const removeVisitorsFaq = (index, draftReset) => {
+    setVisitorsForm((prev) => ({
+      ...prev,
+      faq: prev.faq.filter((_, itemIndex) => itemIndex !== index),
+    }))
+
+    if (visitorEditing.faq === index) {
+      setVisitorEditing((prev) => ({ ...prev, faq: null }))
+      setVisitorDrafts((prev) => ({ ...prev, faq: draftReset }))
     }
   }
 
@@ -2045,7 +2115,8 @@ const DashboardShell = ({ sectionKey = null }) => {
         type === 'visitors-daily' ||
         type === 'visitors-langar' ||
         type === 'visitors-address' ||
-        type === 'visitors-reach'
+        type === 'visitors-reach' ||
+        type === 'visitors-faq'
       ) {
         const nextVisitors = {
           ...visitorsForm,
@@ -2073,23 +2144,18 @@ const DashboardShell = ({ sectionKey = null }) => {
             type === 'visitors-reach'
               ? visitorsForm.reach.map((row, i) => (i === index ? { text: nextData.text ?? '' } : row))
               : visitorsForm.reach,
+          faq:
+            type === 'visitors-faq'
+              ? visitorsForm.faq.map((row, i) =>
+                  i === index ? { question: nextData.question ?? '', answer: nextData.answer ?? '' } : row,
+                )
+              : visitorsForm.faq,
         }
 
         setVisitorsForm(nextVisitors)
         await updateMutation.mutateAsync({
           section: 'visitors',
-          data: {
-            rulesEtiquette: cleanTextRows(nextVisitors.rules),
-            openingTimings: {
-              dailySchedule: cleanPairRows(nextVisitors.daily),
-              langarSchedule: cleanPairRows(nextVisitors.langar),
-              sundaySpecial: nextVisitors.sundaySpecial.trim(),
-            },
-            location: {
-              addressLines: cleanTextRows(nextVisitors.address),
-              howToReach: cleanTextRows(nextVisitors.reach),
-            },
-          },
+          data: buildVisitorsPayload(nextVisitors),
         })
       }
 
@@ -2268,18 +2334,7 @@ const DashboardShell = ({ sectionKey = null }) => {
       if (active === 'visitors') {
         await updateMutation.mutateAsync({
           section: 'visitors',
-          data: {
-            rulesEtiquette: cleanTextRows(visitorsForm.rules),
-            openingTimings: {
-              dailySchedule: cleanPairRows(visitorsForm.daily),
-              langarSchedule: cleanPairRows(visitorsForm.langar),
-              sundaySpecial: visitorsForm.sundaySpecial.trim(),
-            },
-            location: {
-              addressLines: cleanTextRows(visitorsForm.address),
-              howToReach: cleanTextRows(visitorsForm.reach),
-            },
-          },
+          data: buildVisitorsPayload(),
         })
       }
 
@@ -2843,6 +2898,10 @@ const DashboardShell = ({ sectionKey = null }) => {
                   setVisitorsForm={setVisitorsForm}
                   visitorAddressFormRef={visitorAddressFormRef}
                   visitorReachFormRef={visitorReachFormRef}
+                  visitorFaqFormRef={visitorFaqFormRef}
+                  upsertVisitorsFaq={upsertVisitorsFaq}
+                  removeVisitorsFaq={removeVisitorsFaq}
+                  emptyFaq={emptyFaq}
                 />
               </Suspense>
             ) : null}
@@ -3921,6 +3980,39 @@ const DashboardShell = ({ sectionKey = null }) => {
                             }
                             className={inputClass}
                             placeholder='e.g. 5:00 AM - 7:00 AM'
+                          />
+                        </label>
+                      </div>
+                    ) : null}
+
+                    {editModal.type === 'visitors-faq' ? (
+                      <div className='space-y-6'>
+                        <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                          Question
+                          <input
+                            value={editModal.data.question ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, question: event.target.value },
+                              }))
+                            }
+                            className={inputClass}
+                            placeholder='Question shown on the public page'
+                          />
+                        </label>
+                        <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
+                          Answer
+                          <textarea
+                            value={editModal.data.answer ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, answer: event.target.value },
+                              }))
+                            }
+                            className={textareaClass}
+                            placeholder='Answer shown on the public page'
                           />
                         </label>
                       </div>

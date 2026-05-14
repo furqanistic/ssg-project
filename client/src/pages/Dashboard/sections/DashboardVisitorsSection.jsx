@@ -1,325 +1,108 @@
+// File: client/src/pages/Dashboard/sections/DashboardVisitorsSection.jsx
 import React from 'react'
+import { ArrowLeft } from 'lucide-react'
+import { BookOpen, Clock, HelpCircle, MapPin, ShieldCheck } from 'lucide-react'
+import VisitorCardGrid from './visitors/VisitorCardGrid'
+import VisitorFaqEditor from './visitors/VisitorFaqEditor'
+import VisitorGuideEditor from './visitors/VisitorGuideEditor'
+import VisitorLocationEditor from './visitors/VisitorLocationEditor'
+import VisitorRulesEditor from './visitors/VisitorRulesEditor'
+import VisitorTimingsEditor from './visitors/VisitorTimingsEditor'
 
-const DashboardVisitorsSection = ({
-  FileText,
-  Clock,
-  Plus,
-  Save,
-  DataTable,
-  openForms,
-  showForm,
-  actionButtonClass,
-  visitorRuleFormRef,
-  getPanelClass,
-  visitorDrafts,
-  setVisitorDrafts,
-  textareaClass,
-  hideForm,
-  upsertVisitorsText,
-  primaryButtonClass,
-  visitorsForm,
-  startEdit,
-  removeVisitorsRow,
-  visitorDailyFormRef,
-  inputClass,
-  upsertVisitorsPair,
-  emptyPair,
-  visitorLangarFormRef,
-  setVisitorsForm,
-  visitorAddressFormRef,
-  visitorReachFormRef,
-}) => {
+const visitorPanels = [
+  {
+    key: 'guide',
+    title: 'Visitor Guide',
+    description: 'Edit the intro title and body shown in the visitor guide section.',
+    icon: BookOpen,
+    accent: 'text-sky-600 bg-sky-50 border-sky-100',
+  },
+  {
+    key: 'rules',
+    title: 'Rules & Etiquette',
+    description: 'Define social and religious conduct for visitors.',
+    icon: ShieldCheck,
+    accent: 'text-[#001da5] bg-[#001da5]/5 border-[#001da5]/10',
+  },
+  {
+    key: 'timings',
+    title: 'Opening Timings',
+    description: 'Manage daily darshan, langar, and Sunday program details.',
+    icon: Clock,
+    accent: 'text-orange-500 bg-orange-50 border-orange-100',
+  },
+  {
+    key: 'location',
+    title: 'Location',
+    description: 'Manage address lines and public transport instructions.',
+    icon: MapPin,
+    accent: 'text-emerald-600 bg-emerald-50 border-emerald-100',
+  },
+  {
+    key: 'faq',
+    title: 'FAQ',
+    description: 'Add questions and answers displayed on the public visitor page.',
+    icon: HelpCircle,
+    accent: 'text-violet-600 bg-violet-50 border-violet-100',
+  },
+]
+
+const DashboardVisitorsSection = (props) => {
+  const [activePanel, setActivePanel] = React.useState(null)
+  const activePanelConfig = visitorPanels.find((panel) => panel.key === activePanel) ?? null
+
+  if (!props.DataTable) {
+    return null
+  }
+
+  const renderActiveEditor = () => {
+    if (activePanel === 'guide') {
+      return <VisitorGuideEditor panel={activePanelConfig} {...props} />
+    }
+
+    if (activePanel === 'rules') {
+      return <VisitorRulesEditor panel={activePanelConfig} {...props} />
+    }
+
+    if (activePanel === 'timings') {
+      return <VisitorTimingsEditor panel={activePanelConfig} {...props} />
+    }
+
+    if (activePanel === 'location') {
+      return <VisitorLocationEditor panel={activePanelConfig} {...props} />
+    }
+
+    return <VisitorFaqEditor panel={activePanelConfig} {...props} />
+  }
+
   return (
-    <div className='mt-10 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700'>
-      <div className='space-y-6'>
-        <div className='flex justify-between items-center bg-gray-50 p-5 rounded-[22px] border border-gray-100'>
-          <div className='flex items-center gap-4'>
-            <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
-              <FileText size={20} />
-            </div>
-            <div>
-              <h4 className='text-[15px] font-bold text-gray-900'>Rules & Etiquette</h4>
-              <p className='text-[12px] text-gray-400'>Define social and religious conduct</p>
-            </div>
+    <div className='mt-10 animate-in fade-in slide-in-from-bottom-4 duration-700'>
+      {!activePanel ? (
+        <div>
+          <div className='mb-4'>
+            <h3 className='text-[16px] font-black tracking-[-0.02em] text-gray-900'>Visitors Sections</h3>
+            <p className='mt-1 text-[13px] text-gray-500'>Select a section to open it as a separate editor page.</p>
           </div>
-          <button type='button' onClick={() => showForm('visitorsRule')} className={actionButtonClass}>
-            <Plus size={16} className='mr-2' />
-            New Rule
-          </button>
-        </div>
-
-        {openForms.visitorsRule ? (
-          <div ref={visitorRuleFormRef} className={getPanelClass('visitors-rule-form')}>
-            <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-              Rule Text
-              <textarea
-                value={visitorDrafts.rule}
-                onChange={(event) =>
-                  setVisitorDrafts((prev) => ({ ...prev, rule: event.target.value }))
-                }
-                className={textareaClass}
-                placeholder='e.g. Please remove shoes...'
-              />
-            </label>
-            <div className='mt-6 flex gap-3 justify-end'>
-              <button type='button' onClick={() => hideForm('visitorsRule')} className={actionButtonClass}>
-                Cancel
-              </button>
-              <button type='button' onClick={() => upsertVisitorsText('rules', 'rule', 'rule')} className={primaryButtonClass}>
-                <Save size={14} className='mr-1.5' />
-                Save Rule
-              </button>
-            </div>
-          </div>
-        ) : null}
-
-        <DataTable
-          title='Current Conduct Policy'
-          rows={visitorsForm.rules}
-          columns={[{ key: 'text', label: 'Registered Rule' }]}
-          emptyMessage='No community rules defined.'
-          onEdit={(index) => startEdit('visitors-rule', index, visitorsForm.rules[index])}
-          onDelete={(index) => removeVisitorsRow('rules', index, 'rule', { key: 'rule', value: '' })}
-        />
-      </div>
-
-      <div className='space-y-6 pt-10 border-t border-gray-100'>
-        <div className='flex items-center gap-4 mb-4'>
-          <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-orange-500/5 border border-orange-500/10 text-orange-500'>
-            <Clock size={20} />
-          </div>
-          <div>
-            <h4 className='text-[15px] font-bold text-gray-900'>Visitor Timings</h4>
-            <p className='text-[12px] text-gray-400'>Manage daily and special kitchen schedules</p>
-          </div>
-        </div>
-
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-          <div className='space-y-5'>
-            <div className='flex justify-between items-center'>
-              <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Daily Darshan</h5>
-              <button type='button' onClick={() => showForm('visitorsDaily')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5'>
-                <Plus size={12} /> Add Slot
-              </button>
-            </div>
-
-            {openForms.visitorsDaily ? (
-              <div ref={visitorDailyFormRef} className={getPanelClass('visitors-daily-form')}>
-                <div className='grid grid-cols-1 gap-4'>
-                  <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                    Activity Label
-                    <input
-                      value={visitorDrafts.daily.label}
-                      onChange={(event) =>
-                        setVisitorDrafts((prev) => ({
-                          ...prev,
-                          daily: { ...prev.daily, label: event.target.value },
-                        }))
-                      }
-                      className={inputClass}
-                    />
-                  </label>
-                  <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                    Time Range
-                    <input
-                      value={visitorDrafts.daily.value}
-                      onChange={(event) =>
-                        setVisitorDrafts((prev) => ({
-                          ...prev,
-                          daily: { ...prev.daily, value: event.target.value },
-                        }))
-                      }
-                      className={inputClass}
-                    />
-                  </label>
-                </div>
-                <div className='mt-4 flex gap-2 justify-end'>
-                  <button type='button' onClick={() => hideForm('visitorsDaily')} className={actionButtonClass}>
-                    Cancel
-                  </button>
-                  <button type='button' onClick={() => upsertVisitorsPair('daily', 'daily', 'daily')} className={primaryButtonClass}>
-                    <Save size={14} className='mr-1.5' />
-                    Save
-                  </button>
-                </div>
-              </div>
-            ) : null}
-
-            <DataTable
-              title=''
-              rows={visitorsForm.daily}
-              columns={[{ key: 'label', label: 'Activity' }, { key: 'value', label: 'Time' }]}
-              emptyMessage='No daily times set.'
-              onEdit={(index) => startEdit('visitors-daily', index, visitorsForm.daily[index])}
-              onDelete={(index) => removeVisitorsRow('daily', index, 'daily', { key: 'daily', value: emptyPair })}
-            />
-          </div>
-
-          <div className='space-y-5'>
-            <div className='flex justify-between items-center'>
-              <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Langar (Kitchen)</h5>
-              <button type='button' onClick={() => showForm('visitorsLangar')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5'>
-                <Plus size={12} /> Add Slot
-              </button>
-            </div>
-
-            {openForms.visitorsLangar ? (
-              <div ref={visitorLangarFormRef} className={getPanelClass('visitors-langar-form')}>
-                <div className='grid grid-cols-1 gap-4'>
-                  <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                    Meal Type
-                    <input
-                      value={visitorDrafts.langar.label}
-                      onChange={(event) =>
-                        setVisitorDrafts((prev) => ({
-                          ...prev,
-                          langar: { ...prev.langar, label: event.target.value },
-                        }))
-                      }
-                      className={inputClass}
-                    />
-                  </label>
-                  <label className='text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                    Serving Hours
-                    <input
-                      value={visitorDrafts.langar.value}
-                      onChange={(event) =>
-                        setVisitorDrafts((prev) => ({
-                          ...prev,
-                          langar: { ...prev.langar, value: event.target.value },
-                        }))
-                      }
-                      className={inputClass}
-                    />
-                  </label>
-                </div>
-                <div className='mt-4 flex gap-2 justify-end'>
-                  <button type='button' onClick={() => hideForm('visitorsLangar')} className={actionButtonClass}>
-                    Cancel
-                  </button>
-                  <button type='button' onClick={() => upsertVisitorsPair('langar', 'langar', 'langar')} className={primaryButtonClass}>
-                    <Save size={14} className='mr-1.5' />
-                    Save
-                  </button>
-                </div>
-              </div>
-            ) : null}
-
-            <DataTable
-              title=''
-              rows={visitorsForm.langar}
-              columns={[{ key: 'label', label: 'Meal' }, { key: 'value', label: 'Hours' }]}
-              emptyMessage='No kitchen times set.'
-              onEdit={(index) => startEdit('visitors-langar', index, visitorsForm.langar[index])}
-              onDelete={(index) => removeVisitorsRow('langar', index, 'langar', { key: 'langar', value: emptyPair })}
-            />
-          </div>
-        </div>
-
-        <div className='mt-6'>
-          <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1 mb-2'>
-            Sunday Special Program
-          </label>
-          <textarea
-            value={visitorsForm.sundaySpecial}
-            onChange={(event) =>
-              setVisitorsForm((prev) => ({ ...prev, sundaySpecial: event.target.value }))
-            }
-            className={textareaClass}
-            placeholder='Weekly Kirtan Darbar details...'
+          <VisitorCardGrid
+            panels={visitorPanels}
+            activePanel={activePanel}
+            onSelectPanel={setActivePanel}
+            className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'
           />
         </div>
-      </div>
-
-      <div className='space-y-10 pt-10 border-t border-gray-100'>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-          <div className='space-y-5'>
-            <div className='flex justify-between items-center'>
-              <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Address Registry</h5>
-              <button type='button' onClick={() => showForm('visitorsAddress')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5 font-bold uppercase tracking-widest'>
-                <Plus size={12} /> Add Line
-              </button>
-            </div>
-
-            {openForms.visitorsAddress ? (
-              <div ref={visitorAddressFormRef} className={getPanelClass('visitors-address-form')}>
-                <label className='block text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                  Physical Line
-                  <input
-                    value={visitorDrafts.address}
-                    onChange={(event) =>
-                      setVisitorDrafts((prev) => ({ ...prev, address: event.target.value }))
-                    }
-                    className={inputClass}
-                    placeholder='e.g. Alt Biesdorf 71'
-                  />
-                </label>
-                <div className='mt-4 flex gap-2 justify-end'>
-                  <button type='button' onClick={() => hideForm('visitorsAddress')} className={actionButtonClass}>
-                    Cancel
-                  </button>
-                  <button type='button' onClick={() => upsertVisitorsText('address', 'address', 'address')} className={primaryButtonClass}>
-                    <Save size={14} className='mr-1.5' />
-                    Save
-                  </button>
-                </div>
-              </div>
-            ) : null}
-
-            <DataTable
-              title=''
-              rows={visitorsForm.address}
-              columns={[{ key: 'text', label: 'Registered Line' }]}
-              emptyMessage='No address lines.'
-              onEdit={(index) => startEdit('visitors-address', index, visitorsForm.address[index])}
-              onDelete={(index) => removeVisitorsRow('address', index, 'address', { key: 'address', value: '' })}
-            />
-          </div>
-
-          <div className='space-y-5'>
-            <div className='flex justify-between items-center'>
-              <h5 className='text-[12px] font-black text-gray-300 uppercase tracking-widest'>Route Instructions</h5>
-              <button type='button' onClick={() => showForm('visitorsReach')} className='text-[11px] font-bold text-gray-400 hover:text-[#001da5] flex items-center gap-1.5 font-bold uppercase tracking-widest'>
-                <Plus size={12} /> Add Rule
-              </button>
-            </div>
-
-            {openForms.visitorsReach ? (
-              <div ref={visitorReachFormRef} className={getPanelClass('visitors-reach-form')}>
-                <label className='block text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                  Instruction
-                  <input
-                    value={visitorDrafts.reach}
-                    onChange={(event) =>
-                      setVisitorDrafts((prev) => ({ ...prev, reach: event.target.value }))
-                    }
-                    className={inputClass}
-                    placeholder='U-Bahn: U8 Pankstraße'
-                  />
-                </label>
-                <div className='mt-4 flex gap-2 justify-end'>
-                  <button type='button' onClick={() => hideForm('visitorsReach')} className={actionButtonClass}>
-                    Cancel
-                  </button>
-                  <button type='button' onClick={() => upsertVisitorsText('reach', 'reach', 'reach')} className={primaryButtonClass}>
-                    <Save size={14} className='mr-1.5' />
-                    Save
-                  </button>
-                </div>
-              </div>
-            ) : null}
-
-            <DataTable
-              title=''
-              rows={visitorsForm.reach}
-              columns={[{ key: 'text', label: 'Instruction' }]}
-              emptyMessage='No route info set.'
-              onEdit={(index) => startEdit('visitors-reach', index, visitorsForm.reach[index])}
-              onDelete={(index) => removeVisitorsRow('reach', index, 'reach', { key: 'reach', value: '' })}
-            />
-          </div>
+      ) : (
+        <div className='rounded-[30px] border border-gray-100 bg-white p-5 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.35)] sm:p-7'>
+          <button
+            type='button'
+            onClick={() => setActivePanel(null)}
+            className='mb-5 inline-flex items-center gap-2.5 rounded-[12px] border border-gray-200 bg-gray-50 px-4 py-2 text-[12px] font-bold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-white hover:text-[#001da5] active:scale-[0.98]'
+          >
+            <ArrowLeft size={14} />
+            Back To Sections
+          </button>
+          {renderActiveEditor()}
         </div>
-      </div>
+      )}
     </div>
   )
 }

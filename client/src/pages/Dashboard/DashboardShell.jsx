@@ -2943,7 +2943,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                 </p>
               </div>
               
-              {active !== 'about-us' && active !== 'profile' ? (
+              {active !== 'profile' ? (
                 <div className='flex gap-3'>
                   <button
                     type='button'
@@ -4131,6 +4131,17 @@ const DashboardShell = ({ sectionKey = null }) => {
                     const isNewEvent = editModal.type === 'events' && editModal.index < 0
                     const isNewMediaCard = editModal.type === 'media-cards' && editModal.index < 0
                     const isNewMediaUpdate = editModal.type === 'media-updates' && editModal.index < 0
+                    const isNewAboutHistory = editModal.type === 'about-history-section' && editModal.index < 0
+                    const isNewAboutMissionCard = editModal.type === 'about-mission-card' && editModal.index < 0
+                    const isNewAboutMissionValue = editModal.type === 'about-mission-value' && editModal.index < 0
+                    const isNewAboutCommitteeMember =
+                      editModal.type === 'about-committee-member' && editModal.index < 0
+                    const isNewAboutGovernanceStructure =
+                      editModal.type === 'about-governance-structure' && editModal.index < 0
+                    const isNewAboutGovernanceDocument =
+                      editModal.type === 'about-governance-document' && editModal.index < 0
+                    const isNewAboutGovernanceReport =
+                      editModal.type === 'about-governance-report' && editModal.index < 0
                     const modalTitle = isNewVisitorSlot
                       ? 'Create Slot'
                       : isNewEvent
@@ -4139,6 +4150,20 @@ const DashboardShell = ({ sectionKey = null }) => {
                         ? 'Create Media Card'
                       : isNewMediaUpdate
                         ? 'Create System Update'
+                      : isNewAboutHistory
+                        ? 'Create History Section'
+                      : isNewAboutMissionCard
+                        ? 'Create Mission Card'
+                      : isNewAboutMissionValue
+                        ? 'Create Core Value'
+                      : isNewAboutCommitteeMember
+                        ? 'Create Committee Member'
+                      : isNewAboutGovernanceStructure
+                        ? 'Create Structure Block'
+                      : isNewAboutGovernanceDocument
+                        ? 'Create Document'
+                      : isNewAboutGovernanceReport
+                        ? 'Create Report'
                       : isNewVisitorAddress
                         ? 'Create Address Line'
                         : isNewVisitorReach
@@ -4158,6 +4183,20 @@ const DashboardShell = ({ sectionKey = null }) => {
                         ? 'This new media card will appear on the public media page after publish.'
                       : isNewMediaUpdate
                         ? 'This new system update will appear on the public media page after publish.'
+                      : isNewAboutHistory
+                        ? 'This new history section will appear after saving.'
+                      : isNewAboutMissionCard
+                        ? 'This new mission card will appear after saving.'
+                      : isNewAboutMissionValue
+                        ? 'This new core value will appear after saving.'
+                      : isNewAboutCommitteeMember
+                        ? 'This new committee member will appear after saving.'
+                      : isNewAboutGovernanceStructure
+                        ? 'This new structure block will appear after saving.'
+                      : isNewAboutGovernanceDocument
+                        ? 'This new document will appear after saving.'
+                      : isNewAboutGovernanceReport
+                        ? 'This new report will appear after saving.'
                       : isNewVisitorAddress
                         ? 'This new address line will appear on the public visitors page after publish.'
                       : isNewVisitorReach

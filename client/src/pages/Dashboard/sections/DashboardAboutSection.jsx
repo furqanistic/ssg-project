@@ -220,6 +220,8 @@ const DashboardAboutSection = ({
           {React.createElement(dataTableComponent, {
             title: 'History Content Sections',
             rows: aboutUsForm.history.sections,
+            alwaysShowActions: true,
+            actionButtonStyle: 'labeled-compact',
             columns: [
               { key: 'title', label: 'Title' },
               { key: 'body', label: 'Body' },
@@ -282,6 +284,8 @@ const DashboardAboutSection = ({
           {React.createElement(dataTableComponent, {
             title: 'Mission Cards',
             rows: aboutUsForm.mission.cards,
+            alwaysShowActions: true,
+            actionButtonStyle: 'labeled-compact',
             columns: [
               { key: 'title', label: 'Title' },
               { key: 'description', label: 'Description' },
@@ -327,6 +331,8 @@ const DashboardAboutSection = ({
           {React.createElement(dataTableComponent, {
             title: 'Core Values',
             rows: aboutUsForm.mission.coreValues,
+            alwaysShowActions: true,
+            actionButtonStyle: 'labeled-compact',
             columns: [
               { key: 'title', label: 'Title' },
               { key: 'description', label: 'Description' },
@@ -386,6 +392,8 @@ const DashboardAboutSection = ({
           {React.createElement(dataTableComponent, {
             title: 'Committee Members',
             rows: aboutUsForm.committee.members,
+            alwaysShowActions: true,
+            actionButtonStyle: 'labeled-compact',
             columns: [
               { key: 'name', label: 'Name' },
               { key: 'role', label: 'Role' },
@@ -497,6 +505,8 @@ const DashboardAboutSection = ({
           {React.createElement(dataTableComponent, {
             title: 'Structure Blocks',
             rows: aboutUsForm.governance.structureBlocks,
+            alwaysShowActions: true,
+            actionButtonStyle: 'labeled-compact',
             columns: [
               { key: 'title', label: 'Title' },
               { key: 'body', label: 'Body' },
@@ -544,6 +554,8 @@ const DashboardAboutSection = ({
           {React.createElement(dataTableComponent, {
             title: 'Governance Documents',
             rows: aboutUsForm.governance.documents,
+            alwaysShowActions: true,
+            actionButtonStyle: 'labeled-compact',
             columns: [
               { key: 'title', label: 'Title' },
               { key: 'size', label: 'Size' },
@@ -604,6 +616,8 @@ const DashboardAboutSection = ({
           {React.createElement(dataTableComponent, {
             title: 'Governance Reports',
             rows: aboutUsForm.governance.reports,
+            alwaysShowActions: true,
+            actionButtonStyle: 'labeled-compact',
             columns: [
               { key: 'title', label: 'Title' },
               { key: 'size', label: 'Size' },

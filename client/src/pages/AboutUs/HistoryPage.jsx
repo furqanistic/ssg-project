@@ -1,7 +1,7 @@
 import SiteFooter from '@/components/layout/SiteFooter'
 import { useAboutUsContentQuery } from '@/hooks/useAboutUsContent'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
-import { motion } from 'framer-motion'
+import { motion as Motion } from 'framer-motion'
 import {
   Clock3, Compass, Globe, Heart, Landmark, MapPin, ScrollText, Sparkles, Star, ArrowRight, Calendar, History
 } from 'lucide-react'
@@ -39,37 +39,49 @@ const HistoryPage = () => {
 
         {/* Hero Section - Synchronized Architectural Style */}
         <section className='relative isolate overflow-hidden bg-[#071544] pt-[136px] pb-10 md:pt-[152px] md:pb-20'>
+          {history.heroImage ? (
+            <div className='absolute inset-0 z-0'>
+              <img
+                src={history.heroImage}
+                alt={history.heroTitle}
+                className='h-full w-full object-cover'
+                loading='lazy'
+              />
+              <div className='absolute inset-0 bg-[#071544]/75' />
+            </div>
+          ) : null}
+
           {/* Subtle Geometric Grid */}
           <div className='absolute inset-0 z-0 opacity-[0.05]' 
                style={{ backgroundImage: 'linear-gradient(#fff 0.5px, transparent 0.5px), linear-gradient(90deg, #fff 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} />
           
           <div className='container relative z-10 mx-auto px-5'>
             <div className='mx-auto max-w-4xl text-center'>
-              <motion.div
+              <Motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[#f6ab3c]/80'
               >
                 <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]/60' />
                 Institutional Legacy
-              </motion.div>
+              </Motion.div>
 
-              <motion.h1
+              <Motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'
               >
                 {history.heroTitle}
-              </motion.h1>
+              </Motion.h1>
 
-              <motion.p
+              <Motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {history.heroSubtitle}
-              </motion.p>
+              </Motion.p>
             </div>
           </div>
         </section>
@@ -78,30 +90,12 @@ const HistoryPage = () => {
         <section id='history-content' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-24'>
           <div className='container mx-auto max-w-[1200px]'>
             <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
-              {/* Featured Image - Premium Frame */}
-              {history.heroImage && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className='relative overflow-hidden rounded-[2rem] border border-[#071544]/05 bg-white shadow-[0_40px_80px_-16px_rgba(7,21,68,0.12)]'
-                >
-                  <img
-                    src={history.heroImage}
-                    alt={history.heroTitle}
-                    className='aspect-[21/9] w-full object-cover grayscale-[0.2] transition-all duration-700 hover:grayscale-0 hover:scale-[1.02]'
-                    loading='lazy'
-                  />
-                  <div className='pointer-events-none absolute inset-0 bg-gradient-to-t from-[#071544]/40 via-transparent to-transparent' />
-                </motion.div>
-              )}
-
               {/* Core History Narrative */}
-              <div className='mt-10 grid grid-cols-1 gap-6 md:mt-14 md:grid-cols-2 md:gap-10'>
+              <div className='grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10'>
                 {featuredSections.map((section, index) => {
                   const Icon = historyIcons[index % historyIcons.length]
                   return (
-                    <motion.article
+                    <Motion.article
                       key={index}
                       initial='hidden'
                       whileInView='visible'
@@ -118,7 +112,7 @@ const HistoryPage = () => {
                       <p className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
                         {section?.body}
                       </p>
-                    </motion.article>
+                    </Motion.article>
                   )
                 })}
               </div>
@@ -134,7 +128,7 @@ const HistoryPage = () => {
                  style={{ backgroundImage: 'linear-gradient(#071544 0.5px, transparent 0.5px), linear-gradient(90deg, #071544 0.5px, transparent 0.5px)', backgroundSize: '60px 60px' }} />
             
             <div className='container relative z-10 mx-auto px-4 md:px-6'>
-              <motion.div
+              <Motion.div
                 initial='hidden'
                 whileInView='visible'
                 viewport={{ once: true }}
@@ -145,7 +139,7 @@ const HistoryPage = () => {
                 <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
                   The Evolution of Sangat
                 </h2>
-              </motion.div>
+              </Motion.div>
 
               <div className='relative mx-auto max-w-[1000px]'>
                 {/* Timeline Center Line */}
@@ -156,7 +150,7 @@ const HistoryPage = () => {
                     const isEven = index % 2 === 0
                     const Icon = historyIcons[(index + 2) % historyIcons.length]
                     return (
-                      <motion.article
+                      <Motion.article
                         key={index}
                         initial={{ opacity: 0, x: isEven ? -40 : 40 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -188,7 +182,7 @@ const HistoryPage = () => {
                             </p>
                           </div>
                         </div>
-                      </motion.article>
+                      </Motion.article>
                     )
                   })}
                 </div>

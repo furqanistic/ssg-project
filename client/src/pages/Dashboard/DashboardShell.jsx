@@ -811,6 +811,8 @@ const DataTable = ({
   onDelete,
   emptyMessage,
   showActions = true,
+  alwaysShowActions = false,
+  actionButtonStyle = 'default',
 }) => {
   const hasEditAction = showActions && typeof onEdit === 'function'
   const hasDeleteAction = showActions && typeof onDelete === 'function'
@@ -858,13 +860,20 @@ const DataTable = ({
                   ))}
                   {hasActions ? (
                     <td className='px-4 py-4'>
-                      <div className='flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity'>
+                      <div
+                        className={`flex justify-end gap-2 ${alwaysShowActions ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-opacity'}`}
+                      >
                         {hasEditAction ? (
                           <button
                             type='button'
                             onClick={() => onEdit(index)}
-                            className='inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
+                            className={
+                              actionButtonStyle === 'labeled'
+                                ? 'inline-flex h-8 items-center justify-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3 text-[12px] font-semibold text-gray-700 transition hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.03] hover:text-[#001da5]'
+                                : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
+                            }
                           >
+                            {actionButtonStyle === 'labeled' ? <Edit2 size={13} /> : null}
                             Edit
                           </button>
                         ) : null}
@@ -872,8 +881,13 @@ const DataTable = ({
                           <button
                             type='button'
                             onClick={() => onDelete(index)}
-                            className='inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
+                            className={
+                              actionButtonStyle === 'labeled'
+                                ? 'inline-flex h-8 items-center justify-center gap-1.5 rounded-[8px] border border-red-200 bg-red-50/60 px-3 text-[12px] font-semibold text-red-600 transition hover:bg-red-100 hover:border-red-300'
+                                : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
+                            }
                           >
+                            {actionButtonStyle === 'labeled' ? <Trash2 size={13} /> : null}
                             Delete
                           </button>
                         ) : null}

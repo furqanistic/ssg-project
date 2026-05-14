@@ -61,6 +61,8 @@ const VisitorRulesEditor = ({
       rows: visitorsForm.rules,
       columns: [{ key: 'text', label: 'Registered Rule' }],
       emptyMessage: 'No community rules defined.',
+      alwaysShowActions: true,
+      actionButtonStyle: 'labeled',
       onEdit: (index) => startEdit('visitors-rule', index, visitorsForm.rules[index]),
       onDelete: (index) => removeVisitorsRow('rules', index, 'rule', { key: 'rule', value: '' }),
     })}

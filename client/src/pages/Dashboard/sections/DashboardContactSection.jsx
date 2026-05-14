@@ -102,6 +102,8 @@ const DashboardContactSection = ({
           rows={contactForm.address}
           columns={[{ key: 'text', label: 'Registered Line' }]}
           emptyMessage='No contact address lines defined.'
+          alwaysShowActions={true}
+          actionButtonStyle='labeled'
           onEdit={(index) => startEdit('contact-address', index, contactForm.address[index])}
           onDelete={(index) => {
             setContactForm((prev) => ({

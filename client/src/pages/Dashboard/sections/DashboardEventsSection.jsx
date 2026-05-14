@@ -77,12 +77,13 @@ const DashboardEventsSection = ({
             <h3 className='text-[16px] font-black tracking-[-0.02em] text-gray-900'>Event Sections</h3>
             <p className='mt-1 text-[13px] text-gray-500'>Select a section to open it as a focused editor page.</p>
           </div>
-          <div className='grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4'>
+          <div className='grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-2'>
             {eventCards.map((group) => (
               <InteractiveNavCard
                 key={group.key}
                 onClick={() => setActiveGroup(group.key)}
                 active={activeGroup === group.key}
+                className='min-h-[248px]'
                 title={group.title}
                 description={group.description}
                 icon={React.createElement(calendarIcon, { size: 20 })}

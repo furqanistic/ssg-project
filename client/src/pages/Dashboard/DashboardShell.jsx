@@ -813,6 +813,7 @@ const DataTable = ({
   showActions = true,
   alwaysShowActions = false,
   actionButtonStyle = 'default',
+  deletingRowIndex = null,
 }) => {
   const hasEditAction = showActions && typeof onEdit === 'function'
   const hasDeleteAction = showActions && typeof onDelete === 'function'
@@ -881,6 +882,7 @@ const DataTable = ({
                           <button
                             type='button'
                             onClick={() => onDelete(index)}
+                            disabled={deletingRowIndex === index}
                             className={
                               actionButtonStyle === 'labeled'
                                 ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1 rounded-[9px] border border-red-200 bg-red-50/70 px-2.5 text-[11px] font-semibold text-red-600 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-red-300 hover:bg-red-100'
@@ -888,7 +890,7 @@ const DataTable = ({
                             }
                           >
                             {actionButtonStyle === 'labeled' ? <Trash2 size={12} /> : null}
-                            Delete
+                            {deletingRowIndex === index ? 'Deleting...' : 'Delete'}
                           </button>
                         ) : null}
                       </div>
@@ -1012,6 +1014,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [isUploadingAboutImage, setIsUploadingAboutImage] = useState(false)
   const [uploadingServicesImageField, setUploadingServicesImageField] = useState('')
   const [isDeletingUserId, setIsDeletingUserId] = useState('')
+  const [deletingVisitorRuleIndex, setDeletingVisitorRuleIndex] = useState(null)
   const [profileForm, setProfileForm] = useState({
     email: '',
     password: '',
@@ -1704,6 +1707,31 @@ const DashboardShell = ({ sectionKey = null }) => {
     if (visitorEditing.faq === index) {
       setVisitorEditing((prev) => ({ ...prev, faq: null }))
       setVisitorDrafts((prev) => ({ ...prev, faq: draftReset }))
+    }
+  }
+
+  const deleteVisitorsRule = async (index) => {
+    resetStatus()
+    const previousVisitors = visitorsForm
+    const nextVisitors = {
+      ...visitorsForm,
+      rules: visitorsForm.rules.filter((_, itemIndex) => itemIndex !== index),
+    }
+
+    setDeletingVisitorRuleIndex(index)
+    setVisitorsForm(nextVisitors)
+
+    try {
+      await updateMutation.mutateAsync({
+        section: 'visitors',
+        data: buildVisitorsPayload(nextVisitors),
+      })
+      setSuccess('Rule deleted successfully.')
+    } catch (requestError) {
+      setVisitorsForm(previousVisitors)
+      setError(requestError.message || 'Failed to delete rule.')
+    } finally {
+      setDeletingVisitorRuleIndex(null)
     }
   }
 
@@ -2906,6 +2934,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                   visitorsForm={visitorsForm}
                   startEdit={startEdit}
                   removeVisitorsRow={removeVisitorsRow}
+                  deleteVisitorsRule={deleteVisitorsRule}
+                  deletingVisitorRuleIndex={deletingVisitorRuleIndex}
                   visitorDailyFormRef={visitorDailyFormRef}
                   inputClass={inputClass}
                   upsertVisitorsPair={upsertVisitorsPair}
@@ -3939,8 +3969,15 @@ const DashboardShell = ({ sectionKey = null }) => {
                     const isVisitorsTextEdit = ['visitors-rule', 'visitors-address', 'visitors-reach'].includes(
                       editModal.type,
                     )
-                    const modalTitle = isVisitorsTextEdit ? 'Update Rule' : 'Update Entry'
-                    const modalSubtitle = isVisitorsTextEdit
+                    const isNewVisitorRule = editModal.type === 'visitors-rule' && editModal.index < 0
+                    const modalTitle = isNewVisitorRule
+                      ? 'Create Rule'
+                      : isVisitorsTextEdit
+                        ? 'Update Rule'
+                        : 'Update Entry'
+                    const modalSubtitle = isNewVisitorRule
+                      ? 'This new rule will be added to the public visitors page after publish.'
+                      : isVisitorsTextEdit
                       ? 'This change will appear on the public visitors page after publish.'
                       : 'Synchronize these changes with the public website'
 

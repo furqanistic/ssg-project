@@ -950,6 +950,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [servicesForm, setServicesForm] = useState(defaultServicesForm)
   const [youthServicesForm, setYouthServicesForm] = useState(defaultYouthServicesForm)
   const [activeServicesEditor, setActiveServicesEditor] = useState(null)
+  const [activeYouthServicesEditor, setActiveYouthServicesEditor] = useState('intro')
   const [aboutUsForm, setAboutUsForm] = useState(defaultAboutUsForm)
   const [aboutUsSavedSnapshot, setAboutUsSavedSnapshot] = useState('')
   const [aboutUsLastSavedAt, setAboutUsLastSavedAt] = useState(null)
@@ -1408,6 +1409,12 @@ const DashboardShell = ({ sectionKey = null }) => {
       setActiveServicesEditor(null)
     }
   }, [active, activeServicesEditor])
+
+  useEffect(() => {
+    if (activeServicesEditor !== 'youth-page') {
+      setActiveYouthServicesEditor('intro')
+    }
+  }, [activeServicesEditor])
 
   const switchSection = (key) => {
     setActive(key)
@@ -3694,6 +3701,45 @@ const DashboardShell = ({ sectionKey = null }) => {
                   <p className='mt-1 text-[13px] text-gray-500'>
                     These fields are rendered on `/youth-education` (all sections from your dropdown).
                   </p>
+                  <div className='mt-5 grid grid-cols-1 gap-3 md:grid-cols-2'>
+                    {[
+                      { key: 'intro', title: 'Page Intro', icon: LayoutDashboard },
+                      { key: 'gurmukhi', title: 'Gurmukhi Section', icon: FileText },
+                      { key: 'german', title: 'German Section', icon: Search },
+                      { key: 'programs', title: 'Programs & Reasons', icon: PlusCircle },
+                    ].map((item) => (
+                      <button
+                        key={item.key}
+                        type='button'
+                        onClick={() => setActiveYouthServicesEditor(item.key)}
+                        className={`group rounded-[14px] border px-4 py-3 text-left transition-all duration-200 ${
+                          activeYouthServicesEditor === item.key
+                            ? 'border-[#001da5]/45 bg-[#001da5]/6 text-[#001da5] shadow-[0_8px_20px_-16px_rgba(0,29,165,0.55)]'
+                            : 'border-gray-200 bg-white text-gray-700 hover:border-[#001da5]/30 hover:bg-[#001da5]/[0.03] hover:text-[#001da5]'
+                        }`}
+                      >
+                        <div className='flex items-center justify-between gap-3'>
+                          <div className='flex items-center gap-3'>
+                            <span className={`inline-flex h-8 w-8 items-center justify-center rounded-[10px] border ${
+                              activeYouthServicesEditor === item.key
+                                ? 'border-[#001da5]/20 bg-[#001da5]/10 text-[#001da5]'
+                                : 'border-gray-200 bg-gray-50 text-gray-500 group-hover:border-[#001da5]/20 group-hover:bg-[#001da5]/10 group-hover:text-[#001da5]'
+                            }`}>
+                              {React.createElement(item.icon, { size: 15 })}
+                            </span>
+                            <span className='text-[13px] font-bold'>{item.title}</span>
+                          </div>
+                          <ChevronRight
+                            size={15}
+                            className={`transition-transform ${
+                              activeYouthServicesEditor === item.key ? 'translate-x-0.5 text-[#001da5]' : 'text-gray-400 group-hover:translate-x-0.5 group-hover:text-[#001da5]'
+                            }`}
+                          />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  {activeYouthServicesEditor === 'intro' ? (
                   <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
                     <div className='md:col-span-2'>
                       <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Page Heading</label>
@@ -3724,7 +3770,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                       />
                     </div>
                   </div>
+                  ) : null}
 
+                  {activeYouthServicesEditor === 'gurmukhi' ? (
                   <div className='mt-8 rounded-[16px] border border-gray-100 p-5'>
                     <h4 className='text-[16px] font-bold text-gray-900'>Gurmukhi Section</h4>
                     <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -3778,7 +3826,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                       <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Location</label><input type='text' value={youthServicesForm.gurmukhi.scheduleLocation} onChange={(event) => updateYouthServicesField('gurmukhi.scheduleLocation', event.target.value)} className={inputClass} /></div>
                     </div>
                   </div>
+                  ) : null}
 
+                  {activeYouthServicesEditor === 'german' ? (
                   <div className='mt-6 rounded-[16px] border border-gray-100 p-5'>
                     <h4 className='text-[16px] font-bold text-gray-900'>German Section</h4>
                     <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -3812,7 +3862,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                       <div><label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Schedule Location</label><input type='text' value={youthServicesForm.german.scheduleLocation} onChange={(event) => updateYouthServicesField('german.scheduleLocation', event.target.value)} className={inputClass} /></div>
                     </div>
                   </div>
+                  ) : null}
 
+                  {activeYouthServicesEditor === 'programs' ? (
                   <div className='mt-6 rounded-[16px] border border-gray-100 p-5'>
                     <h4 className='text-[16px] font-bold text-gray-900'>Programs, Registration & Reasons</h4>
                     <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -3936,6 +3988,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                       ))}
                     </div>
                   </div>
+                  ) : null}
                 </article>
                 ) : null}
                     </div>

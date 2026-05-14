@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
+import { motion as Motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import SiteFooter from '@/components/layout/SiteFooter'
@@ -39,6 +39,16 @@ const CremationFundPage = () => {
     () => content?.services?.cremationFund ?? {},
     [content?.services?.cremationFund],
   )
+  const aboutText = readLocalizedValue(serviceContent.aboutText, language)
+  const supportText = readLocalizedValue(serviceContent.supportText, language)
+  const aboutParagraphs = aboutText
+    .split(/\n\s*\n/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+  const supportParagraphs = supportText
+    .split(/\n\s*\n/)
+    .map((item) => item.trim())
+    .filter(Boolean)
 
   return (
     <div className='min-h-screen bg-[#fafafa] font-["Outfit",sans-serif] text-[#071544] selection:bg-[#f6ab3c]/30'>
@@ -64,31 +74,31 @@ const CremationFundPage = () => {
           
           <div className='container relative z-10 mx-auto px-5'>
             <div className='mx-auto max-w-4xl text-center'>
-              <motion.div
+              <Motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[#f6ab3c]/80'
               >
                 <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]/60' />
                 Community Support Services
-              </motion.div>
+              </Motion.div>
 
-              <motion.h1
+              <Motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'
               >
                 {readLocalizedValue(serviceContent.heroTitle, language)}
-              </motion.h1>
+              </Motion.h1>
 
-              <motion.p
+              <Motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {readLocalizedValue(serviceContent.heroSubtitle, language)}
-              </motion.p>
+              </Motion.p>
             </div>
           </div>
         </section>
@@ -96,7 +106,7 @@ const CremationFundPage = () => {
         {/* Overlapping Content Container */}
         <section id='fund-details' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-20'>
           <div className='container mx-auto max-w-[1000px]'>
-            <motion.div 
+            <Motion.div 
               initial='hidden'
               whileInView='visible'
               viewport={{ once: true }}
@@ -110,12 +120,16 @@ const CremationFundPage = () => {
                 </h2>
                 
                 <div className='mt-8 space-y-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-12 md:text-lg'>
-                  <p>
-                    {readLocalizedValue(serviceContent.aboutText, language)}
-                  </p>
-                  <p>
-                    {readLocalizedValue(serviceContent.supportText, language)}
-                  </p>
+                  {aboutParagraphs.map((paragraph, index) => (
+                    <p key={`about-${index}`} className='whitespace-pre-line'>
+                      {paragraph}
+                    </p>
+                  ))}
+                  {supportParagraphs.map((paragraph, index) => (
+                    <p key={`support-${index}`} className='whitespace-pre-line'>
+                      {paragraph}
+                    </p>
+                  ))}
                 </div>
 
                 {serviceContent.supportImage && (
@@ -148,7 +162,7 @@ const CremationFundPage = () => {
                   )}
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
           </div>
         </section>
       </div>

@@ -388,7 +388,13 @@ const VisitorGuidePage = () => {
                             <h4 className='text-[9px] font-bold uppercase tracking-widest text-[#f6ab3c]'>
                               {t('visitors.publicTransport')}
                             </h4>
-                            <p className='mt-1 text-[14px] text-[#5a677a]'>{visitorContent.location.howToReach[0]}</p>
+                            <div className='mt-1 space-y-1'>
+                              {visitorContent.location.howToReach.filter(Boolean).map((instruction, index) => (
+                                <p key={`${instruction}-${index}`} className='text-[14px] text-[#5a677a]'>
+                                  {instruction}
+                                </p>
+                              ))}
+                            </div>
                           </div>
                           <div>
                             <h4 className='text-[9px] font-bold uppercase tracking-widest text-[#f6ab3c]'>

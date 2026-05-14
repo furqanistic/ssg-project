@@ -1,238 +1,159 @@
+// File: client/src/pages/Dashboard/sections/DashboardMediaSection.jsx
 import React from 'react'
+import { ArrowLeft } from 'lucide-react'
+import { InteractiveNavCard } from '@/components/ui/interactive-nav-card'
+import { MEDIA_GROUPS, emptyMediaCard, emptyMediaUpdate } from './media/media-group-config'
 
 const DashboardMediaSection = ({
-  ImageIcon,
-  Plus,
-  PlusCircle,
-  LayoutDashboard,
-  DataTable,
-  openForms,
-  showForm,
-  hideForm,
-  mediaCardFormRef,
-  getPanelClass,
-  mediaCardDraft,
-  setMediaCardDraft,
-  inputClass,
-  textareaClass,
+  ImageIcon: imageIcon,
+  Plus: plusIcon,
+  DataTable: dataTableComponent,
   actionButtonClass,
-  primaryButtonClass,
-  upsertMediaCard,
-  editingMediaCardIndex,
+  deleteMediaRowLocal,
   mediaCardsRows,
-  startEdit,
-  setMediaCardsRows,
-  mediaUpdateFormRef,
-  mediaUpdateDraft,
-  setMediaUpdateDraft,
-  upsertMediaUpdate,
-  editingMediaUpdateIndex,
   mediaUpdatesRows,
-  setMediaUpdatesRows,
+  startEdit,
 }) => {
+  const [activeGroup, setActiveGroup] = React.useState(null)
+
+  const getGroupRows = (key) =>
+    key === 'cards' ? mediaCardsRows : mediaUpdatesRows
+
+  const mediaCards = MEDIA_GROUPS.map((group) => ({
+    ...group,
+    count: getGroupRows(group.key).length,
+  }))
+
+  const activeGroupConfig = MEDIA_GROUPS.find((group) => group.key === activeGroup) ?? null
+
+  const openNewMediaModal = (groupKey) => {
+    const empty = groupKey === 'cards' ? emptyMediaCard : emptyMediaUpdate
+    startEdit(`media-${groupKey}`, -1, { ...empty })
+  }
+
+  const handleDelete = (groupKey, targetIndex) => {
+    deleteMediaRowLocal(groupKey, targetIndex)
+  }
+
+  const getTableConfig = (groupKey) => {
+    if (groupKey === 'cards') {
+      return {
+        title: 'Media Cards Table',
+        columns: [
+          { key: 'id', label: 'ID' },
+          { key: 'title', label: 'Title' },
+          { key: 'buttonLabel', label: 'Action Button' },
+        ],
+        emptyMessage: 'No media categories defined.',
+        editType: 'media-cards',
+        emptyObj: emptyMediaCard,
+      }
+    }
+    return {
+      title: 'System Updates Table',
+      columns: [
+        { key: 'title', label: 'Headline' },
+        { key: 'action', label: 'Call to Action' },
+        {
+          key: 'description',
+          label: 'Context',
+          render: (row) => row.description || '\u2014',
+        },
+      ],
+      emptyMessage: 'No system updates found.',
+      editType: 'media-updates',
+      emptyObj: emptyMediaUpdate,
+    }
+  }
+
   return (
-    <div className='mt-10 space-y-12'>
-      <div className='space-y-6'>
-        <div className='flex justify-between items-center bg-gray-50 p-5 rounded-[22px] border border-gray-100'>
-          <div className='flex items-center gap-4'>
-            <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
-              <ImageIcon size={20} />
-            </div>
-            <div>
-              <h4 className='text-[15px] font-bold text-gray-900'>Interactive Media Cards</h4>
-              <p className='text-[12px] text-gray-400'>Manage the quick-access media categories</p>
-            </div>
+    <div className='mt-10 space-y-8'>
+      {!activeGroup ? (
+        <div>
+          <div className='mb-4'>
+            <h3 className='text-[16px] font-black tracking-[-0.02em] text-gray-900'>Media Sections</h3>
+            <p className='mt-1 text-[13px] text-gray-500'>Select a section to open it as a focused editor page.</p>
           </div>
-          <button type='button' onClick={() => showForm('mediaCards')} className={actionButtonClass}>
-            <Plus size={16} className='mr-2' />
-            New Card
-          </button>
-        </div>
-
-        {openForms.mediaCards ? (
-          <div ref={mediaCardFormRef} className={getPanelClass('media-card-form')}>
-            <div className='flex items-center gap-3 mb-8'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
-                <LayoutDashboard size={20} />
-              </div>
-              <h3 className='text-[18px] font-black text-gray-900 tracking-tight'>Card Configuration</h3>
-            </div>
-
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-              <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                Component ID
-                <input
-                  value={mediaCardDraft.id}
-                  onChange={(event) =>
-                    setMediaCardDraft((prev) => ({ ...prev, id: event.target.value }))
-                  }
-                  className={inputClass}
-                  placeholder='e.g. photo-gallery'
-                />
-              </label>
-              <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                Primary Title
-                <input
-                  value={mediaCardDraft.title}
-                  onChange={(event) =>
-                    setMediaCardDraft((prev) => ({ ...prev, title: event.target.value }))
-                  }
-                  className={inputClass}
-                  placeholder='Photo Gallery'
-                />
-              </label>
-              <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1 md:col-span-2'>
-                Action Button Label
-                <input
-                  value={mediaCardDraft.buttonLabel}
-                  onChange={(event) =>
-                    setMediaCardDraft((prev) => ({
-                      ...prev,
-                      buttonLabel: event.target.value,
-                    }))
-                  }
-                  className={inputClass}
-                  placeholder='View Photo Albums'
-                />
-              </label>
-            </div>
-            <label className='mt-6 block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-              Contextual Description
-              <textarea
-                value={mediaCardDraft.description}
-                onChange={(event) =>
-                  setMediaCardDraft((prev) => ({
-                    ...prev,
-                    description: event.target.value,
-                  }))
-                }
-                className={textareaClass}
-                placeholder='Describe what users will find here...'
+          <div className='grid grid-cols-1 gap-5 md:grid-cols-2'>
+            {mediaCards.map((group) => (
+              <InteractiveNavCard
+                key={group.key}
+                onClick={() => setActiveGroup(group.key)}
+                active={activeGroup === group.key}
+                title={group.title}
+                description={group.description}
+                icon={React.createElement(imageIcon, { size: 20 })}
+                iconContainerClassName='text-[#001da5] bg-[#001da5]/5 border-[#001da5]/10'
+                rightSlot={(
+                  <span className='inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[11px] font-semibold tracking-wide text-gray-600 shadow-sm'>
+                    <span className='h-1.5 w-1.5 rounded-full bg-[#001da5]' />
+                    {group.count} {group.count === 1 ? 'entry' : 'entries'}
+                  </span>
+                )}
               />
-            </label>
-
-            <div className='mt-8 pt-6 border-t border-white/5 flex gap-3 justify-end'>
-              <button type='button' onClick={() => hideForm('mediaCards')} className={actionButtonClass}>
-                Discard
-              </button>
-              <button type='button' onClick={upsertMediaCard} className={primaryButtonClass}>
-                {editingMediaCardIndex === null ? 'Create Card' : 'Update Card'}
-              </button>
-            </div>
+            ))}
           </div>
-        ) : null}
-
-        <DataTable
-          title='Available Media Categories'
-          rows={mediaCardsRows}
-          columns={[
-            { key: 'id', label: 'ID' },
-            { key: 'title', label: 'Title' },
-            { key: 'buttonLabel', label: 'Action Button' },
-          ]}
-          emptyMessage='No media categories defined.'
-          onEdit={(index) => startEdit('media-cards', index, mediaCardsRows[index])}
-          onDelete={(index) => {
-            setMediaCardsRows((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
-          }}
-        />
-      </div>
-
-      <div className='space-y-6 pt-10 border-t border-gray-100'>
-        <div className='flex justify-between items-center bg-gray-50 p-5 rounded-[22px] border border-gray-100'>
-          <div className='flex items-center gap-4'>
-            <div className='flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
-              <ImageIcon size={20} />
-            </div>
-            <div>
-              <h4 className='text-[15px] font-bold text-gray-900'>System Updates</h4>
-              <p className='text-[12px] text-gray-400'>Push new content notifications</p>
-            </div>
-          </div>
-          <button type='button' onClick={() => showForm('mediaUpdates')} className={actionButtonClass}>
-            <Plus size={16} className='mr-2' />
-            New Update
-          </button>
         </div>
-
-        {openForms.mediaUpdates ? (
-          <div ref={mediaUpdateFormRef} className={getPanelClass('media-update-form')}>
-            <div className='flex items-center gap-3 mb-8'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
-                <PlusCircle size={20} />
+      ) : (
+        <div className='rounded-[30px] border border-gray-100 bg-white p-5 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.35)] sm:p-7'>
+          <div className='mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+            <button
+              type='button'
+              onClick={() => setActiveGroup(null)}
+              className='inline-flex w-fit items-center gap-2 rounded-[12px] border border-gray-200 bg-gray-50 px-4 py-2 text-[12px] font-bold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-white hover:text-[#001da5] active:scale-[0.98]'
+            >
+              <ArrowLeft size={14} />
+              Back To Sections
+            </button>
+            {activeGroupConfig ? (
+              <div className='flex items-center gap-3'>
+                <span className='text-[13px] text-gray-500'>
+                  {activeGroupConfig.title}
+                  <span className='ml-1.5 text-gray-300'>·</span>
+                  <span className='ml-1.5 font-semibold text-[#001da5]'>{getGroupRows(activeGroupConfig.key).length} entries</span>
+                </span>
               </div>
-              <h3 className='text-[18px] font-black text-gray-900 tracking-tight'>Update Configuration</h3>
-            </div>
-
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-              <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                Headline
-                <input
-                  value={mediaUpdateDraft.title}
-                  onChange={(event) =>
-                    setMediaUpdateDraft((prev) => ({ ...prev, title: event.target.value }))
-                  }
-                  className={inputClass}
-                  placeholder='Vaisakhi 2026 Photo Album'
-                />
-              </label>
-              <label className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                CTA Label
-                <input
-                  value={mediaUpdateDraft.action}
-                  onChange={(event) =>
-                    setMediaUpdateDraft((prev) => ({ ...prev, action: event.target.value }))
-                  }
-                  className={inputClass}
-                  placeholder='View Album'
-                />
-              </label>
-            </div>
-            <label className='mt-6 block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
-              Short Description
-              <textarea
-                value={mediaUpdateDraft.description}
-                onChange={(event) =>
-                  setMediaUpdateDraft((prev) => ({
-                    ...prev,
-                    description: event.target.value,
-                  }))
-                }
-                className={textareaClass}
-                placeholder='Catchy context for the update...'
-              />
-            </label>
-
-            <div className='mt-8 pt-6 border-t border-white/5 flex gap-3 justify-end'>
-              <button type='button' onClick={() => hideForm('mediaUpdates')} className={actionButtonClass}>
-                Discard
-              </button>
-              <button type='button' onClick={upsertMediaUpdate} className={primaryButtonClass}>
-                {editingMediaUpdateIndex === null ? 'Publish Update' : 'Synchronize Update'}
-              </button>
-            </div>
+            ) : null}
           </div>
-        ) : null}
 
-        <DataTable
-          title='Recent Media Feed'
-          rows={mediaUpdatesRows}
-          columns={[
-            { key: 'title', label: 'Headline' },
-            { key: 'action', label: 'Call to Action' },
-            {
-              key: 'description',
-              label: 'Context',
-              render: (row) => row.description || '<span className="text-white/20">Empty</span>',
-            },
-          ]}
-          emptyMessage='No system updates found.'
-          onEdit={(index) => startEdit('media-updates', index, mediaUpdatesRows[index])}
-          onDelete={(index) => {
-            setMediaUpdatesRows((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
-          }}
-        />
-      </div>
+          {activeGroupConfig ? (
+            (() => {
+              const groupedRows = getGroupRows(activeGroupConfig.key)
+              const tableConfig = getTableConfig(activeGroupConfig.key)
+              const isCards = activeGroupConfig.key === 'cards'
+              return (
+                <div className='rounded-[22px] border border-gray-100 bg-white p-6'>
+                  <div className='mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
+                    <div>
+                      <h4 className='text-[18px] font-bold tracking-tight text-gray-900'>{activeGroupConfig.title}</h4>
+                      <p className='mt-1 text-[13px] text-gray-500'>{activeGroupConfig.description}</p>
+                    </div>
+                    <button
+                      type='button'
+                      onClick={() => openNewMediaModal(activeGroupConfig.key)}
+                      className={actionButtonClass}
+                    >
+                      {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })}
+                      Add {isCards ? 'Card' : 'Update'}
+                    </button>
+                  </div>
+
+                  {React.createElement(dataTableComponent, {
+                    title: tableConfig.title,
+                    rows: groupedRows,
+                    columns: tableConfig.columns,
+                    emptyMessage: tableConfig.emptyMessage,
+                    alwaysShowActions: true,
+                    actionButtonStyle: 'labeled',
+                    onEdit: (index) => startEdit(tableConfig.editType, index, groupedRows[index]),
+                    onDelete: (index) => handleDelete(activeGroupConfig.key, index),
+                  })}
+                </div>
+              )
+            })()
+          ) : null}
+        </div>
+      )}
     </div>
   )
 }

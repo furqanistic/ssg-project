@@ -2,16 +2,12 @@ import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   BookOpen,
-  ChevronRight,
   Clock3,
   Copy,
-  Info,
   Mail,
   MapPin,
   Phone,
-  Shirt,
   Star,
-  UtensilsCrossed,
 } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -46,6 +42,10 @@ const SectionLabel = ({ children }) => (
     {children}
   </div>
 )
+const MotionDiv = motion.div
+const MotionH1 = motion.h1
+const MotionP = motion.p
+const MotionSection = motion.section
 
 const VisitorGuidePage = () => {
   const { t } = useTranslation()
@@ -105,16 +105,6 @@ const VisitorGuidePage = () => {
     [content, t],
   )
 
-  const etiquetteCards = React.useMemo(
-    () => [
-      { title: t('visitors.rulesHeadings.0'), icon: Shirt },
-      { title: t('visitors.rulesHeadings.1'), icon: Info },
-      { title: t('visitors.rulesHeadings.2'), icon: UtensilsCrossed },
-      { title: t('visitors.rulesHeadings.3'), icon: Info },
-    ],
-    [t],
-  )
-
   const additionalGuidelines = React.useMemo(
     () => t('visitors.additionalGuidelines', { returnObjects: true }),
     [t],
@@ -127,7 +117,9 @@ const VisitorGuidePage = () => {
       await navigator.clipboard.writeText(visitorContent.contact.email)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch {}
+    } catch (error) {
+      console.error('Failed to copy visitor contact email:', error)
+    }
   }
 
   const guideBody = t('visitors.guideBody')
@@ -145,31 +137,31 @@ const VisitorGuidePage = () => {
           
           <div className='container relative z-10 mx-auto px-5'>
             <div className='mx-auto max-w-4xl text-center'>
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[#f6ab3c]/80'
               >
                 <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]/60' />
                 Visitor Community Engagement
-              </motion.div>
+              </MotionDiv>
 
-              <motion.h1
+              <MotionH1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'
               >
                 {t('visitors.heading')}
-              </motion.h1>
+              </MotionH1>
 
-              <motion.p
+              <MotionP
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {t('visitors.subtitle')}
-              </motion.p>
+              </MotionP>
             </div>
           </div>
         </section>
@@ -193,7 +185,7 @@ const VisitorGuidePage = () => {
               {/* Content Sections - Cleanly Nested */}
               <div className='space-y-4 md:space-y-6'>
                 {/* Guide Journey Section */}
-                <motion.section
+                <MotionSection
                   id='visitor-guide'
                   initial='hidden'
                   whileInView='visible'
@@ -214,10 +206,10 @@ const VisitorGuidePage = () => {
                       ))}
                     </div>
                   </div>
-                </motion.section>
+                </MotionSection>
 
                 {/* Rules & Etiquette Section */}
-                <motion.section
+                <MotionSection
                   id='rules-etiquette'
                   initial='hidden'
                   whileInView='visible'
@@ -232,40 +224,25 @@ const VisitorGuidePage = () => {
                     </h2>
                   </div>
 
-                  <div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
-                    {visitorContent.rulesEtiquette.map((rule, index) => {
-                      const card = etiquetteCards[index % etiquetteCards.length]
-                      const Icon = card.icon
-                      return (
-                        <motion.article
+                  <div className='rounded-2xl border border-[#071544]/[0.08] bg-white shadow-[0_20px_40px_-28px_rgba(7,21,68,0.2)] md:rounded-3xl'>
+                    <div className='divide-y divide-[#071544]/[0.08]'>
+                      {visitorContent.rulesEtiquette.map((rule, index) => (
+                        <MotionDiv
                           key={`${rule}-${index}`}
                           custom={index}
                           initial='hidden'
                           whileInView='visible'
                           viewport={{ once: true, margin: '-40px' }}
                           variants={cardVariants}
-                          className='group relative flex flex-col overflow-hidden rounded-2xl border border-[#071544]/[0.08] bg-white p-6 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-8'
+                          className='group flex items-start gap-4 px-5 py-4 transition-colors duration-300 hover:bg-[#f8f9fb] md:px-8 md:py-5'
                         >
-                          <div className='flex items-start justify-between'>
-                            <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white md:h-14 md:w-14 md:rounded-2xl'>
-                              <Icon className='h-6 w-6' />
-                            </div>
-                            <span className='text-[10px] font-bold tracking-[0.2em] text-[#071544]/20'>
-                              0{index + 1}
-                            </span>
-                          </div>
-                          
-                          <div className='mt-6 md:mt-8'>
-                            <h3 className='text-lg font-semibold tracking-tight text-[#071544] transition-colors duration-300 group-hover:text-[#f6ab3c] md:text-xl'>
-                              {card.title}
-                            </h3>
-                            <p className='mt-3 text-[14px] font-light leading-relaxed text-[#5a677a] md:mt-4 md:text-[15px]'>
-                              {rule}
-                            </p>
-                          </div>
-                        </motion.article>
-                      )
-                    })}
+                          <span className='mt-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-[#071544]/15 bg-[#f6f8fc] px-2 text-[10px] font-bold tracking-wider text-[#071544]/55'>
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                          <p className='text-[14px] font-normal leading-relaxed text-[#3f4b60] md:text-[15px]'>{rule}</p>
+                        </MotionDiv>
+                      ))}
+                    </div>
                   </div>
 
                   <div className='mt-10 rounded-2xl border border-[#f6ab3c]/20 bg-gradient-to-br from-white to-[#fefaf3] p-6 md:mt-12 md:rounded-3xl md:p-8'>
@@ -288,10 +265,10 @@ const VisitorGuidePage = () => {
                       </div>
                     </div>
                   </div>
-                </motion.section>
+                </MotionSection>
 
                 {/* Schedule Section */}
-                <motion.section
+                <MotionSection
                   id='opening-timings'
                   initial='hidden'
                   whileInView='visible'
@@ -365,10 +342,10 @@ const VisitorGuidePage = () => {
                       </p>
                     </div>
                   </div>
-                </motion.section>
+                </MotionSection>
 
                 {/* Location Section */}
-                <motion.section
+                <MotionSection
                   id='location-map'
                   initial='hidden'
                   whileInView='visible'
@@ -431,10 +408,10 @@ const VisitorGuidePage = () => {
                       </div>
                     </div>
                   </div>
-                </motion.section>
+                </MotionSection>
 
                 {/* Contact Section */}
-                <motion.section
+                <MotionSection
                   id='contact-information'
                   initial='hidden'
                   whileInView='visible'
@@ -509,10 +486,10 @@ const VisitorGuidePage = () => {
                       </div>
                     </article>
                   </div>
-                </motion.section>
+                </MotionSection>
 
                 {/* FAQ Section */}
-                <motion.section
+                <MotionSection
                   id='faq'
                   initial='hidden'
                   whileInView='visible'
@@ -526,7 +503,7 @@ const VisitorGuidePage = () => {
                       {t('visitors.faqTitle')}
                     </h2>
                     <div className='mt-8 space-y-4 md:mt-12 md:space-y-6'>
-                      {faqItems.map((item, i) => (
+                      {faqItems.map((item) => (
                         <article
                           key={item.question}
                           className='group rounded-2xl border border-[#071544]/[0.08] bg-white p-5 transition-all duration-300 hover:border-[#f6ab3c]/40 hover:shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] md:rounded-3xl md:p-8'
@@ -541,7 +518,7 @@ const VisitorGuidePage = () => {
                       ))}
                     </div>
                   </div>
-                </motion.section>
+                </MotionSection>
               </div>
             </div>
           </div>

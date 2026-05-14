@@ -6,22 +6,22 @@ const EVENT_GROUPS = [
   {
     key: 'daily',
     title: 'Daily Programs',
-    description: 'Programs that should appear under the Daily tab on the Events page.',
+    description: 'Programs that appear under the Daily tab on the Events page.',
   },
   {
     key: 'weekly',
     title: 'Weekly Programs',
-    description: 'Recurring weekly sangat activities, classes, and gatherings.',
+    description: 'Recurring sangat activities, classes, and gatherings.',
   },
   {
     key: 'monthly',
     title: 'Monthly Programs',
-    description: 'Programs that happen once each month or on a regular monthly cycle.',
+    description: 'Programs that happen on a regular monthly cycle.',
   },
   {
     key: 'yearly',
     title: 'Yearly Celebrations',
-    description: 'Major annual events like gurpurabs, Vaisakhi, and other large celebrations.',
+    description: 'Major annual events like gurpurabs, Vaisakhi, and more.',
   },
 ]
 
@@ -77,7 +77,7 @@ const DashboardEventsSection = ({
             <h3 className='text-[16px] font-black tracking-[-0.02em] text-gray-900'>Event Sections</h3>
             <p className='mt-1 text-[13px] text-gray-500'>Select a section to open it as a focused editor page.</p>
           </div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4'>
+          <div className='grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4'>
             {eventCards.map((group) => (
               <InteractiveNavCard
                 key={group.key}
@@ -88,9 +88,9 @@ const DashboardEventsSection = ({
                 icon={React.createElement(calendarIcon, { size: 20 })}
                 iconContainerClassName='text-[#001da5] bg-[#001da5]/5 border-[#001da5]/10'
                 rightSlot={(
-                  <span className='inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-semibold tracking-wide text-gray-600'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-[#001da5]/70' />
-                    {group.count}
+                  <span className='inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[11px] font-semibold tracking-wide text-gray-600 shadow-sm'>
+                    <span className='h-1.5 w-1.5 rounded-full bg-[#001da5]' />
+                    {group.count} {group.count === 1 ? 'event' : 'events'}
                   </span>
                 )}
               />
@@ -99,14 +99,25 @@ const DashboardEventsSection = ({
         </div>
       ) : (
         <div className='rounded-[30px] border border-gray-100 bg-white p-5 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.35)] sm:p-7'>
-          <button
-            type='button'
-            onClick={() => setActiveGroup(null)}
-            className='mb-5 inline-flex items-center gap-2.5 rounded-[12px] border border-gray-200 bg-gray-50 px-4 py-2 text-[12px] font-bold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-white hover:text-[#001da5] active:scale-[0.98]'
-          >
-            <ArrowLeft size={14} />
-            Back To Sections
-          </button>
+          <div className='mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+            <button
+              type='button'
+              onClick={() => setActiveGroup(null)}
+              className='inline-flex w-fit items-center gap-2 rounded-[12px] border border-gray-200 bg-gray-50 px-4 py-2 text-[12px] font-bold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-white hover:text-[#001da5] active:scale-[0.98]'
+            >
+              <ArrowLeft size={14} />
+              Back To Sections
+            </button>
+            {activeGroupConfig ? (
+              <div className='flex items-center gap-3'>
+                <span className='text-[13px] text-gray-500'>
+                  {activeGroupConfig.title}
+                  <span className='ml-1.5 text-gray-300'>·</span>
+                  <span className='ml-1.5 font-semibold text-[#001da5]'>{getCategoryRows(activeGroupConfig.key).length} entries</span>
+                </span>
+              </div>
+            ) : null}
+          </div>
 
           {activeGroupConfig ? (
             (() => {
@@ -121,7 +132,7 @@ const DashboardEventsSection = ({
                   <div className='mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
                     <div>
                       <h4 className='text-[18px] font-bold tracking-tight text-gray-900'>{activeGroupConfig.title}</h4>
-                      <p className='mt-1 text-[12px] text-gray-500'>{activeGroupConfig.description}</p>
+                      <p className='mt-1 text-[13px] text-gray-500'>{activeGroupConfig.description}</p>
                     </div>
                     <button
                       type='button'

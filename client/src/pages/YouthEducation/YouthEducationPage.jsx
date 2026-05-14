@@ -254,25 +254,26 @@ const YouthEducationPage = () => {
                   variants={sectionVariants}
                   className='py-12 md:py-16'
                 >
-                  <div className='mb-10 md:mb-14'>
-                    <SectionLabel>Gurmukhi</SectionLabel>
-                    <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
-                      {youth.gurmukhi.title}
-                    </h2>
-                    <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
-                      {youth.gurmukhi.description}
-                    </p>
-                  </div>
-
-                  {youth.gurmukhi.image ? (
-                    <div className='mb-8 overflow-hidden rounded-[1.5rem] border border-[#071544]/10 bg-white md:mb-10'>
-                      <img
-                        src={youth.gurmukhi.image}
-                        alt='Gurmukhi class'
-                        className='h-[220px] w-full object-cover md:h-[300px]'
-                      />
+                  <div className='mb-10 grid grid-cols-1 gap-8 md:mb-14 md:grid-cols-2 md:items-center'>
+                    <div>
+                      <SectionLabel>Gurmukhi</SectionLabel>
+                      <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
+                        {youth.gurmukhi.title}
+                      </h2>
+                      <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                        {youth.gurmukhi.description}
+                      </p>
                     </div>
-                  ) : null}
+                    {youth.gurmukhi.image ? (
+                      <div className='overflow-hidden rounded-[1.5rem] border border-[#071544]/10 bg-white'>
+                        <img
+                          src={youth.gurmukhi.image}
+                          alt='Gurmukhi class'
+                          className='h-[220px] w-full object-cover md:h-[300px]'
+                        />
+                      </div>
+                    ) : null}
+                  </div>
 
                   <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
                     {youth.gurmukhi.levels.map((level, index) => (
@@ -298,25 +299,26 @@ const YouthEducationPage = () => {
                   variants={sectionVariants}
                   className='rounded-2xl bg-[#f8f9fa] p-6 md:rounded-3xl md:p-10'
                 >
-                  <div className='mb-10 md:mb-14'>
-                    <SectionLabel>German Support</SectionLabel>
-                    <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
-                      {youth.german.title}
-                    </h2>
-                    <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
-                      {youth.german.description}
-                    </p>
-                  </div>
-
-                  {youth.german.image ? (
-                    <div className='mb-8 overflow-hidden rounded-[1.5rem] border border-[#071544]/10 bg-white md:mb-10'>
-                      <img
-                        src={youth.german.image}
-                        alt='German support class'
-                        className='h-[220px] w-full object-cover md:h-[300px]'
-                      />
+                  <div className='mb-10 grid grid-cols-1 gap-8 md:mb-14 md:grid-cols-2 md:items-center'>
+                    <div>
+                      <SectionLabel>German Support</SectionLabel>
+                      <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
+                        {youth.german.title}
+                      </h2>
+                      <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                        {youth.german.description}
+                      </p>
                     </div>
-                  ) : null}
+                    {youth.german.image ? (
+                      <div className='overflow-hidden rounded-[1.5rem] border border-[#071544]/10 bg-white'>
+                        <img
+                          src={youth.german.image}
+                          alt='German support class'
+                          className='h-[220px] w-full object-cover md:h-[300px]'
+                        />
+                      </div>
+                    ) : null}
+                  </div>
 
                   <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
                     {youth.german.tracks.map((track, index) => (

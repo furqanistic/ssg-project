@@ -218,7 +218,7 @@ const MediaCenterPage = () => {
             <div className='grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12'>
               {updates.map((update, index) => (
                 <motion.article
-                  key={update.title}
+                  key={`${update.title || 'update'}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}

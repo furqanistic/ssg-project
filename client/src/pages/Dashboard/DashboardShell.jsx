@@ -35,6 +35,7 @@ import {
   Edit2,
   Save,
   ChevronRight,
+  ArrowLeft,
   Menu as MenuIcon,
   X,
   PlusCircle,
@@ -43,6 +44,7 @@ import {
   Search,
   CircleDollarSign
 } from 'lucide-react'
+import { InteractiveNavCard } from '@/components/ui/interactive-nav-card'
 
 const ICON_MAP = {
   Users: Users,
@@ -947,6 +949,7 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [donateForm, setDonateForm] = useState(defaultDonateForm)
   const [servicesForm, setServicesForm] = useState(defaultServicesForm)
   const [youthServicesForm, setYouthServicesForm] = useState(defaultYouthServicesForm)
+  const [activeServicesEditor, setActiveServicesEditor] = useState(null)
   const [aboutUsForm, setAboutUsForm] = useState(defaultAboutUsForm)
   const [aboutUsSavedSnapshot, setAboutUsSavedSnapshot] = useState('')
   const [aboutUsLastSavedAt, setAboutUsLastSavedAt] = useState(null)
@@ -1331,6 +1334,41 @@ const DashboardShell = ({ sectionKey = null }) => {
     () => menu.find((item) => item.key === active)?.label ?? 'Content',
     [active],
   )
+  const serviceEditorSections = useMemo(
+    () => [
+      {
+        key: 'language',
+        title: 'Language Editor',
+        description: 'Switch EN/DE values used in services content.',
+      },
+      {
+        key: 'dropdown-links',
+        title: 'Services Dropdown Links',
+        description: 'Manage services menu labels and additional links.',
+      },
+      {
+        key: 'cremation-fund',
+        title: 'Cremation Fund Page',
+        description: 'Edit `/services/antim-sanskar-fund` page content.',
+      },
+      {
+        key: 'main-content',
+        title: 'Main Content',
+        description: 'Update about/support text and CTA labels.',
+      },
+      {
+        key: 'youth-labels',
+        title: 'Youth Dropdown Labels',
+        description: 'Configure class and program labels in dropdown.',
+      },
+      {
+        key: 'youth-page',
+        title: 'Youth Education Page',
+        description: 'Edit all `/youth-education` sections and cards.',
+      },
+    ],
+    [],
+  )
   const aboutUsDirty = useMemo(() => {
     if (active !== 'about-us') {
       return false
@@ -1374,6 +1412,12 @@ const DashboardShell = ({ sectionKey = null }) => {
       setSuccess('')
     }
   }, [active, location.pathname, navigate, sectionKey])
+
+  useEffect(() => {
+    if (active !== 'services' && activeServicesEditor !== null) {
+      setActiveServicesEditor(null)
+    }
+  }, [active, activeServicesEditor])
 
   const switchSection = (key) => {
     setActive(key)
@@ -3135,6 +3179,37 @@ const DashboardShell = ({ sectionKey = null }) => {
                   </button>
                 </article>
 
+                {!activeServicesEditor ? (
+                  <article className={panelClass}>
+                    <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Service Sections</h3>
+                    <p className='mt-1 text-[13px] text-gray-500'>
+                      Select a card to open one focused editor section.
+                    </p>
+                    <div className='mt-6 grid grid-cols-1 gap-5 md:grid-cols-2'>
+                      {serviceEditorSections.map((section) => (
+                        <InteractiveNavCard
+                          key={section.key}
+                          onClick={() => setActiveServicesEditor(section.key)}
+                          title={section.title}
+                          description={section.description}
+                          icon={<FileText size={18} />}
+                          iconContainerClassName='text-[#001da5] bg-[#001da5]/5 border-[#001da5]/10'
+                        />
+                      ))}
+                    </div>
+                  </article>
+                ) : (
+                  <div className='rounded-[24px] border border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'>
+                    <button
+                      type='button'
+                      onClick={() => setActiveServicesEditor(null)}
+                      className='inline-flex w-fit items-center gap-2 rounded-[12px] border border-gray-200 bg-gray-50 px-4 py-2 text-[12px] font-bold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-white hover:text-[#001da5]'
+                    >
+                      <ArrowLeft size={14} />
+                      Back To Sections
+                    </button>
+                    <div className='mt-5'>
+                {activeServicesEditor === 'language' ? (
                 <article className={panelClass}>
                   <div className='flex flex-wrap items-center justify-between gap-4'>
                     <div>
@@ -3161,7 +3236,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                     </div>
                   </div>
                 </article>
+                ) : null}
 
+                {activeServicesEditor === 'dropdown-links' ? (
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Services Dropdown Links</h3>
                   <p className='mt-1 text-[13px] text-gray-500'>
@@ -3383,7 +3460,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                     </div>
                   </div>
                 </article>
+                ) : null}
 
+                {activeServicesEditor === 'cremation-fund' ? (
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Cremation Fund Page</h3>
                   <p className='mt-1 text-[13px] text-gray-500'>
@@ -3454,7 +3533,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                     />
                   ) : null}
                 </article>
+                ) : null}
 
+                {activeServicesEditor === 'main-content' ? (
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Main Content</h3>
                   <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -3557,7 +3638,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                     />
                   ) : null}
                 </article>
+                ) : null}
 
+                {activeServicesEditor === 'youth-labels' ? (
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Youth Dropdown Labels</h3>
                   <p className='mt-1 text-[13px] text-gray-500'>
@@ -3626,7 +3709,9 @@ const DashboardShell = ({ sectionKey = null }) => {
                     </div>
                   </div>
                 </article>
+                ) : null}
 
+                {activeServicesEditor === 'youth-page' ? (
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Youth Education Page</h3>
                   <p className='mt-1 text-[13px] text-gray-500'>
@@ -3875,6 +3960,10 @@ const DashboardShell = ({ sectionKey = null }) => {
                     </div>
                   </div>
                 </article>
+                ) : null}
+                    </div>
+                  </div>
+                )}
               </section>
             ) : null}
 
@@ -4726,7 +4815,7 @@ const DashboardShell = ({ sectionKey = null }) => {
               </div>
             ) : null}
 
-            {active !== 'profile' && active !== 'about-us' ? (
+            {active !== 'profile' && active !== 'about-us' && active !== 'services' ? (
               <button
                 type='button'
                 onClick={onSave}

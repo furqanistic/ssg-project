@@ -74,14 +74,18 @@ const VisitorGuidePage = () => {
   }, [location.hash])
 
   const visitorContent = React.useMemo(
-    () => ({
+    () => {
+      const backendRules = content?.visitors?.rulesEtiquette
+      const backendFaq = content?.visitors?.faq
+
+      return ({
       guide: {
         title: content?.visitors?.guide?.title?.trim() || t('visitors.guideTitle'),
         body: content?.visitors?.guide?.body?.trim() || t('visitors.guideBody'),
       },
       rulesEtiquette:
-        content?.visitors?.rulesEtiquette?.length > 0
-          ? content.visitors.rulesEtiquette
+        Array.isArray(backendRules)
+          ? backendRules
           : t('visitors.rulesDescriptions', { returnObjects: true }),
       openingTimings: {
         dailySchedule:
@@ -106,10 +110,10 @@ const VisitorGuidePage = () => {
         email: content?.contact?.email ?? '',
       },
       faq:
-        content?.visitors?.faq?.length > 0
-          ? content.visitors.faq
+        Array.isArray(backendFaq)
+          ? backendFaq
           : t('visitors.faq', { returnObjects: true }),
-    }),
+    })},
     [content, t],
   )
 

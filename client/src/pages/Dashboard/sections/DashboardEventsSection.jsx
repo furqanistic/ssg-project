@@ -129,7 +129,7 @@ const DashboardEventsSection = ({
                   : groupedRows.findIndex((item) => item.index === deletingEventIndex)
 
               return (
-                <div className='rounded-[22px] border border-gray-100 bg-white p-6'>
+                <>
                   <div className='mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
                     <div>
                       <h4 className='text-[18px] font-bold tracking-tight text-gray-900'>{activeGroupConfig.title}</h4>
@@ -173,7 +173,7 @@ const DashboardEventsSection = ({
                       }
                     },
                   })}
-                </div>
+                </>
               )
             })()
           ) : null}

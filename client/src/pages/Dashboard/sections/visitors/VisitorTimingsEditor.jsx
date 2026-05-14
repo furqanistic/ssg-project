@@ -30,8 +30,12 @@ const VisitorTimingsEditor = ({
     <div className='grid grid-cols-1 gap-8'>
       <div className='min-w-0 space-y-5'>
         <div className='flex items-center justify-between'>
-          <h5 className='text-[12px] font-black uppercase tracking-widest text-gray-300'>Daily Darshan</h5>
-          <button type='button' onClick={() => showForm('visitorsDaily')} className='flex items-center gap-1.5 text-[11px] font-bold text-gray-400 hover:text-[#001da5]'>
+          <h5 className='text-[12px] font-black uppercase tracking-widest text-gray-500'>Daily Darshan</h5>
+          <button
+            type='button'
+            onClick={() => showForm('visitorsDaily')}
+            className='inline-flex h-8 items-center gap-1.5 rounded-[9px] border border-gray-200 bg-white px-3 text-[11px] font-semibold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
+          >
             <Plus size={12} /> Add Slot
           </button>
         </div>
@@ -80,8 +84,12 @@ const VisitorTimingsEditor = ({
 
       <div className='min-w-0 space-y-5'>
         <div className='flex items-center justify-between'>
-          <h5 className='text-[12px] font-black uppercase tracking-widest text-gray-300'>Langar (Kitchen)</h5>
-          <button type='button' onClick={() => showForm('visitorsLangar')} className='flex items-center gap-1.5 text-[11px] font-bold text-gray-400 hover:text-[#001da5]'>
+          <h5 className='text-[12px] font-black uppercase tracking-widest text-gray-500'>Langar (Kitchen)</h5>
+          <button
+            type='button'
+            onClick={() => showForm('visitorsLangar')}
+            className='inline-flex h-8 items-center gap-1.5 rounded-[9px] border border-gray-200 bg-white px-3 text-[11px] font-semibold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
+          >
             <Plus size={12} /> Add Slot
           </button>
         </div>

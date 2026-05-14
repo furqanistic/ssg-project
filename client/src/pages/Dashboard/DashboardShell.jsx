@@ -2186,11 +2186,15 @@ const DashboardShell = ({ sectionKey = null }) => {
               : visitorsForm.langar,
           address:
             type === 'visitors-address'
-              ? visitorsForm.address.map((row, i) => (i === index ? { text: nextData.text ?? '' } : row))
+              ? index < 0
+                ? [...visitorsForm.address, { text: nextData.text ?? '' }]
+                : visitorsForm.address.map((row, i) => (i === index ? { text: nextData.text ?? '' } : row))
               : visitorsForm.address,
           reach:
             type === 'visitors-reach'
-              ? visitorsForm.reach.map((row, i) => (i === index ? { text: nextData.text ?? '' } : row))
+              ? index < 0
+                ? [...visitorsForm.reach, { text: nextData.text ?? '' }]
+                : visitorsForm.reach.map((row, i) => (i === index ? { text: nextData.text ?? '' } : row))
               : visitorsForm.reach,
           faq:
             type === 'visitors-faq'
@@ -3977,8 +3981,14 @@ const DashboardShell = ({ sectionKey = null }) => {
                       (editModal.type === 'visitors-daily' || editModal.type === 'visitors-langar') &&
                       editModal.index < 0
                     const isNewVisitorRule = editModal.type === 'visitors-rule' && editModal.index < 0
+                    const isNewVisitorAddress = editModal.type === 'visitors-address' && editModal.index < 0
+                    const isNewVisitorReach = editModal.type === 'visitors-reach' && editModal.index < 0
                     const modalTitle = isNewVisitorSlot
                       ? 'Create Slot'
+                      : isNewVisitorAddress
+                        ? 'Create Address Line'
+                        : isNewVisitorReach
+                          ? 'Create Route Rule'
                       : isNewVisitorRule
                       ? 'Create Rule'
                       : isVisitorsTextEdit
@@ -3986,6 +3996,10 @@ const DashboardShell = ({ sectionKey = null }) => {
                         : 'Update Entry'
                     const modalSubtitle = isNewVisitorSlot
                       ? 'This new slot will appear on the public visitors page after publish.'
+                      : isNewVisitorAddress
+                        ? 'This new address line will appear on the public visitors page after publish.'
+                        : isNewVisitorReach
+                          ? 'This new route rule will appear on the public visitors page after publish.'
                       : isNewVisitorRule
                       ? 'This new rule will be added to the public visitors page after publish.'
                       : isVisitorsTextEdit

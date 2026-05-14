@@ -1,28 +1,16 @@
 import React from 'react'
-import { Plus, Save } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import VisitorPanelHeader from './VisitorPanelHeader'
 
 const VisitorTimingsEditor = ({
   panel,
   DataTable: TableComponent,
-  openForms,
-  showForm,
-  hideForm,
-  actionButtonClass,
-  primaryButtonClass,
-  getPanelClass,
-  visitorDrafts,
-  setVisitorDrafts,
   textareaClass,
-  inputClass,
   visitorsForm,
   setVisitorsForm,
   startEdit,
   removeVisitorsRow,
-  upsertVisitorsPair,
   emptyPair,
-  visitorDailyFormRef,
-  visitorLangarFormRef,
 }) => (
   <div className='space-y-6'>
     <VisitorPanelHeader icon={panel.icon} title='Opening Timings' description='Manage daily and special kitchen schedules.' />
@@ -33,42 +21,12 @@ const VisitorTimingsEditor = ({
           <h5 className='text-[12px] font-black uppercase tracking-widest text-gray-500'>Daily Darshan</h5>
           <button
             type='button'
-            onClick={() => showForm('visitorsDaily')}
+            onClick={() => startEdit('visitors-daily', -1, { label: '', value: '' })}
             className='inline-flex h-8 items-center gap-1.5 rounded-[9px] border border-gray-200 bg-white px-3 text-[11px] font-semibold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
           >
             <Plus size={12} /> Add Slot
           </button>
         </div>
-
-        {openForms.visitorsDaily ? (
-          <div ref={visitorDailyFormRef} className={getPanelClass('visitors-daily-form')}>
-            <div className='grid grid-cols-1 gap-4'>
-              <label className='text-[11px] font-bold uppercase tracking-widest text-gray-500'>
-                Activity Label
-                <input
-                  value={visitorDrafts.daily.label}
-                  onChange={(event) => setVisitorDrafts((prev) => ({ ...prev, daily: { ...prev.daily, label: event.target.value } }))}
-                  className={inputClass}
-                />
-              </label>
-              <label className='text-[11px] font-bold uppercase tracking-widest text-gray-500'>
-                Time Range
-                <input
-                  value={visitorDrafts.daily.value}
-                  onChange={(event) => setVisitorDrafts((prev) => ({ ...prev, daily: { ...prev.daily, value: event.target.value } }))}
-                  className={inputClass}
-                />
-              </label>
-            </div>
-            <div className='mt-4 flex justify-end gap-2'>
-              <button type='button' onClick={() => hideForm('visitorsDaily')} className={actionButtonClass}>Cancel</button>
-              <button type='button' onClick={() => upsertVisitorsPair('daily', 'daily', 'daily')} className={primaryButtonClass}>
-                <Save size={14} className='mr-1.5' />
-                Save
-              </button>
-            </div>
-          </div>
-        ) : null}
 
         {React.createElement(TableComponent, {
           title: '',
@@ -87,42 +45,12 @@ const VisitorTimingsEditor = ({
           <h5 className='text-[12px] font-black uppercase tracking-widest text-gray-500'>Langar (Kitchen)</h5>
           <button
             type='button'
-            onClick={() => showForm('visitorsLangar')}
+            onClick={() => startEdit('visitors-langar', -1, { label: '', value: '' })}
             className='inline-flex h-8 items-center gap-1.5 rounded-[9px] border border-gray-200 bg-white px-3 text-[11px] font-semibold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
           >
             <Plus size={12} /> Add Slot
           </button>
         </div>
-
-        {openForms.visitorsLangar ? (
-          <div ref={visitorLangarFormRef} className={getPanelClass('visitors-langar-form')}>
-            <div className='grid grid-cols-1 gap-4'>
-              <label className='text-[11px] font-bold uppercase tracking-widest text-gray-500'>
-                Meal Type
-                <input
-                  value={visitorDrafts.langar.label}
-                  onChange={(event) => setVisitorDrafts((prev) => ({ ...prev, langar: { ...prev.langar, label: event.target.value } }))}
-                  className={inputClass}
-                />
-              </label>
-              <label className='text-[11px] font-bold uppercase tracking-widest text-gray-500'>
-                Serving Hours
-                <input
-                  value={visitorDrafts.langar.value}
-                  onChange={(event) => setVisitorDrafts((prev) => ({ ...prev, langar: { ...prev.langar, value: event.target.value } }))}
-                  className={inputClass}
-                />
-              </label>
-            </div>
-            <div className='mt-4 flex justify-end gap-2'>
-              <button type='button' onClick={() => hideForm('visitorsLangar')} className={actionButtonClass}>Cancel</button>
-              <button type='button' onClick={() => upsertVisitorsPair('langar', 'langar', 'langar')} className={primaryButtonClass}>
-                <Save size={14} className='mr-1.5' />
-                Save
-              </button>
-            </div>
-          </div>
-        ) : null}
 
         {React.createElement(TableComponent, {
           title: '',

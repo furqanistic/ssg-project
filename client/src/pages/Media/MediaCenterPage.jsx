@@ -25,26 +25,31 @@ const SectionLabel = ({ children, light = false }) => (
   </div>
 )
 
-const defaultMediaCards = [
-  {
-    id: 'photo-gallery',
+const defaultMediaCardConfig = {
+  'photo-gallery': {
     icon: ImageIcon,
     accent: '#f6ab3c',
     ctaUrl: 'https://www.instagram.com/ssgberlin_org/',
   },
-  {
-    id: 'videos',
+  'videos': {
     icon: Video,
     accent: '#2c76f1',
     ctaUrl: 'https://www.youtube.com/channel/UCs953CyNH7x8SfZ-a2jAv6A',
   },
-  {
-    id: 'live-kirtan',
+  'live-kirtan': {
     icon: Radio,
     accent: '#b33cff',
     ctaUrl: 'https://www.youtube.com/channel/UCs953CyNH7x8SfZ-a2jAv6A',
   },
-]
+}
+
+const defaultMediaCardFallback = {
+  icon: ImageIcon,
+  accent: '#6366f1',
+  ctaUrl: '#',
+}
+
+const defaultMediaCards = Object.values(defaultMediaCardConfig)
 
 const MediaCenterPage = () => {
   const location = useLocation()
@@ -56,7 +61,7 @@ const MediaCenterPage = () => {
 
     if (Array.isArray(content?.media?.cards) && content.media.cards.length > 0) {
       return content.media.cards.map((card, index) => ({
-        ...defaultMediaCards[index % defaultMediaCards.length],
+        ...(defaultMediaCardConfig[card.id] ?? defaultMediaCardFallback),
         ...translatedCards[index % translatedCards.length],
         ...card,
       }))
@@ -195,14 +200,14 @@ const MediaCenterPage = () => {
         </section>
 
         {/* Latest Updates Section */}
-        <section className='py-20 md:py-32'>
+        <section className='py-16 md:py-24'>
           <div className='container mx-auto max-w-[1200px] px-4 md:px-6'>
             <motion.div
               initial='hidden'
               whileInView='visible'
               viewport={{ once: true }}
               variants={sectionVariants}
-              className='mb-16'
+              className='mb-12'
             >
               <SectionLabel>Recent Additions</SectionLabel>
               <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
@@ -220,29 +225,20 @@ const MediaCenterPage = () => {
                   transition={{ delay: index * 0.1 }}
                   className='group relative flex flex-col overflow-hidden rounded-[2.5rem] border border-[#071544]/05 bg-white shadow-[0_40px_80px_-16px_rgba(7,21,68,0.04)] transition-all duration-500 hover:shadow-[0_40px_80px_-16px_rgba(7,21,68,0.08)]'
                 >
-                  <div className='relative h-[300px] w-full overflow-hidden bg-[#071544]/02 md:h-[400px]'>
-                    {/* Placeholder for Dynamic Images with a stylish pattern */}
-                    <div className='absolute inset-0 opacity-[0.05]' 
-                         style={{ backgroundImage: 'radial-gradient(#071544 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
-                    <div className='flex h-full w-full items-center justify-center'>
-                      <div className='h-20 w-20 rounded-full border border-[#071544]/05 bg-white/40 backdrop-blur-sm transition-transform duration-700 group-hover:scale-110' />
-                    </div>
-                  </div>
-
-                  <div className='p-8 md:p-12'>
+                  <div className='p-6 md:p-8'>
                     <div className='mb-4 flex items-center gap-3'>
                       <span className='h-px w-8 bg-[#f6ab3c]/30' />
                       <span className='text-[10px] font-bold uppercase tracking-widest text-[#f6ab3c]'>New Release</span>
                     </div>
-                    <h3 className='text-2xl font-semibold tracking-tight text-[#071544] md:text-3xl'>
+                    <h3 className='text-xl font-semibold tracking-tight text-[#071544] md:text-2xl'>
                       {update.title}
                     </h3>
-                    <p className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                    <p className='mt-3 text-[14px] font-light leading-relaxed text-[#5a677a] md:text-base'>
                       {update.description}
                     </p>
                     <button
                       type='button'
-                      className='mt-10 group inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-[#071544] transition-all duration-500 hover:text-[#f6ab3c]'
+                      className='mt-6 group inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-[#071544] transition-all duration-500 hover:text-[#f6ab3c]'
                     >
                       {update.action}
                       <ArrowRight className='h-4 w-4 transition-transform duration-500 group-hover:translate-x-1' />

@@ -76,80 +76,88 @@ const CommitteePage = () => {
               <motion.article
                 key={`${member?.email ?? member?.name ?? 'member'}-${index}`}
                 variants={fadeIn}
-                className='group relative overflow-hidden rounded-[1.4rem] border border-[#f6ab3c]/20 bg-white/98 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1.5 hover:border-[#f6ab3c]/45 hover:shadow-[0_28px_70px_rgba(22,32,51,0.10)] sm:p-7 md:p-8'
+                className='group relative flex flex-col overflow-hidden rounded-[1.5rem] border border-[#071544]/[0.07] bg-white shadow-[0_8px_32px_-8px_rgba(7,21,68,0.08)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_24px_56px_-12px_rgba(7,21,68,0.13)]'
               >
-                {(() => {
-                  const roleBadgeClass = roleBadgeStyles[index % roleBadgeStyles.length]
-                  const hasEmail = Boolean(member?.email)
-                  const hasPhone = Boolean(member?.phone)
-                  return (
-                    <>
-                <div className="absolute left-0 top-0 h-[3px] w-full bg-gradient-to-r from-[#f6ab3c] via-[#d8bd7d] to-transparent opacity-80" />
-                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f6ab3c]/[0.06] blur-2xl transition-opacity duration-500 group-hover:opacity-100 opacity-0" />
-                
-                <div className='mb-6 flex flex-col items-center text-center md:mb-8'>
-                  <div className='relative mb-5 md:mb-6'>
-                    <div className='absolute -inset-3 rounded-full border border-[#f6ab3c]/12 transition-transform duration-700 group-hover:scale-110' />
-                    <div className="relative h-[94px] w-[94px] overflow-hidden rounded-full border-2 border-white shadow-[0_14px_34px_rgba(22,32,51,0.18)] sm:h-[110px] sm:w-[110px]">
+                {/* Colored top accent bar */}
+                <div className={`h-[3px] w-full ${index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]'}`} />
+
+                {/* Avatar + identity */}
+                <div className='flex flex-col items-center px-6 pb-5 pt-8 text-center sm:px-8'>
+                  {/* Avatar ring */}
+                  <div className='relative mb-5'>
+                    <div className={`absolute -inset-[5px] rounded-full ${index % 2 === 0 ? 'border-2 border-[#f6ab3c]/40' : 'border-2 border-[#2d4f9f]/30'} transition-all duration-500 group-hover:scale-105`} />
+                    <div className='relative h-24 w-24 overflow-hidden rounded-full border-2 border-white shadow-[0_8px_24px_rgba(7,21,68,0.15)] sm:h-[100px] sm:w-[100px]'>
                       <img
                         src={member.image || getAvatarUrl(member.name || member.initials)}
                         alt={member.name}
-                        className='h-full w-full object-cover transition-all duration-700 group-hover:scale-110'
+                        className='h-full w-full object-cover transition-transform duration-700 group-hover:scale-110'
                         loading='lazy'
                       />
                     </div>
                   </div>
 
-                  <h2 className='text-pretty text-[19px] font-bold tracking-normal text-[#071544] md:text-[22px]'>
+                  <h2 className='text-[18px] font-bold leading-tight tracking-tight text-[#071544] sm:text-[20px]'>
                     {member.name}
                   </h2>
-                  <p className={`mt-2 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.18em] ${roleBadgeClass}`}>
-                    {member.role}
-                  </p>
+
+                  {member.role && (
+                    <span className={`mt-2.5 inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${roleBadgeStyles[index % roleBadgeStyles.length]}`}>
+                      {member.role}
+                    </span>
+                  )}
                 </div>
 
-                <div className='space-y-3 border-t border-[#f6ab3c]/18 pt-5 md:space-y-4 md:pt-6'>
-                  <div className='flex items-center gap-4 text-[14px] text-[#516075] group/item'>
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fafafa] text-[#f6ab3c] transition-colors group-hover/item:bg-[#071544] group-hover/item:text-white">
-                      <Mail className='h-3.5 w-3.5' />
+                {/* Divider */}
+                <div className='mx-6 h-px bg-[#071544]/[0.05] sm:mx-8' />
+
+                {/* Contact info */}
+                <div className='flex flex-1 flex-col gap-2.5 px-6 py-5 sm:px-8'>
+                  <div className='flex items-center gap-3 text-[13px] text-[#516075]'>
+                    <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${index % 2 === 0 ? 'bg-[#f6ab3c]/10 text-[#f6ab3c]' : 'bg-[#2d4f9f]/10 text-[#2d4f9f]'}`}>
+                      <Mail className='h-3 w-3' />
                     </div>
-                    {hasEmail ? (
-                      <a href={`mailto:${member.email}`} className="min-w-0 break-all font-medium leading-snug transition-colors hover:text-[#071544]">
+                    {member.email ? (
+                      <a href={`mailto:${member.email}`} className='min-w-0 truncate font-medium transition-colors hover:text-[#071544]'>
                         {member.email}
                       </a>
                     ) : (
-                      <span className="min-w-0 break-all font-medium leading-snug text-[#7b8698]">Email available on request</span>
+                      <span className='text-[#9aa5b4]'>Email available on request</span>
                     )}
                   </div>
-                  {hasPhone ? (
-                    <div className='flex items-center gap-4 text-[14px] text-[#516075] group/item'>
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fafafa] text-[#f6ab3c] transition-colors group-hover/item:bg-[#071544] group-hover/item:text-white">
-                        <Phone className='h-3.5 w-3.5' />
+
+                  {member.phone && (
+                    <div className='flex items-center gap-3 text-[13px] text-[#516075]'>
+                      <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${index % 2 === 0 ? 'bg-[#f6ab3c]/10 text-[#f6ab3c]' : 'bg-[#2d4f9f]/10 text-[#2d4f9f]'}`}>
+                        <Phone className='h-3 w-3' />
                       </div>
-                      <a href={`tel:${member.phone}`} className="font-medium transition-colors hover:text-[#071544]">{member.phone}</a>
+                      <a href={`tel:${member.phone}`} className='font-medium transition-colors hover:text-[#071544]'>
+                        {member.phone}
+                      </a>
                     </div>
-                  ) : null}
+                  )}
                 </div>
 
-                <div className='mt-5 flex gap-2 border-t border-[#f6ab3c]/12 pt-4'>
+                {/* Action buttons */}
+                <div className='flex gap-2.5 border-t border-[#071544]/[0.05] px-6 py-4 sm:px-8'>
                   <a
-                    href={hasEmail ? `mailto:${member.email}` : '/contact#contact-form'}
-                    className='inline-flex flex-1 items-center justify-center rounded-full border border-[#f6ab3c] bg-[#f6ab3c] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#071544] transition-all hover:bg-[#ef9f22] hover:border-[#ef9f22]'
+                    href={member.email ? `mailto:${member.email}` : '/contact#contact-form'}
+                    className={`inline-flex flex-1 items-center justify-center rounded-full py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-300 ${
+                      index % 2 === 0
+                        ? 'bg-[#f6ab3c] text-[#071544] hover:bg-[#ef9f22]'
+                        : 'bg-[#2d4f9f] text-white hover:bg-[#253f87]'
+                    }`}
                   >
-                    {hasEmail ? 'Send Email' : 'Contact'}
+                    {member.email ? 'Send Email' : 'Contact'}
                   </a>
-                  {hasPhone ? (
+                  {member.phone && (
                     <a
                       href={`tel:${member.phone}`}
-                      className='inline-flex flex-1 items-center justify-center rounded-full border border-[#071544]/18 bg-[#071544] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#0b2367]'
+                      className='inline-flex flex-1 items-center justify-center rounded-full border border-[#071544]/15 py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#071544] transition-all duration-300 hover:bg-[#071544] hover:text-white'
                     >
                       Call
                     </a>
-                  ) : null}
+                  )}
                 </div>
-                    </>
-                  )
-                })()}
               </motion.article>
               ))}
               </motion.div>

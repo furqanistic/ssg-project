@@ -75,6 +75,10 @@ const VisitorGuidePage = () => {
 
   const visitorContent = React.useMemo(
     () => ({
+      guide: {
+        title: content?.visitors?.guide?.title?.trim() || t('visitors.guideTitle'),
+        body: content?.visitors?.guide?.body?.trim() || t('visitors.guideBody'),
+      },
       rulesEtiquette:
         content?.visitors?.rulesEtiquette?.length > 0
           ? content.visitors.rulesEtiquette
@@ -101,6 +105,10 @@ const VisitorGuidePage = () => {
         phone: content?.contact?.phone ?? '',
         email: content?.contact?.email ?? '',
       },
+      faq:
+        content?.visitors?.faq?.length > 0
+          ? content.visitors.faq
+          : t('visitors.faq', { returnObjects: true }),
     }),
     [content, t],
   )
@@ -109,7 +117,6 @@ const VisitorGuidePage = () => {
     () => t('visitors.additionalGuidelines', { returnObjects: true }),
     [t],
   )
-  const faqItems = React.useMemo(() => t('visitors.faq', { returnObjects: true }), [t])
   const contactPhoneDigits = String(visitorContent.contact.phone || '').replace(/[^\d+]/g, '')
 
   const handleCopyEmail = async () => {
@@ -121,8 +128,6 @@ const VisitorGuidePage = () => {
       console.error('Failed to copy visitor contact email:', error)
     }
   }
-
-  const guideBody = t('visitors.guideBody')
 
   return (
     <div className='min-h-screen bg-[#fafafa] font-["Outfit",sans-serif] text-[#071544] selection:bg-[#f6ab3c]/30'>
@@ -196,10 +201,10 @@ const VisitorGuidePage = () => {
                   <div className='max-w-3xl'>
                     <SectionLabel>The Journey</SectionLabel>
                     <h3 className='text-2xl font-semibold tracking-tight text-[#071544] md:text-3xl'>
-                      {t('visitors.guideTitle')}
+                      {visitorContent.guide.title}
                     </h3>
                     <div className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-8 md:text-lg'>
-                      {guideBody.split('\n').map((line, index) => (
+                      {visitorContent.guide.body.split('\n').map((line, index) => (
                         <p key={index} className='mb-4 last:mb-0'>
                           {line}
                         </p>
@@ -503,7 +508,7 @@ const VisitorGuidePage = () => {
                       {t('visitors.faqTitle')}
                     </h2>
                     <div className='mt-8 space-y-4 md:mt-12 md:space-y-6'>
-                      {faqItems.map((item) => (
+                      {visitorContent.faq.map((item) => (
                         <article
                           key={item.question}
                           className='group rounded-2xl border border-[#071544]/[0.08] bg-white p-5 transition-all duration-300 hover:border-[#f6ab3c]/40 hover:shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] md:rounded-3xl md:p-8'

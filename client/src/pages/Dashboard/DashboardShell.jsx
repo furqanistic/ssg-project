@@ -1515,7 +1515,7 @@ const DashboardShell = ({ sectionKey = null }) => {
     setSuccess(successMessage)
   }
 
-  const saveMediaSection = async (rows, groupKey, successMessage) => {
+  const _saveMediaSection = async (rows, groupKey, successMessage) => {
     const isCards = groupKey === 'cards'
     const cleanedCards = isCards
       ? rows
@@ -1565,6 +1565,15 @@ const DashboardShell = ({ sectionKey = null }) => {
     })
 
     setSuccess(successMessage || `${isCards ? 'Media cards' : 'System updates'} saved successfully.`)
+  }
+
+  const deleteMediaRowLocal = (groupKey, index) => {
+    resetStatus()
+    if (groupKey === 'cards') {
+      setMediaCardsRows((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
+      return
+    }
+    setMediaUpdatesRows((prev) => prev.filter((_, itemIndex) => itemIndex !== index))
   }
 
   const upsertEvent = async () => {
@@ -2250,27 +2259,6 @@ const DashboardShell = ({ sectionKey = null }) => {
 
         setMediaCardsRows(nextMediaCards)
         setMediaUpdatesRows(nextMediaUpdates)
-
-        await updateMutation.mutateAsync({
-          section: 'media',
-          data: {
-            cards: nextMediaCards
-              .map((row) => ({
-                id: row.id.trim(),
-                title: row.title.trim(),
-                description: row.description.trim(),
-                buttonLabel: row.buttonLabel.trim(),
-              }))
-              .filter((row) => row.id || row.title || row.description || row.buttonLabel),
-            updates: nextMediaUpdates
-              .map((row) => ({
-                title: row.title.trim(),
-                description: row.description.trim(),
-                action: row.action.trim(),
-              }))
-              .filter((row) => row.title || row.description || row.action),
-          },
-        })
       }
 
       if (type === 'contact-address') {
@@ -2999,7 +2987,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                 Plus={Plus}
                 DataTable={DataTable}
                 actionButtonClass={actionButtonClass}
-                saveMediaSection={saveMediaSection}
+                deleteMediaRowLocal={deleteMediaRowLocal}
                 mediaCardsRows={mediaCardsRows}
                 mediaUpdatesRows={mediaUpdatesRows}
                 startEdit={startEdit}

@@ -8,7 +8,8 @@ const VisitorRulesEditor = ({
   actionButtonClass,
   visitorsForm,
   startEdit,
-  removeVisitorsRow,
+  deleteVisitorsRule,
+  deletingVisitorRuleIndex,
 }) => (
   <div className='space-y-6'>
     <VisitorPanelHeader
@@ -34,8 +35,9 @@ const VisitorRulesEditor = ({
       emptyMessage: 'No community rules defined.',
       alwaysShowActions: true,
       actionButtonStyle: 'labeled',
+      deletingRowIndex: deletingVisitorRuleIndex,
       onEdit: (index) => startEdit('visitors-rule', index, visitorsForm.rules[index]),
-      onDelete: (index) => removeVisitorsRow('rules', index, 'rule', { key: 'rule', value: '' }),
+      onDelete: (index) => deleteVisitorsRule(index),
     })}
   </div>
 )

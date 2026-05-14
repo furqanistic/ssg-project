@@ -115,19 +115,6 @@ const emptyEvent = {
   description: '',
 }
 
-const emptyMediaCard = {
-  id: '',
-  title: '',
-  description: '',
-  buttonLabel: '',
-}
-
-const emptyMediaUpdate = {
-  title: '',
-  description: '',
-  action: '',
-}
-
 const emptyPair = { label: '', value: '' }
 const emptyFaq = { question: '', answer: '' }
 const defaultDonateForm = {
@@ -969,12 +956,6 @@ const DashboardShell = ({ sectionKey = null }) => {
   const [eventImageFile, setEventImageFile] = useState(null)
   const [isUploadingEventImage, setIsUploadingEventImage] = useState(false)
 
-  const [mediaCardDraft, setMediaCardDraft] = useState(emptyMediaCard)
-  const [editingMediaCardIndex, setEditingMediaCardIndex] = useState(null)
-
-  const [mediaUpdateDraft, setMediaUpdateDraft] = useState(emptyMediaUpdate)
-  const [editingMediaUpdateIndex, setEditingMediaUpdateIndex] = useState(null)
-
   const [visitorDrafts, setVisitorDrafts] = useState({
     rule: '',
     daily: emptyPair,
@@ -1002,8 +983,6 @@ const DashboardShell = ({ sectionKey = null }) => {
     visitorsReach: false,
     visitorsFaq: false,
     events: false,
-    mediaCards: false,
-    mediaUpdates: false,
     contactAddress: false,
   })
   const [editModal, setEditModal] = useState({
@@ -1048,8 +1027,6 @@ const DashboardShell = ({ sectionKey = null }) => {
   const visitorReachFormRef = useRef(null)
   const visitorFaqFormRef = useRef(null)
   const eventFormRef = useRef(null)
-  const mediaCardFormRef = useRef(null)
-  const mediaUpdateFormRef = useRef(null)
   const contactAddressFormRef = useRef(null)
   const authFailureHandledRef = useRef(false)
 
@@ -1320,10 +1297,6 @@ const DashboardShell = ({ sectionKey = null }) => {
     setEventDraft(emptyEvent)
     setEditingEventIndex(null)
     setEventImageFile(null)
-    setMediaCardDraft(emptyMediaCard)
-    setEditingMediaCardIndex(null)
-    setMediaUpdateDraft(emptyMediaUpdate)
-    setEditingMediaUpdateIndex(null)
     setVisitorDrafts({
       rule: '',
       daily: emptyPair,
@@ -1350,8 +1323,6 @@ const DashboardShell = ({ sectionKey = null }) => {
       visitorsReach: false,
       visitorsFaq: false,
       events: false,
-      mediaCards: false,
-      mediaUpdates: false,
       contactAddress: false,
     })
   }, [aboutEditorLanguage, content, servicesEditorLanguage, dataUpdatedAt])
@@ -1544,6 +1515,58 @@ const DashboardShell = ({ sectionKey = null }) => {
     setSuccess(successMessage)
   }
 
+  const saveMediaSection = async (rows, groupKey, successMessage) => {
+    const isCards = groupKey === 'cards'
+    const cleanedCards = isCards
+      ? rows
+          .map((row) => ({
+            id: row.id.trim(),
+            title: row.title.trim(),
+            description: row.description.trim(),
+            buttonLabel: row.buttonLabel.trim(),
+          }))
+          .filter((row) => row.id || row.title || row.description || row.buttonLabel)
+      : mediaCardsRows
+          .map((row) => ({
+            id: row.id.trim(),
+            title: row.title.trim(),
+            description: row.description.trim(),
+            buttonLabel: row.buttonLabel.trim(),
+          }))
+          .filter((row) => row.id || row.title || row.description || row.buttonLabel)
+    const cleanedUpdates = !isCards
+      ? rows
+          .map((row) => ({
+            title: row.title.trim(),
+            description: row.description.trim(),
+            action: row.action.trim(),
+          }))
+          .filter((row) => row.title || row.description || row.action)
+      : mediaUpdatesRows
+          .map((row) => ({
+            title: row.title.trim(),
+            description: row.description.trim(),
+            action: row.action.trim(),
+          }))
+          .filter((row) => row.title || row.description || row.action)
+
+    if (isCards) {
+      setMediaCardsRows(rows)
+    } else {
+      setMediaUpdatesRows(rows)
+    }
+
+    await updateMutation.mutateAsync({
+      section: 'media',
+      data: {
+        cards: cleanedCards,
+        updates: cleanedUpdates,
+      },
+    })
+
+    setSuccess(successMessage || `${isCards ? 'Media cards' : 'System updates'} saved successfully.`)
+  }
+
   const upsertEvent = async () => {
     resetStatus()
 
@@ -1595,45 +1618,6 @@ const DashboardShell = ({ sectionKey = null }) => {
     } finally {
       setIsUploadingEventImage(false)
     }
-  }
-
-  const upsertMediaCard = () => {
-    resetStatus()
-
-    if (!mediaCardDraft.id.trim() || !mediaCardDraft.title.trim()) {
-      setError('Media card ID and title are required before adding.')
-      return
-    }
-
-    const nextCard = {
-      id: mediaCardDraft.id.trim(),
-      title: mediaCardDraft.title.trim(),
-      description: mediaCardDraft.description.trim(),
-      buttonLabel: mediaCardDraft.buttonLabel.trim(),
-    }
-
-    setMediaCardsRows((prev) => replaceOrAppend(prev, editingMediaCardIndex, nextCard))
-    setMediaCardDraft(emptyMediaCard)
-    setEditingMediaCardIndex(null)
-  }
-
-  const upsertMediaUpdate = () => {
-    resetStatus()
-
-    if (!mediaUpdateDraft.title.trim()) {
-      setError('Media update title is required before adding.')
-      return
-    }
-
-    const nextUpdate = {
-      title: mediaUpdateDraft.title.trim(),
-      description: mediaUpdateDraft.description.trim(),
-      action: mediaUpdateDraft.action.trim(),
-    }
-
-    setMediaUpdatesRows((prev) => replaceOrAppend(prev, editingMediaUpdateIndex, nextUpdate))
-    setMediaUpdateDraft(emptyMediaUpdate)
-    setEditingMediaUpdateIndex(null)
   }
 
   const upsertVisitorsText = (field, draftKey, editKey) => {
@@ -2253,11 +2237,15 @@ const DashboardShell = ({ sectionKey = null }) => {
       if (type === 'media-cards' || type === 'media-updates') {
         const nextMediaCards =
           type === 'media-cards'
-            ? mediaCardsRows.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+            ? index < 0
+              ? [...mediaCardsRows, { ...nextData }]
+              : mediaCardsRows.map((row, i) => (i === index ? { ...row, ...nextData } : row))
             : mediaCardsRows
         const nextMediaUpdates =
           type === 'media-updates'
-            ? mediaUpdatesRows.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+            ? index < 0
+              ? [...mediaUpdatesRows, { ...nextData }]
+              : mediaUpdatesRows.map((row, i) => (i === index ? { ...row, ...nextData } : row))
             : mediaUpdatesRows
 
         setMediaCardsRows(nextMediaCards)
@@ -3009,32 +2997,12 @@ const DashboardShell = ({ sectionKey = null }) => {
                 <DashboardMediaSection
                 ImageIcon={ImageIcon}
                 Plus={Plus}
-                PlusCircle={PlusCircle}
-                LayoutDashboard={LayoutDashboard}
                 DataTable={DataTable}
-                openForms={openForms}
-                showForm={showForm}
-                hideForm={hideForm}
-                mediaCardFormRef={mediaCardFormRef}
-                getPanelClass={getPanelClass}
-                mediaCardDraft={mediaCardDraft}
-                setMediaCardDraft={setMediaCardDraft}
-                inputClass={inputClass}
-                textareaClass={textareaClass}
                 actionButtonClass={actionButtonClass}
-                primaryButtonClass={primaryButtonClass}
-                upsertMediaCard={upsertMediaCard}
-                editingMediaCardIndex={editingMediaCardIndex}
+                saveMediaSection={saveMediaSection}
                 mediaCardsRows={mediaCardsRows}
-                startEdit={startEdit}
-                setMediaCardsRows={setMediaCardsRows}
-                mediaUpdateFormRef={mediaUpdateFormRef}
-                mediaUpdateDraft={mediaUpdateDraft}
-                setMediaUpdateDraft={setMediaUpdateDraft}
-                upsertMediaUpdate={upsertMediaUpdate}
-                editingMediaUpdateIndex={editingMediaUpdateIndex}
                 mediaUpdatesRows={mediaUpdatesRows}
-                setMediaUpdatesRows={setMediaUpdatesRows}
+                startEdit={startEdit}
                 />
               </Suspense>
             ) : null}
@@ -3994,10 +3962,16 @@ const DashboardShell = ({ sectionKey = null }) => {
                     const isNewVisitorReach = editModal.type === 'visitors-reach' && editModal.index < 0
                     const isNewVisitorFaq = editModal.type === 'visitors-faq' && editModal.index < 0
                     const isNewEvent = editModal.type === 'events' && editModal.index < 0
+                    const isNewMediaCard = editModal.type === 'media-cards' && editModal.index < 0
+                    const isNewMediaUpdate = editModal.type === 'media-updates' && editModal.index < 0
                     const modalTitle = isNewVisitorSlot
                       ? 'Create Slot'
                       : isNewEvent
                         ? 'Create Event'
+                      : isNewMediaCard
+                        ? 'Create Media Card'
+                      : isNewMediaUpdate
+                        ? 'Create System Update'
                       : isNewVisitorAddress
                         ? 'Create Address Line'
                         : isNewVisitorReach
@@ -4013,6 +3987,10 @@ const DashboardShell = ({ sectionKey = null }) => {
                       ? 'This new slot will appear on the public visitors page after publish.'
                       : isNewEvent
                         ? 'This new event will appear on the public events page after publish.'
+                      : isNewMediaCard
+                        ? 'This new media card will appear on the public media page after publish.'
+                      : isNewMediaUpdate
+                        ? 'This new system update will appear on the public media page after publish.'
                       : isNewVisitorAddress
                         ? 'This new address line will appear on the public visitors page after publish.'
                       : isNewVisitorReach
@@ -4206,7 +4184,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                               className={inputClass}
                             >
                               {EVENT_EDITOR_CATEGORIES.map((category) => (
-                                <option key={category} value={category} className='bg-[#0a0a0b]'>
+                                <option key={category} value={category} className='bg-white text-gray-900'>
                                   {category}
                                 </option>
                               ))}
@@ -4282,7 +4260,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                               className={inputClass}
                             />
                           </label>
-                          <label className='md:col-span-2 text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                          <label className='md:col-span-2 text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
                             Interactive Label (Button)
                             <input
                               value={editModal.data.buttonLabel ?? ''}
@@ -4296,7 +4274,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                             />
                           </label>
                         </div>
-                        <label className='block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                        <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
                           Supporting Description
                           <textarea
                             value={editModal.data.description ?? ''}
@@ -4342,7 +4320,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                             />
                           </label>
                         </div>
-                        <label className='block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                        <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
                           Brief Context
                           <textarea
                             value={editModal.data.description ?? ''}

@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { ArrowLeft, Shield, Target, Users, ScrollText } from 'lucide-react'
+import { InteractiveNavCard } from '@/components/ui/interactive-nav-card'
 
 const AboutPagePanel = ({
   title,
@@ -67,6 +69,34 @@ const DashboardAboutSection = ({
   removeAboutUsArrayItem,
   normalizeColorValue,
 }) => {
+  const [activeAboutPage, setActiveAboutPage] = useState(null)
+  const aboutPageCards = [
+    {
+      key: 'history',
+      title: 'History Page',
+      description: 'Hero content and timeline/sections shown on the history page.',
+      icon: ScrollText,
+    },
+    {
+      key: 'mission',
+      title: 'Mission & Vision Page',
+      description: 'Hero content, mission cards, and core values.',
+      icon: Target,
+    },
+    {
+      key: 'committee',
+      title: 'Committee Page',
+      description: 'Committee intro, members, and bottom CTA content.',
+      icon: Users,
+    },
+    {
+      key: 'governance',
+      title: 'Governance Page',
+      description: 'Governance structure, documents, reports, and trust sections.',
+      icon: Shield,
+    },
+  ]
+
   const renderImageField = (pageKey, label, successMessage) => (
     <div>
       <input
@@ -127,6 +157,37 @@ const DashboardAboutSection = ({
         </div>
       </div>
 
+      {!activeAboutPage ? (
+        <div className='rounded-[16px] border border-gray-100 bg-white p-5'>
+          <h3 className='text-[18px] font-bold tracking-tight text-gray-900'>About Us Sections</h3>
+          <p className='mt-1 text-[12px] text-gray-500'>Select one page to open a focused editor.</p>
+          <div className='mt-5 grid grid-cols-1 gap-4 md:grid-cols-2'>
+            {aboutPageCards.map((item) => (
+              <InteractiveNavCard
+                key={item.key}
+                onClick={() => setActiveAboutPage(item.key)}
+                title={item.title}
+                description={item.description}
+                icon={React.createElement(item.icon, { size: 18 })}
+                iconContainerClassName='text-[#001da5] bg-[#001da5]/5 border-[#001da5]/10'
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className='rounded-[16px] border border-gray-100 bg-white p-4'>
+          <button
+            type='button'
+            onClick={() => setActiveAboutPage(null)}
+            className='inline-flex items-center gap-2 rounded-[10px] border border-gray-200 bg-gray-50 px-3 py-2 text-[12px] font-bold text-gray-700 transition hover:border-[#001da5]/30 hover:text-[#001da5]'
+          >
+            <ArrowLeft size={14} />
+            Back To Sections
+          </button>
+        </div>
+      )}
+
+      {activeAboutPage === 'history' ? (
       <AboutPagePanel
         title='History Page'
         description='Edit only the content that appears on the History page.'
@@ -177,7 +238,9 @@ const DashboardAboutSection = ({
           </button>
         </div>
       </AboutPagePanel>
+      ) : null}
 
+      {activeAboutPage === 'mission' ? (
       <AboutPagePanel
         title='Mission & Vision Page'
         description='Edit the page hero, mission cards, and core values for Mission & Vision.'
@@ -283,7 +346,9 @@ const DashboardAboutSection = ({
           </button>
         </div>
       </AboutPagePanel>
+      ) : null}
 
+      {activeAboutPage === 'committee' ? (
       <AboutPagePanel
         title='Committee Page'
         description='Edit the committee introduction, member list, and bottom call-to-action in one place.'
@@ -382,7 +447,9 @@ const DashboardAboutSection = ({
           </div>
         </FieldGroup>
       </AboutPagePanel>
+      ) : null}
 
+      {activeAboutPage === 'governance' ? (
       <AboutPagePanel
         title='Governance Page'
         description='Edit governance hero content, structure blocks, documents, reports, and trust-related sections.'
@@ -601,6 +668,7 @@ const DashboardAboutSection = ({
           />
         </FieldGroup>
       </AboutPagePanel>
+      ) : null}
 
       {isUploadingAboutImage ? <p className='text-[12px] text-gray-500'>Uploading image...</p> : null}
     </div>

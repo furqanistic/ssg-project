@@ -1337,11 +1337,6 @@ const DashboardShell = ({ sectionKey = null }) => {
   const serviceEditorSections = useMemo(
     () => [
       {
-        key: 'language',
-        title: 'Language Editor',
-        description: 'Switch EN/DE values used in services content.',
-      },
-      {
         key: 'dropdown-links',
         title: 'Services Dropdown Links',
         description: 'Manage services menu labels and additional links.',
@@ -3200,44 +3195,33 @@ const DashboardShell = ({ sectionKey = null }) => {
                   </article>
                 ) : (
                   <div className='rounded-[24px] border border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'>
-                    <button
-                      type='button'
-                      onClick={() => setActiveServicesEditor(null)}
-                      className='inline-flex w-fit items-center gap-2 rounded-[12px] border border-gray-200 bg-gray-50 px-4 py-2 text-[12px] font-bold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-white hover:text-[#001da5]'
-                    >
-                      <ArrowLeft size={14} />
-                      Back To Sections
-                    </button>
+                    <div className='flex flex-wrap items-center justify-between gap-3'>
+                      <button
+                        type='button'
+                        onClick={() => setActiveServicesEditor(null)}
+                        className='inline-flex w-fit items-center gap-2 rounded-[12px] border border-gray-200 bg-gray-50 px-4 py-2 text-[12px] font-bold text-gray-700 transition-all duration-200 hover:border-[#001da5]/35 hover:bg-white hover:text-[#001da5]'
+                      >
+                        <ArrowLeft size={14} />
+                        Back To Sections
+                      </button>
+                      <div className='flex items-center rounded-full border border-gray-200 bg-gray-50 p-1'>
+                        {['en', 'de'].map((language) => (
+                          <button
+                            key={`services-lang-${language}`}
+                            type='button'
+                            onClick={() => setServicesEditorLanguage(language)}
+                            className={`rounded-full px-4 py-2 text-[12px] font-bold uppercase tracking-wider transition-all ${
+                              servicesEditorLanguage === language
+                                ? 'bg-[#001da5] text-white'
+                                : 'text-gray-600 hover:bg-white'
+                            }`}
+                          >
+                            {language}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <div className='mt-5'>
-                {activeServicesEditor === 'language' ? (
-                <article className={panelClass}>
-                  <div className='flex flex-wrap items-center justify-between gap-4'>
-                    <div>
-                      <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Language Editor</h3>
-                      <p className='mt-1 text-[13px] text-gray-500'>
-                        Switch language to edit EN/DE values stored in Supabase.
-                      </p>
-                    </div>
-                    <div className='flex items-center rounded-full border border-gray-200 bg-gray-50 p-1'>
-                      {['en', 'de'].map((language) => (
-                        <button
-                          key={`services-lang-${language}`}
-                          type='button'
-                          onClick={() => setServicesEditorLanguage(language)}
-                          className={`rounded-full px-4 py-2 text-[12px] font-bold uppercase tracking-wider transition-all ${
-                            servicesEditorLanguage === language
-                              ? 'bg-[#001da5] text-white'
-                              : 'text-gray-600 hover:bg-white'
-                          }`}
-                        >
-                          {language}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </article>
-                ) : null}
-
                 {activeServicesEditor === 'dropdown-links' ? (
                 <article className={panelClass}>
                   <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Services Dropdown Links</h3>

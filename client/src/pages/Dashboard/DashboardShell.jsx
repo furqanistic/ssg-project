@@ -308,7 +308,7 @@ const createServicePath = (label = '') => {
   return slug ? `/services/${slug}` : ''
 }
 
-const panelClass = 'rounded-[24px] border border-gray-100 bg-white p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden transition-all duration-300'
+const panelClass = 'rounded-[24px] border border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden transition-all duration-300'
 const inputClass = 'mt-2 h-11 w-full rounded-[14px] border border-gray-200 bg-gray-50 px-4 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:bg-gray-100/50 focus:border-[#001da5] focus:bg-white focus:ring-4 focus:ring-[#001da5]/5'
 const textareaClass = 'mt-2 min-h-[120px] w-full rounded-[14px] border border-gray-200 bg-gray-50 p-4 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:bg-gray-100/50 focus:border-[#001da5] focus:bg-white focus:ring-4 focus:ring-[#001da5]/5'
 const actionButtonClass = 'inline-flex h-10 items-center justify-center rounded-[12px] border border-gray-200 bg-gray-50 px-5 text-[13px] font-semibold text-gray-700 transition-all hover:bg-gray-100 hover:text-[#001da5] hover:border-[#001da5]/30 active:scale-95'
@@ -2819,7 +2819,7 @@ const DashboardShell = ({ sectionKey = null }) => {
 
   return (
     <div className='min-h-screen bg-[#f8faff] font-["Poppins","Segoe_UI",sans-serif] text-gray-900 selection:bg-[#001da5]/10 selection:text-[#001da5]'>
-      <div className='mx-auto w-full max-w-[1600px] lg:flex'>
+      <div className='mx-auto w-full lg:flex'>
         {/* Sidebar */}
         <aside className='sticky top-0 hidden h-screen w-[280px] shrink-0 overflow-y-auto border-r border-gray-100 bg-white p-8 lg:flex lg:flex-col lg:self-start'>
           <div className='mb-10 flex items-center gap-3 px-2'>
@@ -2883,7 +2883,7 @@ const DashboardShell = ({ sectionKey = null }) => {
           </div>
         </aside>
 
-        <main className='flex-1 px-4 py-8 sm:px-8 md:px-12 lg:px-16'>
+        <main className='flex-1 px-4 py-8 md:px-5 lg:px-5'>
           {/* Mobile Header */}
           <div className='mb-8 rounded-[24px] border border-gray-100 bg-white/80 backdrop-blur-xl p-6 shadow-sm lg:hidden'>
             <div className='flex items-center justify-between mb-6'>

@@ -871,10 +871,12 @@ const DataTable = ({
                             className={
                               actionButtonStyle === 'labeled'
                                 ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1 rounded-[9px] border border-gray-200 bg-white px-2.5 text-[11px] font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
+                                : actionButtonStyle === 'labeled-compact'
+                                  ? 'inline-flex h-8 w-[78px] items-center justify-center gap-1 rounded-[9px] border border-gray-200 bg-white px-2 text-[11px] font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
                             }
                           >
-                            {actionButtonStyle === 'labeled' ? <Edit2 size={12} /> : null}
+                            {actionButtonStyle === 'labeled' || actionButtonStyle === 'labeled-compact' ? <Edit2 size={12} /> : null}
                             Edit
                           </button>
                         ) : null}
@@ -886,10 +888,12 @@ const DataTable = ({
                             className={
                               actionButtonStyle === 'labeled'
                                 ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1 rounded-[9px] border border-red-200 bg-red-50/70 px-2.5 text-[11px] font-semibold text-red-600 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-red-300 hover:bg-red-100'
+                                : actionButtonStyle === 'labeled-compact'
+                                  ? 'inline-flex h-8 w-[78px] items-center justify-center gap-1 rounded-[9px] border border-red-200 bg-red-50/70 px-2 text-[11px] font-semibold text-red-600 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-red-300 hover:bg-red-100'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
                             }
                           >
-                            {actionButtonStyle === 'labeled' ? <Trash2 size={12} /> : null}
+                            {actionButtonStyle === 'labeled' || actionButtonStyle === 'labeled-compact' ? <Trash2 size={12} /> : null}
                             {deletingRowIndex === index ? 'Deleting...' : 'Delete'}
                           </button>
                         ) : null}

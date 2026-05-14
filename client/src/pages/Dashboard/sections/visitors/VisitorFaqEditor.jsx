@@ -34,7 +34,7 @@ const VisitorFaqEditor = ({
       ],
       emptyMessage: 'No FAQ entries defined.',
       alwaysShowActions: true,
-      actionButtonStyle: 'labeled',
+      actionButtonStyle: 'labeled-compact',
       onEdit: (index) => startEdit('visitors-faq', index, visitorsForm.faq[index]),
       onDelete: (index) => removeVisitorsFaq(index, emptyFaq),
     })}

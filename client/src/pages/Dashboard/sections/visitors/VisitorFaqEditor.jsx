@@ -76,6 +76,8 @@ const VisitorFaqEditor = ({
         { key: 'answer', label: 'Answer' },
       ],
       emptyMessage: 'No FAQ entries defined.',
+      alwaysShowActions: true,
+      actionButtonStyle: 'labeled',
       onEdit: (index) => startEdit('visitors-faq', index, visitorsForm.faq[index]),
       onDelete: (index) => removeVisitorsFaq(index, emptyFaq),
     })}
@@ -83,4 +85,3 @@ const VisitorFaqEditor = ({
 )
 
 export default VisitorFaqEditor
-

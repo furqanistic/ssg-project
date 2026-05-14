@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
+import { motion as Motion } from 'framer-motion'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useSiteContentQuery } from '@/hooks/useContent'
@@ -48,9 +48,9 @@ const SectionLabel = ({ children, light = false }) => (
   </div>
 )
 
-const ProgramCard = ({ title, description, icon: Icon, accent, scheduleDay, scheduleTime, scheduleLocation, index }) => {
+const ProgramCard = ({ title, description, icon: IconComponent, scheduleDay, scheduleTime, scheduleLocation, index }) => {
   return (
-    <motion.article
+    <Motion.article
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
@@ -59,7 +59,7 @@ const ProgramCard = ({ title, description, icon: Icon, accent, scheduleDay, sche
     >
       <div className='flex items-start justify-between'>
         <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
-          <Icon className='h-7 w-7' />
+          {React.createElement(IconComponent, { className: 'h-7 w-7' })}
         </div>
         <span className='text-[12px] font-bold tracking-[0.2em] text-[#071544]/20'>
           0{index + 1}
@@ -84,7 +84,7 @@ const ProgramCard = ({ title, description, icon: Icon, accent, scheduleDay, sche
           </div>
         </div>
       </div>
-    </motion.article>
+    </Motion.article>
   )
 }
 
@@ -200,31 +200,31 @@ const YouthEducationPage = () => {
           
           <div className='container relative z-10 mx-auto px-5'>
             <div className='mx-auto max-w-4xl text-center'>
-              <motion.div
+              <Motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[#f6ab3c]/80'
               >
                 <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]/60' />
                 Youth Development & Culture
-              </motion.div>
+              </Motion.div>
 
-              <motion.h1
+              <Motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className='text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'
               >
                 {youth.heading}
-              </motion.h1>
+              </Motion.h1>
 
-              <motion.p
+              <Motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {youth.subtitle}
-              </motion.p>
+              </Motion.p>
             </div>
           </div>
         </section>
@@ -246,7 +246,7 @@ const YouthEducationPage = () => {
 
               <div className='space-y-4 md:space-y-6'>
                 {/* Gurmukhi Section */}
-                <motion.section
+                <Motion.section
                   id='gurmukhi-class'
                   initial='hidden'
                   whileInView='visible'
@@ -264,6 +264,16 @@ const YouthEducationPage = () => {
                     </p>
                   </div>
 
+                  {youth.gurmukhi.image ? (
+                    <div className='mb-8 overflow-hidden rounded-[1.5rem] border border-[#071544]/10 bg-white md:mb-10'>
+                      <img
+                        src={youth.gurmukhi.image}
+                        alt='Gurmukhi class'
+                        className='h-[220px] w-full object-cover md:h-[300px]'
+                      />
+                    </div>
+                  ) : null}
+
                   <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
                     {youth.gurmukhi.levels.map((level, index) => (
                       <ProgramCard
@@ -277,10 +287,10 @@ const YouthEducationPage = () => {
                       />
                     ))}
                   </div>
-                </motion.section>
+                </Motion.section>
 
                 {/* German Section */}
-                <motion.section
+                <Motion.section
                   id='german-class'
                   initial='hidden'
                   whileInView='visible'
@@ -298,6 +308,16 @@ const YouthEducationPage = () => {
                     </p>
                   </div>
 
+                  {youth.german.image ? (
+                    <div className='mb-8 overflow-hidden rounded-[1.5rem] border border-[#071544]/10 bg-white md:mb-10'>
+                      <img
+                        src={youth.german.image}
+                        alt='German support class'
+                        className='h-[220px] w-full object-cover md:h-[300px]'
+                      />
+                    </div>
+                  ) : null}
+
                   <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
                     {youth.german.tracks.map((track, index) => (
                       <ProgramCard
@@ -311,10 +331,10 @@ const YouthEducationPage = () => {
                       />
                     ))}
                   </div>
-                </motion.section>
+                </Motion.section>
 
                 {/* Enrichment Section */}
-                <motion.section
+                <Motion.section
                   id='camps-workshops'
                   initial='hidden'
                   whileInView='visible'
@@ -334,7 +354,7 @@ const YouthEducationPage = () => {
 
                   <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
                     {youth.camps.cards.map((card, index) => (
-                      <motion.article
+                      <Motion.article
                         key={`${card.title}-${index}`}
                         initial={{ opacity: 0, y: 24 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -366,13 +386,13 @@ const YouthEducationPage = () => {
                             {card.time}
                           </div>
                         </div>
-                      </motion.article>
+                      </Motion.article>
                     ))}
                   </div>
-                </motion.section>
+                </Motion.section>
 
                 {/* Registration Section */}
-                <motion.section
+                <Motion.section
                   id='registration'
                   initial='hidden'
                   whileInView='visible'
@@ -408,10 +428,10 @@ const YouthEducationPage = () => {
                       </Link>
                     </div>
                   </div>
-                </motion.section>
+                </Motion.section>
 
                 {/* Why Choose Us Section */}
-                <motion.section
+                <Motion.section
                   initial='hidden'
                   whileInView='visible'
                   viewport={{ once: true, margin: '-80px' }}
@@ -427,7 +447,7 @@ const YouthEducationPage = () => {
 
                   <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>
                     {reasonItems.map((item, index) => (
-                      <motion.div
+                      <Motion.div
                         key={`${item.title}-${item.text}`}
                         initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -444,10 +464,10 @@ const YouthEducationPage = () => {
                         <p className='mt-3 text-[15px] font-light leading-relaxed text-[#5a677a]'>
                           {item.text}
                         </p>
-                      </motion.div>
+                      </Motion.div>
                     ))}
                   </div>
-                </motion.section>
+                </Motion.section>
               </div>
             </div>
           </div>

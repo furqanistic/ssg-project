@@ -2198,9 +2198,11 @@ const DashboardShell = ({ sectionKey = null }) => {
               : visitorsForm.reach,
           faq:
             type === 'visitors-faq'
-              ? visitorsForm.faq.map((row, i) =>
-                  i === index ? { question: nextData.question ?? '', answer: nextData.answer ?? '' } : row,
-                )
+              ? index < 0
+                ? [...visitorsForm.faq, { question: nextData.question ?? '', answer: nextData.answer ?? '' }]
+                : visitorsForm.faq.map((row, i) =>
+                    i === index ? { question: nextData.question ?? '', answer: nextData.answer ?? '' } : row,
+                  )
               : visitorsForm.faq,
         }
 
@@ -3983,12 +3985,15 @@ const DashboardShell = ({ sectionKey = null }) => {
                     const isNewVisitorRule = editModal.type === 'visitors-rule' && editModal.index < 0
                     const isNewVisitorAddress = editModal.type === 'visitors-address' && editModal.index < 0
                     const isNewVisitorReach = editModal.type === 'visitors-reach' && editModal.index < 0
+                    const isNewVisitorFaq = editModal.type === 'visitors-faq' && editModal.index < 0
                     const modalTitle = isNewVisitorSlot
                       ? 'Create Slot'
                       : isNewVisitorAddress
                         ? 'Create Address Line'
                         : isNewVisitorReach
                           ? 'Create Route Rule'
+                        : isNewVisitorFaq
+                          ? 'Create FAQ'
                       : isNewVisitorRule
                       ? 'Create Rule'
                       : isVisitorsTextEdit
@@ -3998,8 +4003,10 @@ const DashboardShell = ({ sectionKey = null }) => {
                       ? 'This new slot will appear on the public visitors page after publish.'
                       : isNewVisitorAddress
                         ? 'This new address line will appear on the public visitors page after publish.'
-                        : isNewVisitorReach
+                      : isNewVisitorReach
                           ? 'This new route rule will appear on the public visitors page after publish.'
+                        : isNewVisitorFaq
+                          ? 'This new FAQ entry will appear on the public visitors page after publish.'
                       : isNewVisitorRule
                       ? 'This new rule will be added to the public visitors page after publish.'
                       : isVisitorsTextEdit
@@ -4096,7 +4103,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                               }))
                             }
                             className={inputClass}
-                            placeholder='Question shown on the public page'
+                            placeholder='Do I need to be Sikh to visit?'
                           />
                         </label>
                         <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
@@ -4110,7 +4117,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                               }))
                             }
                             className={textareaClass}
-                            placeholder='Answer shown on the public page'
+                            placeholder='Write the public answer...'
                           />
                         </label>
                       </div>

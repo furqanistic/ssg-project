@@ -869,11 +869,11 @@ const DataTable = ({
                             onClick={() => onEdit(index)}
                             className={
                               actionButtonStyle === 'labeled'
-                                ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3 text-[12px] font-semibold text-gray-700 transition hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.03] hover:text-[#001da5]'
+                                ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1 rounded-[9px] border border-gray-200 bg-white px-2.5 text-[11px] font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
                             }
                           >
-                            {actionButtonStyle === 'labeled' ? <Edit2 size={13} /> : null}
+                            {actionButtonStyle === 'labeled' ? <Edit2 size={12} /> : null}
                             Edit
                           </button>
                         ) : null}
@@ -883,11 +883,11 @@ const DataTable = ({
                             onClick={() => onDelete(index)}
                             className={
                               actionButtonStyle === 'labeled'
-                                ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1.5 rounded-[8px] border border-red-200 bg-red-50/60 px-3 text-[12px] font-semibold text-red-600 transition hover:bg-red-100 hover:border-red-300'
+                                ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1 rounded-[9px] border border-red-200 bg-red-50/70 px-2.5 text-[11px] font-semibold text-red-600 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-red-300 hover:bg-red-100'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
                             }
                           >
-                            {actionButtonStyle === 'labeled' ? <Trash2 size={13} /> : null}
+                            {actionButtonStyle === 'labeled' ? <Trash2 size={12} /> : null}
                             Delete
                           </button>
                         ) : null}
@@ -2136,7 +2136,9 @@ const DashboardShell = ({ sectionKey = null }) => {
           ...visitorsForm,
           rules:
             type === 'visitors-rule'
-              ? visitorsForm.rules.map((row, i) => (i === index ? { text: nextData.text ?? '' } : row))
+              ? index < 0
+                ? [...visitorsForm.rules, { text: nextData.text ?? '' }]
+                : visitorsForm.rules.map((row, i) => (i === index ? { text: nextData.text ?? '' } : row))
               : visitorsForm.rules,
           daily:
             type === 'visitors-daily'

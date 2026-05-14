@@ -83,9 +83,7 @@ const MissionPage = () => {
               >
                 {missionCards.map(({ title, description: cardDescription, accent: cardAccent }, index) => {
                   const isWide = index === 0
-                  // Use the accent color stored in data (set via dashboard)
                   const accentColor = cardAccent || '#2d4f9f'
-                  const borderAccent = `border-[${accentColor}]/25 hover:border-[${accentColor}]/45`
 
                   return (
                     <motion.article
@@ -93,56 +91,49 @@ const MissionPage = () => {
                       variants={fadeUp}
                       className={`group ${isWide ? 'sm:col-span-2' : ''}`}
                     >
+                      {/* Outer shell */}
                       <div
-                        className='rounded-[2rem] border bg-white/[0.02] p-[1px] transition-all duration-700 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.08)]'
-                        style={{ borderColor: `${accentColor}40` }}
+                        className='h-full rounded-[1.75rem] border bg-white p-6 transition-all duration-500 hover:shadow-[0_16px_48px_-12px_rgba(7,21,68,0.1)] sm:p-8'
+                        style={{ borderColor: `${accentColor}30` }}
                       >
-                        <div className='relative flex flex-col rounded-[calc(2rem-1px)] bg-white p-5 sm:p-7 md:p-8'>
-                          {/* Corner SVG decoration */}
-                          <div className='absolute top-0 right-0 h-14 w-14 opacity-[0.02] pointer-events-none'>
-                            <svg viewBox='0 0 100 100' className='h-full w-full rotate-90'>
-                              <path d='M100 0 L100 100 L0 100' fill='none' stroke='currentColor' strokeWidth='1.5' />
-                            </svg>
-                          </div>
+                        {/* Colored top accent bar */}
+                        <div
+                          className='mb-6 h-[3px] w-10 rounded-full transition-all duration-500 group-hover:w-20'
+                          style={{ backgroundColor: accentColor }}
+                        />
 
-                          {/* Index badge + accent dot */}
-                          <div className='mb-5 flex items-center gap-3'>
-                            <span
-                              className='h-2.5 w-2.5 rounded-full transition-transform duration-500 group-hover:scale-125'
-                              style={{ backgroundColor: accentColor }}
-                            />
-                            <span className='text-[10px] font-black text-[#111318]/15 select-none tracking-wider'>
-                              0{index + 1}
-                            </span>
-                          </div>
+                        {/* Index number */}
+                        <span
+                          className='mb-3 block text-[11px] font-bold uppercase tracking-[0.2em]'
+                          style={{ color: `${accentColor}90` }}
+                        >
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
 
-                          <h3 className='text-[18px] sm:text-[21px] font-medium tracking-tight text-[#071544] leading-tight transition-colors duration-500'
-                            style={{ ['--hover-color']: accentColor }}
+                        <h3 className='text-[20px] font-semibold leading-snug tracking-tight text-[#071544] transition-colors duration-500 group-hover:text-[var(--accent)] sm:text-[22px]'
+                          style={{ '--accent': accentColor }}
+                        >
+                          {title}
+                        </h3>
+
+                        <p className='mt-4 flex-1 text-[14px] font-light leading-relaxed text-[#5a677a] sm:text-[15px]'>
+                          {cardDescription}
+                        </p>
+
+                        {/* Footer */}
+                        <div className='mt-6 flex items-center gap-2 border-t pt-5' style={{ borderColor: `${accentColor}15` }}>
+                          <span
+                            className='flex h-7 w-7 items-center justify-center rounded-full transition-all duration-500 group-hover:translate-x-1'
+                            style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
                           >
-                            {title}
-                          </h3>
-
-                          {/* Accent rule using card color */}
-                          <div
-                            className='mt-3 h-[1px] w-8 transition-all duration-500 group-hover:w-16'
-                            style={{ backgroundColor: `${accentColor}50` }}
-                          />
-
-                          <p className='mt-4 flex-1 text-[13px] font-light leading-relaxed text-[#5a677a] sm:text-[14px]'>
-                            {cardDescription}
-                          </p>
-
-                          <div className='mt-6 pt-4 border-t border-[#071544]/[0.04]'>
-                            <span className='group/btn inline-flex items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[#5a677a] transition-colors duration-500'>
-                              Discover more
-                              <span
-                                className='flex h-6 w-6 items-center justify-center rounded-full transition-all duration-500 group-hover:translate-x-0.5'
-                                style={{ backgroundColor: `${accentColor}18`, color: accentColor }}
-                              >
-                                <ChevronRight className='h-3 w-3 stroke-[2.5]' />
-                              </span>
-                            </span>
-                          </div>
+                            <ChevronRight className='h-3.5 w-3.5 stroke-[2.5]' />
+                          </span>
+                          <span
+                            className='text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors duration-500'
+                            style={{ color: `${accentColor}80` }}
+                          >
+                            Learn more
+                          </span>
                         </div>
                       </div>
                     </motion.article>

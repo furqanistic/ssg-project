@@ -67,7 +67,7 @@ const GovernancePage = () => {
     <div className='min-h-screen bg-[#fafafa] font-["Outfit",sans-serif] text-[#071544] selection:bg-[#f6ab3c]/30'>
       <div className='relative'>
         <NavbarSection />
-        <AboutPageHero title={governance.heroTitle} subtitle={governance.heroSubtitle} />
+        <AboutPageHero title={governance.heroTitle} subtitle={governance.heroSubtitle} image={governance.heroImage} />
       </div>
 
       <section className='relative z-20 -mt-6 overflow-hidden px-4 pb-12 sm:px-5 md:-mt-8 md:px-6 md:pb-20'>
@@ -75,23 +75,6 @@ const GovernancePage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
             <div className='relative mx-auto max-w-[1000px]'>
-            {governance.heroImage && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="relative mb-10 overflow-hidden rounded-lg border border-[#f6ab3c]/25 bg-white p-1.5 shadow-[0_24px_80px_rgba(22,32,51,0.11)] md:mb-16"
-              >
-                <img
-                  src={governance.heroImage}
-                  alt={governance.heroTitle}
-                  className='h-[220px] w-full rounded-[5px] object-cover grayscale transition-all duration-1000 hover:scale-[1.02] hover:grayscale-0 sm:h-[300px] md:h-[440px]'
-                  loading='lazy'
-                />
-                <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
-              </motion.div>
-            )}
 
               <motion.div
               initial={{ opacity: 0, y: 20 }}

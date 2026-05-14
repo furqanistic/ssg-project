@@ -2170,15 +2170,19 @@ const DashboardShell = ({ sectionKey = null }) => {
               : visitorsForm.rules,
           daily:
             type === 'visitors-daily'
-              ? visitorsForm.daily.map((row, i) =>
-                  i === index ? { label: nextData.label ?? '', value: nextData.value ?? '' } : row,
-                )
+              ? index < 0
+                ? [...visitorsForm.daily, { label: nextData.label ?? '', value: nextData.value ?? '' }]
+                : visitorsForm.daily.map((row, i) =>
+                    i === index ? { label: nextData.label ?? '', value: nextData.value ?? '' } : row,
+                  )
               : visitorsForm.daily,
           langar:
             type === 'visitors-langar'
-              ? visitorsForm.langar.map((row, i) =>
-                  i === index ? { label: nextData.label ?? '', value: nextData.value ?? '' } : row,
-                )
+              ? index < 0
+                ? [...visitorsForm.langar, { label: nextData.label ?? '', value: nextData.value ?? '' }]
+                : visitorsForm.langar.map((row, i) =>
+                    i === index ? { label: nextData.label ?? '', value: nextData.value ?? '' } : row,
+                  )
               : visitorsForm.langar,
           address:
             type === 'visitors-address'

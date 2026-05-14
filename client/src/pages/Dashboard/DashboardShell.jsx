@@ -2218,7 +2218,10 @@ const DashboardShell = ({ sectionKey = null }) => {
       }
 
       if (type === 'events') {
-        const nextEvents = eventsRows.map((row, i) => (i === index ? { ...row, ...nextData } : row))
+        const nextEvents =
+          index < 0
+            ? [...eventsRows, { ...nextData }]
+            : eventsRows.map((row, i) => (i === index ? { ...row, ...nextData } : row))
         setEventsRows(nextEvents)
 
         await updateMutation.mutateAsync({
@@ -3990,8 +3993,11 @@ const DashboardShell = ({ sectionKey = null }) => {
                     const isNewVisitorAddress = editModal.type === 'visitors-address' && editModal.index < 0
                     const isNewVisitorReach = editModal.type === 'visitors-reach' && editModal.index < 0
                     const isNewVisitorFaq = editModal.type === 'visitors-faq' && editModal.index < 0
+                    const isNewEvent = editModal.type === 'events' && editModal.index < 0
                     const modalTitle = isNewVisitorSlot
                       ? 'Create Slot'
+                      : isNewEvent
+                        ? 'Create Event'
                       : isNewVisitorAddress
                         ? 'Create Address Line'
                         : isNewVisitorReach
@@ -4005,6 +4011,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                         : 'Update Entry'
                     const modalSubtitle = isNewVisitorSlot
                       ? 'This new slot will appear on the public visitors page after publish.'
+                      : isNewEvent
+                        ? 'This new event will appear on the public events page after publish.'
                       : isNewVisitorAddress
                         ? 'This new address line will appear on the public visitors page after publish.'
                       : isNewVisitorReach
@@ -4205,11 +4213,11 @@ const DashboardShell = ({ sectionKey = null }) => {
                             </select>
                           </label>
                           <div className='md:col-span-2 space-y-3'>
-                            <span className='text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>Update Image Resources</span>
+                            <span className='text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>Event Image</span>
                             <div className='flex items-center gap-3'>
-                              <label className='flex-1 flex h-11 items-center justify-center rounded-[12px] border border-white/5 bg-white/[0.03] px-4 text-[14px] text-white/40 cursor-pointer hover:bg-white/5 hover:text-white transition-all'>
-                                <ImageIcon size={16} className='mr-2' />
-                                {modalImageFile ? modalImageFile.name : 'Replace current image'}
+                              <label className='flex-1 flex h-11 cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-gray-200 bg-gray-50 px-4 text-[14px] text-gray-500 transition-all hover:bg-gray-100 hover:text-[#001da5]'>
+                                <ImageIcon size={16} />
+                                {modalImageFile ? modalImageFile.name : 'Upload event image'}
                                 <input
                                   type='file'
                                   accept='image/*'
@@ -4219,16 +4227,16 @@ const DashboardShell = ({ sectionKey = null }) => {
                               </label>
                             </div>
                             {editModal.data.image && (
-                              <div className='relative mt-3 rounded-[16px] overflow-hidden border border-white/10 group h-[180px]'>
+                              <div className='relative mt-3 rounded-[16px] overflow-hidden border border-gray-200 group h-[180px]'>
                                 <img src={editModal.data.image} alt='Current' className='h-full w-full object-cover' />
                                 <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
-                                   <p className='text-[12px] font-bold'>Current Visual Resource</p>
+                                   <p className='text-[12px] font-bold text-white'>Current Image</p>
                                 </div>
                               </div>
                             )}
                           </div>
                         </div>
-                        <label className='block text-[13px] font-bold text-white/60 uppercase tracking-widest ml-1'>
+                        <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
                           Description
                           <textarea
                             value={editModal.data.description ?? ''}
@@ -4239,6 +4247,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                               }))
                             }
                             className={textareaClass}
+                            placeholder='Enter event description...'
                           />
                         </label>
                       </div>

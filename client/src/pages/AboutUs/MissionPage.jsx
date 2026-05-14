@@ -1,20 +1,21 @@
 import { motion } from 'framer-motion'
-import { BookOpen, Globe, Heart, Users, Target, Compass, ArrowUpRight, ChevronRight } from 'lucide-react'
+import { ArrowUpRight, ChevronRight, Compass } from 'lucide-react'
 import React from 'react'
 import AboutPageHero from '@/components/about/AboutPageHero'
 import SiteFooter from '@/components/layout/SiteFooter'
 import { useAboutUsContentQuery } from '@/hooks/useAboutUsContent'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
-const missionIcons = [Target, Heart, Users, BookOpen, Globe, Compass]
+
 
 const stagger = {
-  animate: { transition: { staggerChildren: 0.08 } },
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
 }
 
 const fadeUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
 }
 
 const MissionPage = () => {
@@ -27,7 +28,7 @@ const MissionPage = () => {
     <div className='min-h-screen bg-[#f8f7f5] font-["Outfit",sans-serif] selection:bg-[#f6ab3c]/30'>
       <div className='relative'>
         <NavbarSection />
-        <AboutPageHero title={mission.heroTitle} subtitle={mission.heroDescription} />
+        <AboutPageHero title={mission.heroTitle} subtitle={mission.heroDescription} image={mission.heroImage} />
       </div>
 
       {/* ─── OVERLAPPING WHITE CONTAINER ─── */}
@@ -36,25 +37,6 @@ const MissionPage = () => {
         <div className='mx-auto max-w-[1280px]'>
           <div className='rounded-[2.5rem] border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:p-10'>
             <div className='mx-auto max-w-[1040px]'>
-              {mission.heroImage && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className='mb-8 md:mb-12'
-                >
-                  <div className="overflow-hidden rounded-[1.75rem] border border-[#f6ab3c]/25 bg-white p-1.5 shadow-[0_24px_80px_rgba(22,32,51,0.11)]">
-                    <img
-                      src={mission.heroImage}
-                      alt={mission.heroTitle}
-                      className='h-[200px] w-full rounded-[calc(1.75rem-1.5px)] object-cover transition-all duration-700 hover:scale-[1.02] sm:h-[280px] md:h-[420px]'
-                      loading='lazy'
-                    />
-                    <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
-                  </div>
-                </motion.div>
-              )}
 
               {/* Mission Intro */}
               <div className="mb-10 border-b border-[#071544]/[0.04] pb-10 md:mb-14 md:pb-14">
@@ -94,18 +76,16 @@ const MissionPage = () => {
               {/* Mission Cards — Bento Grid */}
               <motion.div
                 variants={stagger}
-                initial="initial"
-                whileInView="animate"
+                initial='hidden'
+                whileInView='visible'
                 viewport={{ once: true, margin: '-60px' }}
                 className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6"
               >
-                {missionCards.map(({ title, description: cardDescription }, index) => {
-                  const Icon = missionIcons[index % missionIcons.length]
+                {missionCards.map(({ title, description: cardDescription, accent: cardAccent }, index) => {
                   const isWide = index === 0
-                  const accent = index % 2 === 0
-                    ? 'border-[#f6ab3c]/30 hover:border-[#f6ab3c]/50'
-                    : 'border-[#2d4f9f]/25 hover:border-[#2d4f9f]/45'
-                  const iconBg = index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]'
+                  // Use the accent color stored in data (set via dashboard)
+                  const accentColor = cardAccent || '#2d4f9f'
+                  const borderAccent = `border-[${accentColor}]/25 hover:border-[${accentColor}]/45`
 
                   return (
                     <motion.article
@@ -113,36 +93,53 @@ const MissionPage = () => {
                       variants={fadeUp}
                       className={`group ${isWide ? 'sm:col-span-2' : ''}`}
                     >
-                      <div className={`rounded-[2rem] border ${accent} bg-white/[0.02] p-[1px] transition-all duration-700 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.08)]`}>
-                        <div className="relative flex flex-col rounded-[calc(2rem-1px)] bg-white p-5 sm:p-7 md:p-8">
-                          <div className="absolute top-0 right-0 h-14 w-14 opacity-[0.02] pointer-events-none">
-                            <svg viewBox="0 0 100 100" className="h-full w-full rotate-90">
-                              <path d="M100 0 L100 100 L0 100" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      <div
+                        className='rounded-[2rem] border bg-white/[0.02] p-[1px] transition-all duration-700 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.08)]'
+                        style={{ borderColor: `${accentColor}40` }}
+                      >
+                        <div className='relative flex flex-col rounded-[calc(2rem-1px)] bg-white p-5 sm:p-7 md:p-8'>
+                          {/* Corner SVG decoration */}
+                          <div className='absolute top-0 right-0 h-14 w-14 opacity-[0.02] pointer-events-none'>
+                            <svg viewBox='0 0 100 100' className='h-full w-full rotate-90'>
+                              <path d='M100 0 L100 100 L0 100' fill='none' stroke='currentColor' strokeWidth='1.5' />
                             </svg>
                           </div>
 
-                          <div className="flex items-start justify-between mb-5">
-                            <div className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl ${iconBg} text-white shadow-[0_8px_18px_-5px_rgba(0,0,0,0.1)] ring-1 ring-inset ring-white/20 transition-all duration-700 group-hover:scale-110 group-hover:-rotate-3`}>
-                              <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[2]" />
-                            </div>
-                            <span className="text-[10px] font-black text-[#111318]/10 select-none tracking-wider">0{index + 1}</span>
+                          {/* Index badge + accent dot */}
+                          <div className='mb-5 flex items-center gap-3'>
+                            <span
+                              className='h-2.5 w-2.5 rounded-full transition-transform duration-500 group-hover:scale-125'
+                              style={{ backgroundColor: accentColor }}
+                            />
+                            <span className='text-[10px] font-black text-[#111318]/15 select-none tracking-wider'>
+                              0{index + 1}
+                            </span>
                           </div>
 
-                          <h3 className="text-[18px] sm:text-[21px] font-medium tracking-tight text-[#071544] leading-tight transition-colors duration-500 group-hover:text-[#f6ab3c]">
+                          <h3 className='text-[18px] sm:text-[21px] font-medium tracking-tight text-[#071544] leading-tight transition-colors duration-500'
+                            style={{ ['--hover-color']: accentColor }}
+                          >
                             {title}
                           </h3>
 
-                          <div className="mt-3 h-[1px] w-8 bg-[#f6ab3c]/30 transition-all duration-500 group-hover:w-16" />
+                          {/* Accent rule using card color */}
+                          <div
+                            className='mt-3 h-[1px] w-8 transition-all duration-500 group-hover:w-16'
+                            style={{ backgroundColor: `${accentColor}50` }}
+                          />
 
-                          <p className="mt-4 flex-1 text-[13px] font-light leading-relaxed text-[#5a677a] sm:text-[14px]">
+                          <p className='mt-4 flex-1 text-[13px] font-light leading-relaxed text-[#5a677a] sm:text-[14px]'>
                             {cardDescription}
                           </p>
 
-                          <div className="mt-6 pt-4 border-t border-[#071544]/[0.04]">
-                            <span className="group/btn inline-flex items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[#5a677a] transition-colors duration-500 group-hover:text-[#f6ab3c]">
+                          <div className='mt-6 pt-4 border-t border-[#071544]/[0.04]'>
+                            <span className='group/btn inline-flex items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[#5a677a] transition-colors duration-500'>
                               Discover more
-                              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#f6ab3c]/10 text-[#f6ab3c] transition-all duration-500 group-hover/btn:bg-[#f6ab3c] group-hover/btn:text-white group-hover:translate-x-0.5">
-                                <ChevronRight className="h-3 w-3 stroke-[2.5]" />
+                              <span
+                                className='flex h-6 w-6 items-center justify-center rounded-full transition-all duration-500 group-hover:translate-x-0.5'
+                                style={{ backgroundColor: `${accentColor}18`, color: accentColor }}
+                              >
+                                <ChevronRight className='h-3 w-3 stroke-[2.5]' />
                               </span>
                             </span>
                           </div>

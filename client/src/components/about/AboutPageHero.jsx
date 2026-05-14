@@ -4,6 +4,7 @@ import React from 'react'
 const AboutPageHero = ({
   title,
   subtitle,
+  image = null,
   className = '',
   eyebrowText = 'Institutional Legacy',
   compact = false,
@@ -14,6 +15,14 @@ const AboutPageHero = ({
         compact ? 'pb-8 pt-[124px] md:pb-10 md:pt-[134px]' : 'pb-10 pt-[136px] md:pb-16 md:pt-[152px]'
       } ${className}`}
     >
+      {/* Background image (when provided) */}
+      {image && (
+        <div className='absolute inset-0 z-0'>
+          <img src={image} alt='' className='h-full w-full object-cover' aria-hidden='true' />
+          <div className='absolute inset-0 bg-[#071544]/78' />
+        </div>
+      )}
+
       {/* Architectural grid */}
       <div
         aria-hidden="true"

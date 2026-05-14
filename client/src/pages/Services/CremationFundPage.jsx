@@ -47,6 +47,17 @@ const CremationFundPage = () => {
 
         {/* Hero Section - Synchronized Architectural Style */}
         <section className='relative isolate overflow-hidden bg-[#071544] pt-[136px] pb-10 md:pt-[140px] md:pb-20'>
+          {serviceContent.heroImage ? (
+            <div className='absolute inset-0 z-0'>
+              <img
+                src={serviceContent.heroImage}
+                alt='Cremation fund hero'
+                className='h-full w-full object-cover'
+              />
+              <div className='absolute inset-0 bg-[#071544]/75' />
+            </div>
+          ) : null}
+
           {/* Subtle Geometric Grid */}
           <div className='absolute inset-0 z-0 opacity-[0.05]' 
                style={{ backgroundImage: 'linear-gradient(#fff 0.5px, transparent 0.5px), linear-gradient(90deg, #fff 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} />

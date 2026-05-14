@@ -1347,11 +1347,6 @@ const DashboardShell = ({ sectionKey = null }) => {
         description: 'Edit `/services/antim-sanskar-fund` page content.',
       },
       {
-        key: 'main-content',
-        title: 'Main Content',
-        description: 'Update about/support text and CTA labels.',
-      },
-      {
         key: 'youth-labels',
         title: 'Youth Dropdown Labels',
         description: 'Configure class and program labels in dropdown.',
@@ -3516,111 +3511,109 @@ const DashboardShell = ({ sectionKey = null }) => {
                       className='mt-4 h-40 w-full rounded-[12px] border border-gray-100 object-cover'
                     />
                   ) : null}
-                </article>
-                ) : null}
 
-                {activeServicesEditor === 'main-content' ? (
-                <article className={panelClass}>
-                  <h3 className='text-[20px] font-black tracking-tight text-gray-900'>Main Content</h3>
-                  <div className='mt-6 grid grid-cols-1 gap-4 md:grid-cols-2'>
-                    <div className='md:col-span-2'>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Section Title</label>
-                      <input
-                        type='text'
-                        value={servicesForm.aboutTitle}
-                        onChange={(event) =>
-                          setServicesForm((prev) => ({ ...prev, aboutTitle: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='Section heading'
-                      />
-                    </div>
-                    <div className='md:col-span-2'>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>About Text</label>
-                      <textarea
-                        value={servicesForm.aboutText}
-                        onChange={(event) =>
-                          setServicesForm((prev) => ({ ...prev, aboutText: event.target.value }))
-                        }
-                        className={textareaClass}
-                        placeholder='Main paragraph'
-                      />
-                    </div>
-                    <div className='md:col-span-2'>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Support Text</label>
-                      <textarea
-                        value={servicesForm.supportText}
-                        onChange={(event) =>
-                          setServicesForm((prev) => ({ ...prev, supportText: event.target.value }))
-                        }
-                        className={textareaClass}
-                        placeholder='Secondary paragraph'
-                      />
-                    </div>
-                    <div className='md:col-span-2'>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Support Image URL</label>
-                      <input
-                        type='text'
-                        value={servicesForm.supportImage}
-                        onChange={(event) =>
-                          setServicesForm((prev) => ({ ...prev, supportImage: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='https://...'
-                      />
-                      <div className='mt-2 flex items-center gap-3'>
-                        <label className='inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-50'>
-                          <input
-                            type='file'
-                            accept='image/*'
-                            className='hidden'
-                            onChange={(event) => {
-                              const file = event.target.files?.[0]
-                              if (file) {
-                                uploadServicesImage(file, 'supportImage')
-                              }
-                              event.target.value = ''
-                            }}
-                          />
-                          Upload Support Image
-                        </label>
-                        {uploadingServicesImageField === 'supportImage' ? (
-                          <span className='text-[12px] font-medium text-gray-500'>Uploading...</span>
-                        ) : null}
+                  <div className='mt-8 border-t border-gray-100 pt-6'>
+                    <h4 className='text-[16px] font-bold text-gray-900'>Main Content</h4>
+                    <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-2'>
+                      <div className='md:col-span-2'>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Section Title</label>
+                        <input
+                          type='text'
+                          value={servicesForm.aboutTitle}
+                          onChange={(event) =>
+                            setServicesForm((prev) => ({ ...prev, aboutTitle: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='Section heading'
+                        />
+                      </div>
+                      <div className='md:col-span-2'>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>About Text</label>
+                        <textarea
+                          value={servicesForm.aboutText}
+                          onChange={(event) =>
+                            setServicesForm((prev) => ({ ...prev, aboutText: event.target.value }))
+                          }
+                          className={textareaClass}
+                          placeholder='Main paragraph'
+                        />
+                      </div>
+                      <div className='md:col-span-2'>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Support Text</label>
+                        <textarea
+                          value={servicesForm.supportText}
+                          onChange={(event) =>
+                            setServicesForm((prev) => ({ ...prev, supportText: event.target.value }))
+                          }
+                          className={textareaClass}
+                          placeholder='Secondary paragraph'
+                        />
+                      </div>
+                      <div className='md:col-span-2'>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Support Image URL</label>
+                        <input
+                          type='text'
+                          value={servicesForm.supportImage}
+                          onChange={(event) =>
+                            setServicesForm((prev) => ({ ...prev, supportImage: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='https://...'
+                        />
+                        <div className='mt-2 flex items-center gap-3'>
+                          <label className='inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-50'>
+                            <input
+                              type='file'
+                              accept='image/*'
+                              className='hidden'
+                              onChange={(event) => {
+                                const file = event.target.files?.[0]
+                                if (file) {
+                                  uploadServicesImage(file, 'supportImage')
+                                }
+                                event.target.value = ''
+                              }}
+                            />
+                            Upload Support Image
+                          </label>
+                          {uploadingServicesImageField === 'supportImage' ? (
+                            <span className='text-[12px] font-medium text-gray-500'>Uploading...</span>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Contact Button Label</label>
+                        <input
+                          type='text'
+                          value={servicesForm.contactButtonLabel}
+                          onChange={(event) =>
+                            setServicesForm((prev) => ({ ...prev, contactButtonLabel: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='Contact us'
+                        />
+                      </div>
+                      <div>
+                        <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Donate Button Label</label>
+                        <input
+                          type='text'
+                          value={servicesForm.donateButtonLabel}
+                          onChange={(event) =>
+                            setServicesForm((prev) => ({ ...prev, donateButtonLabel: event.target.value }))
+                          }
+                          className={inputClass}
+                          placeholder='Donate now'
+                        />
                       </div>
                     </div>
-                    <div>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Contact Button Label</label>
-                      <input
-                        type='text'
-                        value={servicesForm.contactButtonLabel}
-                        onChange={(event) =>
-                          setServicesForm((prev) => ({ ...prev, contactButtonLabel: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='Contact us'
+                    {servicesForm.supportImage ? (
+                      <img
+                        src={servicesForm.supportImage}
+                        alt='Support preview'
+                        className='mt-4 h-40 w-full rounded-[12px] border border-gray-100 object-cover'
                       />
-                    </div>
-                    <div>
-                      <label className='text-[12px] font-bold uppercase tracking-wider text-gray-500'>Donate Button Label</label>
-                      <input
-                        type='text'
-                        value={servicesForm.donateButtonLabel}
-                        onChange={(event) =>
-                          setServicesForm((prev) => ({ ...prev, donateButtonLabel: event.target.value }))
-                        }
-                        className={inputClass}
-                        placeholder='Donate now'
-                      />
-                    </div>
+                    ) : null}
                   </div>
-                  {servicesForm.supportImage ? (
-                    <img
-                      src={servicesForm.supportImage}
-                      alt='Support preview'
-                      className='mt-4 h-40 w-full rounded-[12px] border border-gray-100 object-cover'
-                    />
-                  ) : null}
                 </article>
                 ) : null}
 

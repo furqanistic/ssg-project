@@ -3973,13 +3973,20 @@ const DashboardShell = ({ sectionKey = null }) => {
                     const isVisitorsTextEdit = ['visitors-rule', 'visitors-address', 'visitors-reach'].includes(
                       editModal.type,
                     )
+                    const isNewVisitorSlot =
+                      (editModal.type === 'visitors-daily' || editModal.type === 'visitors-langar') &&
+                      editModal.index < 0
                     const isNewVisitorRule = editModal.type === 'visitors-rule' && editModal.index < 0
-                    const modalTitle = isNewVisitorRule
+                    const modalTitle = isNewVisitorSlot
+                      ? 'Create Slot'
+                      : isNewVisitorRule
                       ? 'Create Rule'
                       : isVisitorsTextEdit
                         ? 'Update Rule'
                         : 'Update Entry'
-                    const modalSubtitle = isNewVisitorRule
+                    const modalSubtitle = isNewVisitorSlot
+                      ? 'This new slot will appear on the public visitors page after publish.'
+                      : isNewVisitorRule
                       ? 'This new rule will be added to the public visitors page after publish.'
                       : isVisitorsTextEdit
                       ? 'This change will appear on the public visitors page after publish.'

@@ -42,10 +42,20 @@ function InteractiveNavCard({
         {rightSlot ?? (
           <span
             className={cn(
-              "h-2.5 w-2.5 shrink-0 rounded-full transition-colors duration-300",
-              active ? "bg-[#001da5]" : "bg-gray-200 group-hover:bg-[#001da5]/45",
+              "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide transition-all duration-300",
+              active
+                ? "border-[#001da5]/25 bg-[#001da5]/8 text-[#001da5]"
+                : "border-gray-200 bg-white text-gray-500 group-hover:border-[#001da5]/20 group-hover:text-[#001da5]",
             )}
-          />
+          >
+            <span
+              className={cn(
+                "h-1.5 w-1.5 rounded-full",
+                active ? "bg-[#001da5]" : "bg-gray-300 group-hover:bg-[#001da5]/60",
+              )}
+            />
+            Section
+          </span>
         )}
       </div>
 

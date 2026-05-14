@@ -869,7 +869,7 @@ const DataTable = ({
                             onClick={() => onEdit(index)}
                             className={
                               actionButtonStyle === 'labeled'
-                                ? 'inline-flex h-8 items-center justify-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3 text-[12px] font-semibold text-gray-700 transition hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.03] hover:text-[#001da5]'
+                                ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3 text-[12px] font-semibold text-gray-700 transition hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.03] hover:text-[#001da5]'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
                             }
                           >
@@ -883,7 +883,7 @@ const DataTable = ({
                             onClick={() => onDelete(index)}
                             className={
                               actionButtonStyle === 'labeled'
-                                ? 'inline-flex h-8 items-center justify-center gap-1.5 rounded-[8px] border border-red-200 bg-red-50/60 px-3 text-[12px] font-semibold text-red-600 transition hover:bg-red-100 hover:border-red-300'
+                                ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1.5 rounded-[8px] border border-red-200 bg-red-50/60 px-3 text-[12px] font-semibold text-red-600 transition hover:bg-red-100 hover:border-red-300'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
                             }
                           >
@@ -3932,14 +3932,25 @@ const DashboardShell = ({ sectionKey = null }) => {
             {editModal.open ? (
               <div className='fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300'>
                 <div className='flex max-h-[90vh] w-full max-w-[720px] flex-col overflow-hidden rounded-[32px] border border-gray-100 bg-white shadow-[0_30px_100px_-15px_rgba(0,0,0,0.1)] animate-in zoom-in-95 duration-300'>
+                  {/** Visitors text entry modal gets dedicated copy/style */}
+                  {(() => {
+                    const isVisitorsTextEdit = ['visitors-rule', 'visitors-address', 'visitors-reach'].includes(
+                      editModal.type,
+                    )
+                    const modalTitle = isVisitorsTextEdit ? 'Update Rule' : 'Update Entry'
+                    const modalSubtitle = isVisitorsTextEdit
+                      ? 'This change will appear on the public visitors page after publish.'
+                      : 'Synchronize these changes with the public website'
+
+                    return (
                   <div className='overflow-y-auto px-8 pb-8 pt-8'>
                     <div className='flex items-center gap-4 mb-8 pb-6 border-b border-gray-100'>
                       <div className='flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#001da5] text-white shadow-lg shadow-blue-500/20'>
                         <Edit2 size={24} />
                       </div>
                       <div>
-                        <h3 className='text-[20px] font-bold text-gray-900 tracking-tight'>Update Entry</h3>
-                        <p className='text-[13px] text-gray-400'>Synchronize these changes with the public website</p>
+                        <h3 className='text-[20px] font-bold text-gray-900 tracking-tight'>{modalTitle}</h3>
+                        <p className='text-[13px] text-gray-500'>{modalSubtitle}</p>
                       </div>
                       <button onClick={closeEditModal} className='ml-auto h-10 w-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-gray-900'>
                         <X size={20} />
@@ -3950,19 +3961,28 @@ const DashboardShell = ({ sectionKey = null }) => {
                     {['visitors-rule', 'visitors-address', 'visitors-reach', 'contact-address'].includes(
                       editModal.type,
                     ) ? (
-                      <label className='block text-[13px] font-bold text-gray-500 uppercase tracking-widest ml-1'>
-                        Text Content
-                        <textarea
-                          value={editModal.data.text ?? ''}
-                          onChange={(event) =>
-                            setEditModal((prev) => ({
-                              ...prev,
-                              data: { ...prev.data, text: event.target.value },
-                            }))
-                          }
-                          className={textareaClass}
-                          placeholder='Edit text content...'
-                        />
+                      <label className='block ml-1'>
+                        <div className='mb-2 flex items-center justify-between'>
+                          <span className='text-[12px] font-bold uppercase tracking-[0.14em] text-gray-500'>
+                            Text Content
+                          </span>
+                          <span className='text-[11px] font-semibold text-gray-400'>
+                            {(editModal.data.text ?? '').trim().length} chars
+                          </span>
+                        </div>
+                        <div className='mt-2 rounded-[14px] border border-gray-200 bg-[#fafbff] p-1.5'>
+                          <textarea
+                            value={editModal.data.text ?? ''}
+                            onChange={(event) =>
+                              setEditModal((prev) => ({
+                                ...prev,
+                                data: { ...prev.data, text: event.target.value },
+                              }))
+                            }
+                            className={`${textareaClass} !mt-0 !border-0 !bg-transparent !shadow-none focus:!ring-0`}
+                            placeholder='Edit text content...'
+                          />
+                        </div>
                       </label>
                     ) : null}
 
@@ -4631,7 +4651,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                       </div>
                     ) : null}
 
-                    <div className='mt-10 pt-8 border-t border-white/5 flex justify-end gap-3'>
+                    <div className='mt-10 pt-6 border-t border-gray-100 flex justify-end gap-3'>
                       <button
                         type='button'
                         onClick={closeEditModal}
@@ -4650,6 +4670,8 @@ const DashboardShell = ({ sectionKey = null }) => {
                       </button>
                     </div>
                   </div>
+                    )
+                  })()}
                 </div>
               </div>
             ) : null}

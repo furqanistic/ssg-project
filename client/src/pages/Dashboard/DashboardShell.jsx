@@ -818,7 +818,7 @@ const DataTable = ({
 
   return (
     <div className={panelClass}>
-      <div className='mb-6 flex items-center justify-between'>
+      <div className='mb-4 flex items-center justify-between'>
         <div>
           <h3 className='text-[16px] font-bold text-gray-900 tracking-tight'>{title}</h3>
           <p className='mt-0.5 text-[12px] text-gray-500'>Total entries: {rows.length}</p>
@@ -832,13 +832,13 @@ const DataTable = ({
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className='border-b border-gray-100 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400'
+                  className='border-b border-gray-100 px-3 py-2.5 text-left text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400'
                 >
                   {column.label}
                 </th>
               ))}
               {hasActions ? (
-                <th className='border-b border-gray-100 px-4 py-3 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400'>
+                <th className='border-b border-gray-100 px-3 py-2.5 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400'>
                   Actions
                 </th>
               ) : null}
@@ -851,15 +851,15 @@ const DataTable = ({
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className='px-4 py-4 text-[13px] text-gray-700 font-medium'
+                      className='px-3 py-3 text-[13px] text-gray-700 font-medium'
                     >
                       {column.render ? column.render(row) : (row[column.key] || '-')}
                     </td>
                   ))}
                   {hasActions ? (
-                    <td className='px-4 py-4'>
+                    <td className='px-3 py-3'>
                       <div
-                        className={`flex justify-end gap-2 ${alwaysShowActions ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-opacity'}`}
+                        className={`flex justify-end gap-1.5 ${alwaysShowActions ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-opacity'}`}
                       >
                         {hasEditAction ? (
                           <button
@@ -869,7 +869,7 @@ const DataTable = ({
                               actionButtonStyle === 'labeled'
                                 ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1 rounded-[9px] border border-gray-200 bg-white px-2.5 text-[11px] font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
                                 : actionButtonStyle === 'labeled-compact'
-                                  ? 'inline-flex h-8 w-[78px] items-center justify-center gap-1 rounded-[9px] border border-gray-200 bg-white px-2 text-[11px] font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
+                                  ? 'inline-flex h-7 min-w-[70px] whitespace-nowrap items-center justify-center gap-1 rounded-[9px] border border-gray-200 bg-white px-2 text-[11px] font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-[#001da5]/35 hover:bg-[#001da5]/[0.04] hover:text-[#001da5]'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-gray-200 px-3 text-[12px] font-bold text-gray-600 transition hover:bg-white hover:border-[#001da5]/30 hover:text-[#001da5]'
                             }
                           >
@@ -886,7 +886,7 @@ const DataTable = ({
                               actionButtonStyle === 'labeled'
                                 ? 'inline-flex h-8 w-[92px] items-center justify-center gap-1 rounded-[9px] border border-red-200 bg-red-50/70 px-2.5 text-[11px] font-semibold text-red-600 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-red-300 hover:bg-red-100'
                                 : actionButtonStyle === 'labeled-compact'
-                                  ? 'inline-flex h-8 w-[78px] items-center justify-center gap-1 rounded-[9px] border border-red-200 bg-red-50/70 px-2 text-[11px] font-semibold text-red-600 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-red-300 hover:bg-red-100'
+                                  ? 'inline-flex h-7 min-w-[70px] whitespace-nowrap items-center justify-center gap-1 rounded-[9px] border border-red-200 bg-red-50/70 px-2 text-[11px] font-semibold text-red-600 shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:border-red-300 hover:bg-red-100'
                                 : 'inline-flex h-8 items-center justify-center rounded-[8px] border border-red-100 bg-red-50/50 px-3 text-[12px] font-bold text-red-500 transition hover:bg-red-50 hover:border-red-200'
                             }
                           >

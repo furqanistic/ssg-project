@@ -754,14 +754,14 @@ const DashboardServicesRenderer = ({
                           key={item.key}
                           type='button'
                           onClick={() => setActiveYouthProgramsEditor(item.key)}
-                          className={`inline-flex w-full items-center justify-between gap-2 rounded-[10px] border px-3 py-2 text-[12px] font-bold transition ${
+                          className={`inline-flex w-full items-center justify-between gap-2 rounded-[10px] border px-2.5 py-2 text-[11px] font-bold transition md:px-3 md:text-[12px] ${
                             activeYouthProgramsEditor === item.key
                               ? 'border-[#001da5]/35 bg-[#001da5]/8 text-[#001da5]'
                               : 'border-transparent bg-white text-gray-700 hover:border-[#001da5]/25 hover:text-[#001da5]'
                           }`}
                         >
                           <span className='flex items-center gap-2'>
-                            <span className={`inline-flex h-6 w-6 items-center justify-center rounded-[8px] ${
+                            <span className={`hidden h-6 w-6 items-center justify-center rounded-[8px] md:inline-flex ${
                               activeYouthProgramsEditor === item.key
                                 ? 'bg-[#001da5]/12 text-[#001da5]'
                                 : 'bg-gray-100 text-gray-500'
@@ -770,7 +770,7 @@ const DashboardServicesRenderer = ({
                             </span>
                             <span>{item.title}</span>
                           </span>
-                          <ChevronRight size={14} className={activeYouthProgramsEditor === item.key ? 'text-[#001da5]' : 'text-gray-400'} />
+                          <ChevronRight size={14} className={`hidden md:block ${activeYouthProgramsEditor === item.key ? 'text-[#001da5]' : 'text-gray-400'}`} />
                         </button>
                       ))}
                     </div>

@@ -26,28 +26,26 @@ const DashboardProfileSection = ({
   const adminsCount = users.filter((user) => user.role === 'admin').length
 
   return (
-    <div className='mt-10 space-y-8'>
-      <section className='relative overflow-hidden rounded-[26px] border border-[#001da5]/10 bg-gradient-to-br from-[#001da5] via-[#1234bf] to-[#4e67d8] px-7 py-8 text-white shadow-[0_20px_50px_rgba(0,29,165,0.25)]'>
-        <div className='absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl' />
-        <div className='absolute -bottom-20 left-20 h-52 w-52 rounded-full bg-[#9fb0ff]/20 blur-2xl' />
-        <div className='relative grid grid-cols-1 gap-6 lg:grid-cols-[1.7fr_1fr]'>
+    <div className='mt-10 space-y-10'>
+      <section className='rounded-[18px] border border-gray-200 bg-white px-5 py-4'>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-[1.7fr_1fr]'>
           <div>
-            <p className='text-[11px] font-bold uppercase tracking-[0.16em] text-white/70'>
+            <p className='text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500'>
               Account Center
             </p>
-            <h3 className='mt-2 text-[28px] font-black tracking-tight'>Profile & Access Control</h3>
-            <p className='mt-2 max-w-[580px] text-[14px] leading-6 text-white/85'>
+            <h3 className='mt-1 text-[22px] font-black tracking-tight text-gray-900'>Profile & Access Control</h3>
+            <p className='mt-1 max-w-[580px] text-[13px] leading-6 text-gray-500'>
               Keep your administrator account secure and control who can manage website content.
             </p>
           </div>
           <div className='grid grid-cols-2 gap-3'>
-            <div className='rounded-[14px] border border-white/20 bg-white/10 px-4 py-3'>
-              <p className='text-[11px] font-bold uppercase tracking-[0.14em] text-white/70'>Users</p>
-              <p className='mt-1 text-[26px] font-black tracking-tight'>{users.length}</p>
+            <div className='rounded-[12px] border border-gray-100 bg-gray-50 px-4 py-3'>
+              <p className='text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500'>Users</p>
+              <p className='mt-1 text-[24px] font-black tracking-tight text-gray-900'>{users.length}</p>
             </div>
-            <div className='rounded-[14px] border border-white/20 bg-white/10 px-4 py-3'>
-              <p className='text-[11px] font-bold uppercase tracking-[0.14em] text-white/70'>Admins</p>
-              <p className='mt-1 text-[26px] font-black tracking-tight'>{adminsCount}</p>
+            <div className='rounded-[12px] border border-gray-100 bg-gray-50 px-4 py-3'>
+              <p className='text-[11px] font-bold uppercase tracking-[0.14em] text-gray-500'>Admins</p>
+              <p className='mt-1 text-[24px] font-black tracking-tight text-gray-900'>{adminsCount}</p>
             </div>
           </div>
         </div>
@@ -55,13 +53,13 @@ const DashboardProfileSection = ({
 
       <div className='grid grid-cols-1 gap-8 xl:grid-cols-2'>
         <article className={panelClass}>
-          <div className='mb-7 flex items-center gap-4 border-b border-gray-100 pb-6'>
+          <div className='mb-8 flex items-center gap-4 border-b border-gray-100 pb-6'>
             <div className='flex h-12 w-12 items-center justify-center rounded-[14px] border border-[#001da5]/10 bg-[#001da5]/5 text-[#001da5]'>
               {React.createElement(userIcon, { size: 23 })}
             </div>
             <div>
-              <h4 className='text-[19px] font-black tracking-tight text-gray-900'>My Credentials</h4>
-              <p className='text-[12px] text-gray-500'>Update your login email and password</p>
+              <h4 className='text-[18px] font-bold tracking-tight text-gray-900'>My Credentials</h4>
+              <p className='text-[12px] text-gray-400'>Update your login email and password</p>
             </div>
           </div>
 
@@ -121,13 +119,13 @@ const DashboardProfileSection = ({
         </article>
 
         <article className={panelClass}>
-          <div className='mb-7 flex items-center gap-4 border-b border-gray-100 pb-6'>
+          <div className='mb-8 flex items-center gap-4 border-b border-gray-100 pb-6'>
             <div className='flex h-12 w-12 items-center justify-center rounded-[14px] border border-[#001da5]/10 bg-[#001da5]/5 text-[#001da5]'>
               {React.createElement(plusCircleIcon, { size: 23 })}
             </div>
             <div>
-              <h4 className='text-[19px] font-black tracking-tight text-gray-900'>Add Team Member</h4>
-              <p className='text-[12px] text-gray-500'>Create another dashboard account instantly</p>
+              <h4 className='text-[18px] font-bold tracking-tight text-gray-900'>Add Team Member</h4>
+              <p className='text-[12px] text-gray-400'>Create another dashboard account instantly</p>
             </div>
           </div>
 

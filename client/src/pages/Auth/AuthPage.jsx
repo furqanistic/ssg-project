@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react'
-import authVisual from '@/assets/auth-visual.svg'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 import { useLoginMutation } from '@/hooks/useAuthQueries'
@@ -60,19 +59,10 @@ const AuthPage = () => {
     <div className='min-h-screen bg-white font-["Poppins","Segoe_UI",sans-serif] text-[#121521]'>
       <div className='relative min-h-screen'>
         <NavbarSection />
-        <section className='flex min-h-[calc(100vh-88px)] items-center px-0 pb-8 pt-[88px] md:min-h-0 md:px-6 md:pb-14 md:pt-28'>
-          <div className='mx-auto max-w-[1280px]'>
-            <article className='mx-auto w-full max-w-[560px] overflow-hidden rounded-none border-y border-[#d8e0ee] bg-white shadow-none md:max-w-none md:rounded-[24px] md:border md:shadow-[0_24px_50px_-22px_rgba(7,21,68,0.22)]'>
-              <div className='grid lg:grid-cols-[1.04fr_0.96fr]'>
-                <div className='relative hidden min-h-[330px] bg-[#0f2557] lg:block'>
-                  <img
-                    src={authVisual}
-                    alt='Secure login illustration'
-                    className='h-full w-full object-cover'
-                  />
-                </div>
-
-                <div className='p-5 md:p-8 lg:p-10'>
+        <section className='flex min-h-screen items-center justify-center px-4 pb-8 pt-24 md:pb-14 md:pt-28'>
+          <div className='w-full max-w-[560px]'>
+            <article className='w-full overflow-hidden rounded-[24px] border border-[#d8e0ee] bg-white shadow-[0_24px_50px_-22px_rgba(7,21,68,0.22)]'>
+              <div className='p-5 md:p-8 lg:p-10'>
                   <div className='mb-6 flex items-center justify-between border-b border-[#ebf0f8] pb-5'>
                 <div>
                   <h3 className='text-[19px] font-bold tracking-[-0.02em] text-[#111318] md:text-[23px]'>
@@ -154,7 +144,6 @@ const AuthPage = () => {
                 {t('common.actions.backToHome')}
               </Link>
                 </div>
-              </div>
             </article>
           </div>
         </section>

@@ -1966,19 +1966,9 @@ const DashboardShell = ({ sectionKey = null }) => {
 
   const saveAboutUsNonPopupSection = async (sectionLabel = 'About section') => {
     setError('')
-    setSuccess('')
-
-    try {
-      await updateMutation.mutateAsync({
-        section: 'aboutUs',
-        data: buildAboutUsPayload(aboutUsForm, content?.aboutUs ?? {}, aboutEditorLanguage),
-      })
-      setAboutUsSavedSnapshot(JSON.stringify(createAboutUsPayload(aboutUsForm)))
-      setAboutUsLastSavedAt(new Date())
-      setSuccess(`${sectionLabel} saved successfully.`)
-    } catch (requestError) {
-      setError(requestError.message)
-    }
+    setSuccess(
+      `${sectionLabel} draft updated. Click top "Publish Changes" to push updates to the public website.`,
+    )
   }
 
   const handleLogout = () => {

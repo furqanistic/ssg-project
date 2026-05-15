@@ -10,12 +10,7 @@ import NavbarSection from '@/pages/Home/components/NavbarSection'
 const getAvatarUrl = (name = 'Member') =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=071544&color=f6ab3c&size=220&bold=true&format=png`
 
-const roleBadgeStyles = [
-  'border-[#f6ab3c]/35 bg-[#fff6e9] text-[#b96d00]',
-  'border-[#2d4f9f]/30 bg-[#eef3ff] text-[#2d4f9f]',
-  'border-[#14b8a6]/30 bg-[#eafcf8] text-[#0f766e]',
-  'border-[#a855f7]/25 bg-[#f6efff] text-[#7e22ce]',
-]
+const roleBadgeStyle = 'border-[#2d4f9f]/35 bg-[#dfe9ff] text-[#1b3577]'
 
 const CommitteePage = () => {
   const { aboutUs } = useAboutUsContentQuery()
@@ -105,7 +100,7 @@ const CommitteePage = () => {
                   </h2>
 
                   {member.role && (
-                    <span className={`mt-2.5 inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${roleBadgeStyles[index % roleBadgeStyles.length]}`}>
+                    <span className={`mt-2.5 inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${roleBadgeStyle}`}>
                       {member.role}
                     </span>
                   )}

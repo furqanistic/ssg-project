@@ -91,8 +91,8 @@ const MissionPage = () => {
                       className={`group ${isWide ? 'sm:col-span-2' : ''}`}
                     >
                       <div
-                        className='h-full rounded-[2rem] border bg-white p-6 transition-all duration-500 hover:shadow-[0_16px_48px_-12px_rgba(7,21,68,0.1)] sm:p-8'
-                        style={{ borderColor: accentColor }}
+                        className='h-full rounded-[2rem] border border-[#071544]/10 bg-white p-6 transition-all duration-500 hover:shadow-[0_16px_48px_-12px_rgba(7,21,68,0.1)] sm:p-8'
+                        style={{ borderColor: `${accentColor}55` }}
                       >
                         <div className='mb-4 flex items-center gap-2'>
                           <span className='h-1.5 w-1.5 rounded-full' style={{ backgroundColor: accentColor }} />
@@ -101,13 +101,13 @@ const MissionPage = () => {
                           </span>
                         </div>
 
-                        <h3 className='text-[20px] font-bold tracking-tight text-[#071544] sm:text-[22px]'>
+                        <h3 className='text-[20px] font-extrabold tracking-tight text-[#071544] sm:text-[22px]'>
                           {title}
                         </h3>
 
                         <div className='mt-3 h-[1px] w-8' style={{ backgroundColor: `${accentColor}30` }} />
 
-                        <p className='mt-4 flex-1 text-[14px] font-light leading-relaxed text-[#5a677a] sm:text-[15px]'>
+                        <p className='mt-4 flex-1 text-[14px] font-normal leading-relaxed text-[#5a677a] sm:text-[15px]'>
                           {cardDescription}
                         </p>
                       </div>
@@ -204,13 +204,13 @@ const MissionPage = () => {
                         <span className="text-[10px] font-black text-[#111318]/20 select-none tracking-wider">0{index + 1}</span>
                       </div>
 
-                      <h3 className="text-[17px] sm:text-[19px] font-bold tracking-tight text-[#071544] leading-tight transition-colors duration-500 group-hover:text-[#2d4f9f]">
+                      <h3 className="text-[17px] sm:text-[19px] font-extrabold tracking-tight text-[#071544] leading-tight transition-colors duration-500 group-hover:text-[#2d4f9f]">
                         {value.title}
                       </h3>
 
                       <div className="mt-3 h-[1px] w-6 bg-[#2d4f9f]/25 transition-all duration-500 group-hover:w-10" />
 
-                      <p className="mt-3 flex-1 text-pretty text-[14px] leading-[1.7] text-[#516075] sm:text-[15px] md:mt-4 md:text-[16px]">
+                      <p className="mt-3 flex-1 text-pretty text-[14px] font-normal leading-[1.7] text-[#516075] sm:text-[15px] md:mt-4 md:text-[16px]">
                         {value.description}
                       </p>
                     </div>

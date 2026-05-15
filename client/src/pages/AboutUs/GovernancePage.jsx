@@ -143,16 +143,24 @@ const GovernancePage = () => {
           <div className="space-y-14 md:space-y-24">
             <motion.div variants={staggerContainer} initial="initial" whileInView="animate" viewport={{ once: true }}>
               <div className='mx-auto max-w-[1000px]'>
-              <div className="mb-7 flex items-center gap-1.5 sm:gap-2 md:mb-10 md:gap-2">
-                <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#f6ab3c]/10 text-[#f6ab3c] sm:h-12 sm:w-12'>
-                  <ShieldCheck className='h-5 w-5' />
+              <div className='mb-7 flex items-start justify-between gap-3 md:mb-10'>
+                <div className='flex min-w-0 items-center gap-1.5 sm:gap-2 md:gap-2'>
+                  <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#f6ab3c]/10 text-[#f6ab3c] sm:h-12 sm:w-12'>
+                    <ShieldCheck className='h-5 w-5' />
+                  </div>
+                  <h2 className='text-balance text-[22px] font-extrabold tracking-normal text-[#071544] md:text-[34px]'>
+                    {governance.documentsTitle}
+                  </h2>
                 </div>
-                <h2 className='text-balance text-[22px] font-extrabold tracking-normal text-[#071544] md:text-[34px]'>
-                  {governance.documentsTitle}
-                </h2>
+                <div className='hidden shrink-0 items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95] sm:flex'>
+                  <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#071544] px-2 text-white'>{docsCount}</span>
+                  Available Documents
+                </div>
+              </div>
+              <div className='mb-5 flex items-center gap-3'>
                 <div className="h-[1px] flex-1 bg-[#f6ab3c]/20" />
               </div>
-              <div className='mb-5 flex items-center justify-end gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95]'>
+              <div className='mb-5 flex items-center justify-end gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95] sm:hidden'>
                 <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#071544] px-2 text-white'>{docsCount}</span>
                 Available Documents
               </div>
@@ -175,16 +183,24 @@ const GovernancePage = () => {
 
             <motion.div variants={staggerContainer} initial="initial" whileInView="animate" viewport={{ once: true }}>
               <div className='mx-auto max-w-[1000px]'>
-              <div className="mb-7 flex items-center gap-1.5 sm:gap-2 md:mb-10 md:gap-2">
-                <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#f6ab3c]/10 text-[#f6ab3c] sm:h-12 sm:w-12'>
-                  <FileText className='h-5 w-5' />
+              <div className='mb-7 flex items-start justify-between gap-3 md:mb-10'>
+                <div className='flex min-w-0 items-center gap-1.5 sm:gap-2 md:gap-2'>
+                  <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#f6ab3c]/10 text-[#f6ab3c] sm:h-12 sm:w-12'>
+                    <FileText className='h-5 w-5' />
+                  </div>
+                  <h2 className='text-balance text-[22px] font-extrabold tracking-normal text-[#071544] md:text-[34px]'>
+                    {governance.reportsTitle}
+                  </h2>
                 </div>
-                <h2 className='text-balance text-[22px] font-extrabold tracking-normal text-[#071544] md:text-[34px]'>
-                  {governance.reportsTitle}
-                </h2>
+                <div className='hidden shrink-0 items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95] sm:flex'>
+                  <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2d4f9f] px-2 text-white'>{reportsCount}</span>
+                  Published Reports
+                </div>
+              </div>
+              <div className='mb-5 flex items-center gap-3'>
                 <div className="h-[1px] flex-1 bg-[#f6ab3c]/20" />
               </div>
-              <div className='mb-5 flex items-center justify-end gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95]'>
+              <div className='mb-5 flex items-center justify-end gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95] sm:hidden'>
                 <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2d4f9f] px-2 text-white'>{reportsCount}</span>
                 Published Reports
               </div>

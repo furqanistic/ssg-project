@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowUpRight, ChevronRight, Compass } from 'lucide-react'
+import { ArrowUpRight, Compass } from 'lucide-react'
 import React from 'react'
 import AboutPageHero from '@/components/about/AboutPageHero'
 import SiteFooter from '@/components/layout/SiteFooter'
@@ -119,22 +119,6 @@ const MissionPage = () => {
                         <p className='mt-4 flex-1 text-[14px] font-light leading-relaxed text-[#5a677a] sm:text-[15px]'>
                           {cardDescription}
                         </p>
-
-                        {/* Footer */}
-                        <div className='mt-6 flex items-center gap-2 border-t pt-5' style={{ borderColor: `${accentColor}15` }}>
-                          <span
-                            className='flex h-7 w-7 items-center justify-center rounded-full transition-all duration-500 group-hover:translate-x-1'
-                            style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
-                          >
-                            <ChevronRight className='h-3.5 w-3.5 stroke-[2.5]' />
-                          </span>
-                          <span
-                            className='text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors duration-500'
-                            style={{ color: `${accentColor}80` }}
-                          >
-                            Learn more
-                          </span>
-                        </div>
                       </div>
                     </motion.article>
                   )

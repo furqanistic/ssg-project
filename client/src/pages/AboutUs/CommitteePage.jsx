@@ -41,7 +41,11 @@ const CommitteePage = () => {
     <div className='min-h-screen bg-[#fafafa] font-["Outfit",sans-serif] text-[#071544] selection:bg-[#f6ab3c]/30'>
       <div className='relative'>
         <NavbarSection />
-        <AboutPageHero title={committee.heroTitle} subtitle={committee.heroSubtitle} />
+        <AboutPageHero
+          title={committee.heroTitle}
+          subtitle={committee.heroSubtitle}
+          image={committee.heroImage}
+        />
       </div>
 
       <section className='relative z-20 -mt-6 overflow-hidden px-4 pb-12 sm:px-5 md:-mt-8 md:px-6 md:pb-20'>

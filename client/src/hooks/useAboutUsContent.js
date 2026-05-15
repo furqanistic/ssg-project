@@ -49,6 +49,7 @@ const normalizeAboutUs = (aboutUs = {}, language = 'en') => {
     committee: {
       heroTitle: toText(committee.heroTitle, language),
       heroSubtitle: toText(committee.heroSubtitle, language),
+      heroImage: toText(committee.heroImage),
       intro: toText(committee.intro, language),
       members: toArray(committee.members)
         .map((item) => ({

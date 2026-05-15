@@ -379,6 +379,9 @@ const DashboardAboutSection = ({
             placeholder='Committee page subtitle'
           />
           <div className='md:col-span-2'>
+            {renderImageField('committee', 'Committee', 'Committee hero image uploaded.')}
+          </div>
+          <div className='md:col-span-2'>
             <textarea
               value={aboutUsForm.committee.intro}
               onChange={(event) => updateAboutUsText('committee', 'intro', event.target.value)}

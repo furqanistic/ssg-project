@@ -331,6 +331,7 @@ const defaultAboutUsForm = {
   committee: {
     heroTitle: '',
     heroSubtitle: '',
+    heroImage: '',
     intro: '',
     members: [{ initials: '', name: '', role: '', email: '', phone: '', image: '' }],
     ctaTitle: '',
@@ -409,6 +410,7 @@ const createAboutUsPayload = (sourceForm) => ({
   committee: {
     heroTitle: sourceForm.committee.heroTitle.trim(),
     heroSubtitle: sourceForm.committee.heroSubtitle.trim(),
+    heroImage: sourceForm.committee.heroImage.trim(),
     intro: sourceForm.committee.intro.trim(),
     members: sourceForm.committee.members
       .map((item) => ({
@@ -518,6 +520,7 @@ const buildAboutUsEditorForm = (aboutUs = {}, language = 'en') => {
     committee: {
       heroTitle: readLocalizedEditorValue(aboutUs.committee?.heroTitle, language),
       heroSubtitle: readLocalizedEditorValue(aboutUs.committee?.heroSubtitle, language),
+      heroImage: aboutUs.committee?.heroImage ?? '',
       intro: readLocalizedEditorValue(aboutUs.committee?.intro, language),
       members:
         Array.isArray(aboutUs.committee?.members) && aboutUs.committee.members.length > 0
@@ -669,6 +672,7 @@ const buildLocalizedAboutUsPayload = (sourceForm, existingAboutUs = {}, language
         language,
         payload.committee.heroSubtitle,
       ),
+      heroImage: payload.committee.heroImage,
       intro: upsertLocalizedValue(existingAboutUs.committee?.intro, language, payload.committee.intro),
       members: payload.committee.members.map((item, index) => ({
         initials: upsertLocalizedValue(existingAboutUs.committee?.members?.[index]?.initials, language, item.initials),

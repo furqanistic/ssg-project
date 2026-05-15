@@ -1579,16 +1579,14 @@ const DashboardShell = ({ sectionKey = null }) => {
         }
 
         setAboutUsForm(nextAboutUsForm)
-        await updateMutation.mutateAsync({
-          section: 'aboutUs',
-          data: buildAboutUsPayload(nextAboutUsForm, content?.aboutUs ?? {}, aboutEditorLanguage),
-        })
-        setAboutUsSavedSnapshot(JSON.stringify(createAboutUsPayload(nextAboutUsForm)))
-        setAboutUsLastSavedAt(new Date())
       }
 
       closeEditModal()
-      setSuccess('Changes saved successfully.')
+      setSuccess(
+        isAboutModalType
+          ? 'Draft updated. Click Save About Page or Publish Changes to apply publicly.'
+          : 'Changes saved successfully.',
+      )
     } catch (requestError) {
       setError(requestError.message)
     }
@@ -3088,7 +3086,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                     {editModal.type === 'about-governance-document' ? (
                       <div className='space-y-6'>
                         <p className='rounded-[10px] border border-blue-100 bg-blue-50 px-3 py-2 text-[12px] font-medium text-blue-700'>
-                          Select file, then click Save Changes. The file uploads to Supabase and the URL is saved automatically.
+                          Select file, then click Save Changes. The file uploads and the URL is saved automatically.
                         </p>
                         <input
                           value={editModal.data.title ?? ''}
@@ -3170,7 +3168,7 @@ const DashboardShell = ({ sectionKey = null }) => {
                     {editModal.type === 'about-governance-report' ? (
                       <div className='space-y-6'>
                         <p className='rounded-[10px] border border-blue-100 bg-blue-50 px-3 py-2 text-[12px] font-medium text-blue-700'>
-                          Select file, then click Save Changes. The file uploads to Supabase and the URL is saved automatically.
+                          Select file, then click Save Changes. The file uploads and the URL is saved automatically.
                         </p>
                         <input
                           value={editModal.data.title ?? ''}

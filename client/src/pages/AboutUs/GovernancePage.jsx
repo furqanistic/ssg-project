@@ -6,38 +6,49 @@ import SiteFooter from '@/components/layout/SiteFooter'
 import { useAboutUsContentQuery } from '@/hooks/useAboutUsContent'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
 
-const DownloadCard = ({ title, size, fileUrl, ctaLabel }) => {
+const DownloadCard = ({ title, size, fileUrl, ctaLabel, accent = '#f6ab3c' }) => {
+  const displaySize = typeof size === 'string' && size.trim() ? size.trim() : '-'
+  const accentColor = typeof accent === 'string' && accent.trim() ? accent.trim() : '#f6ab3c'
+
   return (
     <motion.article 
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className='group relative overflow-hidden rounded-[1.2rem] border border-[#f6ab3c]/18 bg-white/96 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1 hover:border-[#f6ab3c]/50 hover:bg-white hover:shadow-[0_24px_60px_rgba(22,32,51,0.09)] sm:p-6'
+      className='group relative flex h-full flex-col overflow-hidden rounded-[1.2rem] border border-[#f6ab3c]/18 bg-white/96 p-5 shadow-[0_14px_45px_rgba(22,32,51,0.055)] transition-all duration-500 hover:-translate-y-1 hover:border-[#f6ab3c]/50 hover:bg-white hover:shadow-[0_24px_60px_rgba(22,32,51,0.09)] sm:p-6'
     >
+      <div className='flex h-full flex-col'>
       <div className='flex items-start gap-4 sm:gap-5'>
-        <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#071544] text-[#f6ab3c] shadow-[0_10px_25px_rgba(16,42,98,0.18)] transition-transform duration-500 group-hover:scale-105 sm:h-12 sm:w-12'>
+        <div
+          className='flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-[#071544] shadow-[0_10px_25px_rgba(16,42,98,0.18)] transition-transform duration-500 group-hover:scale-105 sm:h-12 sm:w-12'
+          style={{ backgroundColor: accentColor }}
+        >
           <FileText className='h-5 w-5 stroke-[1.5]' />
         </div>
-        <div className='min-w-0'>
-          <h3 className='text-pretty text-[16px] font-bold tracking-normal text-[#071544] md:text-[18px]'>
+        <div className='min-w-0 flex-1'>
+          <h3 className='text-[16px] font-bold tracking-normal text-[#071544] md:text-[18px]'>
             {title}
           </h3>
           <div className='mt-2 inline-flex items-center rounded-full border border-[#071544]/10 bg-[#f8f9fb] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#607089]'>
-            {size}
+            {displaySize}
           </div>
+        </div>
+      </div>
+
+      <div className='mt-4 pt-1'>
           {fileUrl ? (
             <a
               href={fileUrl}
               target='_blank'
               rel='noreferrer'
               download
-              className='mt-4 inline-flex min-h-10 items-center justify-center gap-2.5 rounded-full border border-[#f6ab3c] bg-[#f6ab3c] px-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#071544] transition-all hover:border-[#ef9f22] hover:bg-[#ef9f22]'
+              className='inline-flex min-h-10 w-full items-center justify-center gap-2.5 rounded-full border border-[#f6ab3c] bg-[#f6ab3c] px-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#071544] transition-all hover:border-[#ef9f22] hover:bg-[#ef9f22]'
             >
               <Download className='h-4 w-4' />
               <span>{ctaLabel}</span>
             </a>
           ) : (
-            <span className='mt-4 inline-flex min-h-10 items-center justify-center gap-2.5 rounded-full border border-[#071544]/12 bg-[#f8f9fb] px-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#7a879b]'>
+            <span className='inline-flex min-h-10 w-full items-center justify-center gap-2.5 rounded-full border border-[#071544]/12 bg-[#f8f9fb] px-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#7a879b]'>
               <Download className='h-4 w-4' />
               {ctaLabel} (Coming Soon)
             </span>
@@ -151,6 +162,7 @@ const GovernancePage = () => {
                     key={`${document?.title ?? 'document'}-${index}`}
                     title={document.title}
                     size={document.size}
+                    accent={document.accent}
                     fileUrl={document.fileUrl}
                     ctaLabel={downloadLabel}
                   />
@@ -180,6 +192,7 @@ const GovernancePage = () => {
                     key={`${report?.title ?? 'report'}-${index}`}
                     title={report.title}
                     size={report.size}
+                    accent={report.accent}
                     fileUrl={report.fileUrl}
                     ctaLabel={downloadLabel}
                   />
@@ -231,4 +244,3 @@ const GovernancePage = () => {
 }
 
 export default GovernancePage
-

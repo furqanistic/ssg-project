@@ -1,10 +1,10 @@
 import React from 'react'
 
 const DashboardContactSection = ({
-  Mail,
-  Plus,
-  Save,
-  DataTable,
+  Mail: MailIcon,
+  Plus: PlusIcon,
+  Save: SaveIcon,
+  DataTable: DataTableComponent,
   panelClass,
   contactForm,
   setContactForm,
@@ -27,7 +27,7 @@ const DashboardContactSection = ({
       <div className={panelClass}>
         <div className='flex items-center gap-4 mb-8 pb-6 border-b border-gray-100'>
           <div className='flex h-12 w-12 items-center justify-center rounded-[14px] bg-[#001da5]/5 border border-[#001da5]/10 text-[#001da5]'>
-            <Mail size={24} />
+            {React.createElement(MailIcon, { size: 24 })}
           </div>
           <div>
             <h3 className='text-[18px] font-bold text-gray-900 tracking-tight'>Direct Communications</h3>
@@ -69,7 +69,7 @@ const DashboardContactSection = ({
             <p className='text-[12px] text-gray-400'>Manage display address lines</p>
           </div>
           <button type='button' onClick={() => showForm('contactAddress')} className={actionButtonClass}>
-            <Plus size={16} className='mr-2' />
+            {React.createElement(PlusIcon, { size: 16, className: 'mr-2' })}
             Add Line
           </button>
         </div>
@@ -90,28 +90,28 @@ const DashboardContactSection = ({
                 Discard
               </button>
               <button type='button' onClick={upsertContactAddress} className={primaryButtonClass}>
-                <Save size={16} className='mr-2' />
+                {React.createElement(SaveIcon, { size: 16, className: 'mr-2' })}
                 {editingContactAddressIndex === null ? 'Add Address' : 'Update Address'}
               </button>
             </div>
           </div>
         ) : null}
 
-        <DataTable
-          title='Contact Address Repository'
-          rows={contactForm.address}
-          columns={[{ key: 'text', label: 'Registered Line' }]}
-          emptyMessage='No contact address lines defined.'
-          alwaysShowActions={true}
-          actionButtonStyle='labeled'
-          onEdit={(index) => startEdit('contact-address', index, contactForm.address[index])}
-          onDelete={(index) => {
+        {React.createElement(DataTableComponent, {
+          title: 'Contact Address Repository',
+          rows: contactForm.address,
+          columns: [{ key: 'text', label: 'Registered Line' }],
+          emptyMessage: 'No contact address lines defined.',
+          alwaysShowActions: true,
+          actionButtonStyle: 'labeled',
+          onEdit: (index) => startEdit('contact-address', index, contactForm.address[index]),
+          onDelete: (index) => {
             setContactForm((prev) => ({
               ...prev,
               address: prev.address.filter((_, itemIndex) => itemIndex !== index),
             }))
-          }}
-        />
+          },
+        })}
       </div>
     </div>
   )

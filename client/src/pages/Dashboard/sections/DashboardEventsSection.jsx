@@ -164,7 +164,10 @@ const DashboardEventsSection = ({
                       const nextRows = eventsRows.filter((_, itemIndex) => itemIndex !== targetIndex)
                       setDeletingEventIndex(targetIndex)
                       try {
-                        await saveEventsSection(nextRows, `${activeGroupConfig.title} updated successfully.`)
+                        await saveEventsSection(
+                          nextRows,
+                          `${activeGroupConfig.title} draft updated. Click Publish Changes to update the public website.`,
+                        )
                       } finally {
                         setDeletingEventIndex(null)
                       }
@@ -213,7 +216,10 @@ const DashboardEventsSection = ({
               const nextRows = eventsRows.filter((_, itemIndex) => itemIndex !== targetIndex)
               setDeletingEventIndex(targetIndex)
               try {
-                await saveEventsSection(nextRows, 'Events updated successfully.')
+                await saveEventsSection(
+                  nextRows,
+                  'Events draft updated. Click Publish Changes to update the public website.',
+                )
               } finally {
                 setDeletingEventIndex(null)
               }

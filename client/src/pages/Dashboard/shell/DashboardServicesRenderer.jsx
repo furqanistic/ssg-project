@@ -1,5 +1,5 @@
 import React from 'react'
-import { ArrowLeft, BookOpen, CalendarDays, ChevronRight, FileText, GraduationCap, Heart, LayoutDashboard, Plus, Save } from 'lucide-react'
+import { ArrowLeft, BookOpen, CalendarDays, ChevronRight, FileText, GraduationCap, Heart, Image as ImageIcon, LayoutDashboard, Plus, Save, Trash2 } from 'lucide-react'
 import { InteractiveNavCard } from '@/components/ui/interactive-nav-card'
 
 const DashboardServicesRenderer = ({
@@ -35,9 +35,9 @@ const DashboardServicesRenderer = ({
               <section className='space-y-6'>
                 <article className='sticky top-4 z-20 flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-blue-100 bg-white/95 px-5 py-4 shadow-[0_16px_35px_rgba(0,29,165,0.12)] backdrop-blur'>
                   <div>
-                    <h3 className='text-[15px] font-black tracking-tight text-gray-900'>Save Services Changes</h3>
+                    <h3 className='text-[15px] font-black tracking-tight text-gray-900'>Save Services Draft</h3>
                     <p className='mt-0.5 text-[12px] font-medium text-gray-500'>
-                      Save after editing links or page content so the navbar and service page update.
+                      Save keeps edits in the dashboard. Use top Publish Changes when you want the public site updated.
                     </p>
                   </div>
                   <button
@@ -47,7 +47,7 @@ const DashboardServicesRenderer = ({
                     className='inline-flex h-11 items-center justify-center gap-2 rounded-[12px] bg-[#001da5] px-5 text-[13px] font-bold text-white shadow-lg shadow-blue-500/20 transition hover:bg-[#001580] disabled:cursor-not-allowed disabled:opacity-70'
                   >
                     <Save className='h-4 w-4' />
-                    {updateMutation.isPending ? 'Saving...' : 'Save Services'}
+                    {updateMutation.isPending ? 'Saving...' : 'Save Draft'}
                   </button>
                 </article>
 

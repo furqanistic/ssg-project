@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { CalendarDays, Clock3, MapPin, Sparkles, ChevronRight, Sun, Users, Trophy, Star } from 'lucide-react'
+import { CalendarDays, Clock3, MapPin, Sparkles, Sun, Users, Trophy, Star } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEventsContentQuery } from '@/hooks/useEventsContent'
@@ -206,12 +206,6 @@ const ProgramsPage = () => {
                         <p className='mt-3 line-clamp-2 text-[13px] font-light leading-relaxed text-[#5a677a]/80 md:mt-4 md:line-clamp-3 md:text-[14px]'>
                           {event.description}
                         </p>
-                        
-                        <div className='mt-auto pt-4 md:pt-6'>
-                          <button className='flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-[#071544] transition-all hover:gap-2 md:text-[12px]'>
-                            View Details <ChevronRight className='h-3 w-3' />
-                          </button>
-                        </div>
                       </div>
                     </motion.article>
                   ))}
@@ -270,10 +264,6 @@ const ProgramsPage = () => {
                   <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
                     {program.description}
                   </p>
-                </div>
-
-                <div className='mt-10 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#f6ab3c] opacity-0 transition-all duration-500 group-hover:opacity-100'>
-                  Explore Program <ChevronRight className='h-3.5 w-3.5' />
                 </div>
               </motion.article>
             )})}

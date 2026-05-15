@@ -76,9 +76,8 @@ const MissionPage = () => {
               {/* Mission Cards — Bento Grid */}
               <motion.div
                 variants={stagger}
-                initial='hidden'
-                whileInView='visible'
-                viewport={{ once: true, margin: '-60px' }}
+                initial='visible'
+                animate='visible'
                 className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6"
               >
                 {missionCards.map(({ title, description: cardDescription, accent: cardAccent }, index) => {
@@ -91,30 +90,22 @@ const MissionPage = () => {
                       variants={fadeUp}
                       className={`group ${isWide ? 'sm:col-span-2' : ''}`}
                     >
-                      {/* Outer shell */}
                       <div
-                        className='h-full rounded-[1.75rem] border bg-white p-6 transition-all duration-500 hover:shadow-[0_16px_48px_-12px_rgba(7,21,68,0.1)] sm:p-8'
-                        style={{ borderColor: `${accentColor}30` }}
+                        className='h-full rounded-[2rem] border bg-white p-6 transition-all duration-500 hover:shadow-[0_16px_48px_-12px_rgba(7,21,68,0.1)] sm:p-8'
+                        style={{ borderColor: accentColor }}
                       >
-                        {/* Colored top accent bar */}
-                        <div
-                          className='mb-6 h-[3px] w-10 rounded-full transition-all duration-500 group-hover:w-20'
-                          style={{ backgroundColor: accentColor }}
-                        />
+                        <div className='mb-4 flex items-center gap-2'>
+                          <span className='h-1.5 w-1.5 rounded-full' style={{ backgroundColor: accentColor }} />
+                          <span className='text-[11px] font-bold uppercase tracking-[0.2em]' style={{ color: `${accentColor}80` }}>
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                        </div>
 
-                        {/* Index number */}
-                        <span
-                          className='mb-3 block text-[11px] font-bold uppercase tracking-[0.2em]'
-                          style={{ color: `${accentColor}90` }}
-                        >
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-
-                        <h3 className='text-[20px] font-semibold leading-snug tracking-tight text-[#071544] transition-colors duration-500 group-hover:text-[var(--accent)] sm:text-[22px]'
-                          style={{ '--accent': accentColor }}
-                        >
+                        <h3 className='text-[20px] font-bold tracking-tight text-[#071544] sm:text-[22px]'>
                           {title}
                         </h3>
+
+                        <div className='mt-3 h-[1px] w-8' style={{ backgroundColor: `${accentColor}30` }} />
 
                         <p className='mt-4 flex-1 text-[14px] font-light leading-relaxed text-[#5a677a] sm:text-[15px]'>
                           {cardDescription}
@@ -191,7 +182,7 @@ const MissionPage = () => {
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
           >
             {coreValues.map((value, index) => {
-              const accentColor = index % 2 === 0 ? 'border-[#f6ab3c]/25 hover:border-[#f6ab3c]/45' : 'border-[#2d4f9f]/20 hover:border-[#2d4f9f]/40'
+              const accentColor = index % 2 === 0 ? 'border-[#f6ab3c]/50 hover:border-[#f6ab3c]/70' : 'border-[#2d4f9f]/50 hover:border-[#2d4f9f]/70'
               const dotColor = index % 2 === 0 ? 'bg-[#f6ab3c]' : 'bg-[#2d4f9f]'
 
               return (
@@ -213,19 +204,15 @@ const MissionPage = () => {
                         <span className="text-[10px] font-black text-[#111318]/20 select-none tracking-wider">0{index + 1}</span>
                       </div>
 
-                      <h3 className="text-[17px] sm:text-[19px] font-medium tracking-tight text-[#071544] leading-tight transition-colors duration-500 group-hover:text-[#2d4f9f]">
+                      <h3 className="text-[17px] sm:text-[19px] font-bold tracking-tight text-[#071544] leading-tight transition-colors duration-500 group-hover:text-[#2d4f9f]">
                         {value.title}
                       </h3>
 
                       <div className="mt-3 h-[1px] w-6 bg-[#2d4f9f]/25 transition-all duration-500 group-hover:w-10" />
 
-                      <p className="mt-3 flex-1 text-[13px] font-light leading-relaxed text-[#5a677a] sm:text-[14px]">
+                      <p className="mt-3 flex-1 text-pretty text-[14px] leading-[1.7] text-[#516075] sm:text-[15px] md:mt-4 md:text-[16px]">
                         {value.description}
                       </p>
-
-                      <div className="mt-5 pt-3 border-t border-[#071544]/[0.04]">
-                        <span className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#5a677a]/50">Core value</span>
-                      </div>
                     </div>
                   </div>
                 </motion.article>

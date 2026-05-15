@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ArrowLeft, Shield, Target, Users, ScrollText } from 'lucide-react'
+import { ArrowLeft, ChevronRight, Shield, Target, Users, ScrollText } from 'lucide-react'
 import { InteractiveNavCard } from '@/components/ui/interactive-nav-card'
 
 const AboutPagePanel = ({
@@ -70,6 +70,7 @@ const DashboardAboutSection = ({
   normalizeColorValue,
 }) => {
   const [activeAboutPage, setActiveAboutPage] = useState(null)
+  const [activeCommitteeTab, setActiveCommitteeTab] = useState('all')
   const [activeGovernanceTab, setActiveGovernanceTab] = useState('hero')
   const aboutPageCards = [
     {
@@ -102,6 +103,12 @@ const DashboardAboutSection = ({
     { key: 'structure', label: 'Structure' },
     { key: 'documents', label: 'Documents & Reports' },
     { key: 'transparency', label: 'Transparency & Tax' },
+  ]
+  const committeeTabs = [
+    { key: 'all', label: 'All' },
+    { key: 'hero', label: 'Hero' },
+    { key: 'members', label: 'Members' },
+    { key: 'cta', label: 'Bottom CTA' },
   ]
 
   const renderImageField = (pageKey, label, successMessage) => (
@@ -372,98 +379,122 @@ const DashboardAboutSection = ({
         onSave={() => saveAboutUsNonPopupSection('Committee page')}
         saveIcon={saveIcon}
       >
-        <FieldGroup title='Hero Section' description='Top section content for the Committee page.'>
-          <input
-            value={aboutUsForm.committee.heroTitle}
-            onChange={(event) => updateAboutUsText('committee', 'heroTitle', event.target.value)}
-            className={inputClass}
-            placeholder='Committee page title'
-          />
-          <input
-            value={aboutUsForm.committee.heroSubtitle}
-            onChange={(event) => updateAboutUsText('committee', 'heroSubtitle', event.target.value)}
-            className={inputClass}
-            placeholder='Committee page subtitle'
-          />
-          <div className='md:col-span-2'>
-            {renderImageField('committee', 'Committee', 'Committee hero image uploaded.')}
-          </div>
-          <div className='md:col-span-2'>
-            <textarea
-              value={aboutUsForm.committee.intro}
-              onChange={(event) => updateAboutUsText('committee', 'intro', event.target.value)}
-              className={textareaClass}
-              placeholder='Committee page introduction'
-            />
-          </div>
-        </FieldGroup>
-
-        <div className='space-y-3'>
-          {React.createElement(dataTableComponent, {
-            title: 'Committee Members',
-            rows: aboutUsForm.committee.members,
-            alwaysShowActions: true,
-            actionButtonStyle: 'labeled-compact',
-            columns: [
-              { key: 'name', label: 'Name' },
-              { key: 'role', label: 'Role' },
-              { key: 'email', label: 'Email' },
-              { key: 'phone', label: 'Phone' },
-              { key: 'image', label: 'Image URL' },
-            ],
-            emptyMessage: 'No members yet.',
-            onEdit: (index) =>
-              startEdit('about-committee-member', index, aboutUsForm.committee.members[index]),
-            onDelete: (index) =>
-              removeAboutUsArrayItem('committee', 'members', index, {
-                initials: '',
-                name: '',
-                role: '',
-                email: '',
-                phone: '',
-                image: '',
-              }),
-          })}
-          <button
-            type='button'
-            onClick={() =>
-              startEdit('about-committee-member', -1, {
-                initials: '',
-                name: '',
-                role: '',
-                email: '',
-                phone: '',
-                image: '',
-              })
-            }
-            className={actionButtonClass}
-          >
-            {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Member
-          </button>
+        <div className='grid grid-cols-2 gap-3 md:grid-cols-4'>
+          {committeeTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type='button'
+              onClick={() => setActiveCommitteeTab(tab.key)}
+              className={`flex items-center justify-between gap-2 rounded-[10px] border px-3 py-2 text-left text-[12px] font-bold transition ${
+                activeCommitteeTab === tab.key
+                  ? 'border-[#001da5]/35 bg-[#001da5]/5 text-[#001da5]'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-[#001da5]/25 hover:text-[#001da5]'
+              }`}
+            >
+              <span>{tab.label}</span>
+              <ChevronRight size={14} className={activeCommitteeTab === tab.key ? 'text-[#001da5]' : 'text-gray-400'} />
+            </button>
+          ))}
         </div>
 
-        <FieldGroup title='Bottom CTA Section' description='Call-to-action shown near the bottom of the Committee page.'>
-          <input
-            value={aboutUsForm.committee.ctaTitle}
-            onChange={(event) => updateAboutUsText('committee', 'ctaTitle', event.target.value)}
-            className={inputClass}
-            placeholder='CTA title'
-          />
-          <input
-            value={aboutUsForm.committee.ctaButtonLabel}
-            onChange={(event) => updateAboutUsText('committee', 'ctaButtonLabel', event.target.value)}
-            className={inputClass}
-            placeholder='CTA button label'
-          />
-          <div className='md:col-span-2'>
-            <textarea
-              value={aboutUsForm.committee.ctaDescription}
-              onChange={(event) => updateAboutUsText('committee', 'ctaDescription', event.target.value)}
-              className={textareaClass}
-              placeholder='CTA description'
+        {activeCommitteeTab === 'all' || activeCommitteeTab === 'hero' ? (
+          <FieldGroup title='Hero Section' description='Top section content for the Committee page.'>
+            <input
+              value={aboutUsForm.committee.heroTitle}
+              onChange={(event) => updateAboutUsText('committee', 'heroTitle', event.target.value)}
+              className={inputClass}
+              placeholder='Committee page title'
             />
+            <input
+              value={aboutUsForm.committee.heroSubtitle}
+              onChange={(event) => updateAboutUsText('committee', 'heroSubtitle', event.target.value)}
+              className={inputClass}
+              placeholder='Committee page subtitle'
+            />
+            <div className='md:col-span-2'>
+              {renderImageField('committee', 'Committee', 'Committee hero image uploaded.')}
+            </div>
+            <div className='md:col-span-2'>
+              <textarea
+                value={aboutUsForm.committee.intro}
+                onChange={(event) => updateAboutUsText('committee', 'intro', event.target.value)}
+                className={textareaClass}
+                placeholder='Committee page introduction'
+              />
+            </div>
+          </FieldGroup>
+        ) : null}
+
+        {activeCommitteeTab === 'all' || activeCommitteeTab === 'members' ? (
+          <div className='space-y-3'>
+            {React.createElement(dataTableComponent, {
+              title: 'Committee Members',
+              rows: aboutUsForm.committee.members,
+              alwaysShowActions: true,
+              actionButtonStyle: 'labeled-compact',
+              columns: [
+                { key: 'name', label: 'Name' },
+                { key: 'role', label: 'Role' },
+                { key: 'email', label: 'Email' },
+                { key: 'phone', label: 'Phone' },
+                { key: 'image', label: 'Image URL' },
+              ],
+              emptyMessage: 'No members yet.',
+              onEdit: (index) =>
+                startEdit('about-committee-member', index, aboutUsForm.committee.members[index]),
+              onDelete: (index) =>
+                removeAboutUsArrayItem('committee', 'members', index, {
+                  initials: '',
+                  name: '',
+                  role: '',
+                  email: '',
+                  phone: '',
+                  image: '',
+                }),
+            })}
+            <button
+              type='button'
+              onClick={() =>
+                startEdit('about-committee-member', -1, {
+                  initials: '',
+                  name: '',
+                  role: '',
+                  email: '',
+                  phone: '',
+                  image: '',
+                })
+              }
+              className={actionButtonClass}
+            >
+              {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Member
+            </button>
           </div>
-        </FieldGroup>
+        ) : null}
+
+        {activeCommitteeTab === 'all' || activeCommitteeTab === 'cta' ? (
+          <FieldGroup title='Bottom CTA Section' description='Call-to-action shown near the bottom of the Committee page.'>
+            <input
+              value={aboutUsForm.committee.ctaTitle}
+              onChange={(event) => updateAboutUsText('committee', 'ctaTitle', event.target.value)}
+              className={inputClass}
+              placeholder='CTA title'
+            />
+            <input
+              value={aboutUsForm.committee.ctaButtonLabel}
+              onChange={(event) => updateAboutUsText('committee', 'ctaButtonLabel', event.target.value)}
+              className={inputClass}
+              placeholder='CTA button label'
+            />
+            <div className='md:col-span-2'>
+              <textarea
+                value={aboutUsForm.committee.ctaDescription}
+                onChange={(event) => updateAboutUsText('committee', 'ctaDescription', event.target.value)}
+                className={textareaClass}
+                placeholder='CTA description'
+              />
+            </div>
+          </FieldGroup>
+        ) : null}
       </AboutPagePanel>
       ) : null}
 
@@ -484,13 +515,14 @@ const DashboardAboutSection = ({
               key={tab.key}
               type='button'
               onClick={() => setActiveGovernanceTab(tab.key)}
-              className={`rounded-[10px] border px-3 py-2 text-left text-[12px] font-bold transition ${
+              className={`flex items-center justify-between gap-2 rounded-[10px] border px-3 py-2 text-left text-[12px] font-bold transition ${
                 activeGovernanceTab === tab.key
                   ? 'border-[#001da5]/35 bg-[#001da5]/5 text-[#001da5]'
                   : 'border-gray-200 bg-white text-gray-700 hover:border-[#001da5]/25 hover:text-[#001da5]'
               }`}
             >
-              {tab.label}
+              <span>{tab.label}</span>
+              <ChevronRight size={14} className={activeGovernanceTab === tab.key ? 'text-[#001da5]' : 'text-gray-400'} />
             </button>
           ))}
         </div>

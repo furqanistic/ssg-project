@@ -742,7 +742,7 @@ const DashboardServicesRenderer = ({
                   {activeYouthServicesEditor === 'programs' ? (
                   <div className='mt-6 rounded-[16px] border border-gray-100 p-5'>
                     <h4 className='text-[16px] font-bold text-gray-900'>Programs, Registration & Reasons</h4>
-                    <div className='mt-4 grid grid-cols-2 gap-3'>
+                    <div className='mt-4 grid grid-cols-2 gap-2 rounded-[12px] border border-gray-200 bg-gray-50/70 p-2 md:grid-cols-3'>
                       {[
                         { key: 'overview', title: 'Overview & Registration', icon: LayoutDashboard },
                         { key: 'gurmukhi-levels', title: 'Gurmukhi Levels', icon: BookOpen },
@@ -754,30 +754,23 @@ const DashboardServicesRenderer = ({
                           key={item.key}
                           type='button'
                           onClick={() => setActiveYouthProgramsEditor(item.key)}
-                          className={`group rounded-[12px] border px-4 py-3 text-left transition-all duration-200 ${
+                          className={`inline-flex w-full items-center justify-between gap-2 rounded-[10px] border px-3 py-2 text-[12px] font-bold transition ${
                             activeYouthProgramsEditor === item.key
-                              ? 'border-[#001da5]/45 bg-[#001da5]/6 text-[#001da5] shadow-[0_8px_20px_-16px_rgba(0,29,165,0.55)]'
-                              : 'border-gray-200 bg-white text-gray-700 hover:border-[#001da5]/30 hover:bg-[#001da5]/[0.03] hover:text-[#001da5]'
+                              ? 'border-[#001da5]/35 bg-[#001da5]/8 text-[#001da5]'
+                              : 'border-transparent bg-white text-gray-700 hover:border-[#001da5]/25 hover:text-[#001da5]'
                           }`}
                         >
-                          <div className='flex items-center justify-between gap-3'>
-                            <div className='flex items-center gap-3'>
-                              <span className={`inline-flex h-8 w-8 items-center justify-center rounded-[10px] ${
-                                activeYouthProgramsEditor === item.key
-                                  ? 'bg-[#001da5]/10 text-[#001da5]'
-                                  : 'border border-gray-200 bg-gray-50 text-gray-500 group-hover:border-[#001da5]/20 group-hover:bg-[#001da5]/10 group-hover:text-[#001da5]'
-                              }`}>
-                                {React.createElement(item.icon, { size: 15 })}
-                              </span>
-                              <span className='text-[13px] font-bold'>{item.title}</span>
-                            </div>
-                            <ChevronRight
-                              size={15}
-                              className={`transition-transform ${
-                                activeYouthProgramsEditor === item.key ? 'translate-x-0.5 text-[#001da5]' : 'text-gray-400 group-hover:translate-x-0.5 group-hover:text-[#001da5]'
-                              }`}
-                            />
-                          </div>
+                          <span className='flex items-center gap-2'>
+                            <span className={`inline-flex h-6 w-6 items-center justify-center rounded-[8px] ${
+                              activeYouthProgramsEditor === item.key
+                                ? 'bg-[#001da5]/12 text-[#001da5]'
+                                : 'bg-gray-100 text-gray-500'
+                            }`}>
+                              {React.createElement(item.icon, { size: 13 })}
+                            </span>
+                            <span>{item.title}</span>
+                          </span>
+                          <ChevronRight size={14} className={activeYouthProgramsEditor === item.key ? 'text-[#001da5]' : 'text-gray-400'} />
                         </button>
                       ))}
                     </div>

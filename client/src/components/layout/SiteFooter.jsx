@@ -70,7 +70,7 @@ const SiteFooter = () => {
                 </p>
               </div>
             </div>
-            <p className='mt-4 max-w-[30ch] text-[14px] font-light leading-[1.6] text-white/55'>
+            <p className='mt-4 max-w-[30ch] text-[14px] font-normal leading-[1.6] text-white/55'>
               {t('footer.description')}
             </p>
           </div>
@@ -85,7 +85,7 @@ const SiteFooter = () => {
                 <Link
                   key={link.label}
                   to={link.to}
-                  className='block text-[14px] font-light text-white/65 transition-colors duration-500 hover:text-white/90'
+                  className='block text-[14px] font-normal text-white/65 transition-colors duration-500 hover:text-white/90'
                 >
                   {link.label}
                 </Link>
@@ -98,7 +98,7 @@ const SiteFooter = () => {
             <h3 className='text-[10px] font-medium uppercase tracking-[0.22em] text-white/40'>
               {t('footer.contactInfo')}
             </h3>
-            <div className='mt-5 space-y-3.5 text-[14px] font-light text-white/65'>
+            <div className='mt-5 space-y-3.5 text-[14px] font-normal text-white/65'>
               <div className='flex items-start justify-center gap-3 text-center md:justify-start md:text-left'>
                 <MapPin className='mt-0.5 h-4 w-4 shrink-0 text-[#f6ab3c]/60' />
                 <p className='leading-[1.5]'>
@@ -169,14 +169,14 @@ const SiteFooter = () => {
         {/* Bottom bar */}
         <div className='mt-10 border-t border-white/8 pt-6 md:pt-7'>
           <div className='flex flex-col items-center gap-3 text-center md:flex-row md:items-center md:justify-between'>
-            <p className='text-[13px] font-light text-white/45 md:text-[14px]'>
+            <p className='text-[13px] font-normal text-white/45 md:text-[14px]'>
               {t('footer.copyright')}
             </p>
             <div className='flex flex-wrap justify-center gap-5 md:justify-start md:gap-6'>
-              <a href='#' className='text-[13px] font-light text-white/45 transition-colors duration-500 hover:text-white/80 md:text-[14px]'>
+              <a href='#' className='text-[13px] font-normal text-white/45 transition-colors duration-500 hover:text-white/80 md:text-[14px]'>
                 {t('footer.impressum')}
               </a>
-              <a href='#' className='text-[13px] font-light text-white/45 transition-colors duration-500 hover:text-white/80 md:text-[14px]'>
+              <a href='#' className='text-[13px] font-normal text-white/45 transition-colors duration-500 hover:text-white/80 md:text-[14px]'>
                 {t('footer.privacy')}
               </a>
             </div>

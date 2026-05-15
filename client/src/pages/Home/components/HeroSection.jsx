@@ -123,7 +123,7 @@ const HeroSection = () => {
 
           <motion.p
             variants={itemVariants}
-            className="mt-6 max-w-[520px] text-lg font-light leading-[1.6] text-white/55"
+            className="mt-6 max-w-[520px] text-lg font-normal leading-[1.6] text-white/55"
           >
             {t('home.hero.subtitle')}
           </motion.p>

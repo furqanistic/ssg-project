@@ -167,7 +167,7 @@ const VisitorGuidePage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {t('visitors.subtitle')}
               </MotionP>
@@ -178,14 +178,14 @@ const VisitorGuidePage = () => {
         {/* Overlapping Content Section - Exact Structural Match */}
         <section id='visitor-tabs' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-20'>
           <div className='container mx-auto max-w-[1200px]'>
-            <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
+            <div className='rounded-2xl border border-[#071544]/[0.15] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
               <div className='border-b border-[#071544]/[0.03] pb-10 md:pb-12'>
                 <div className='max-w-2xl'>
                   <SectionLabel>Visitor Guide</SectionLabel>
                   <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-4xl lg:text-5xl'>
                     Your <span className='text-[#f6ab3c]'>Visit</span>
                   </h2>
-                  <p className='mt-5 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                  <p className='mt-5 text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                     Everything you need to know for a meaningful and respectful experience at our Gurdawara.
                   </p>
                 </div>
@@ -207,7 +207,7 @@ const VisitorGuidePage = () => {
                     <h3 className='text-2xl font-semibold tracking-tight text-[#071544] md:text-3xl'>
                       {visitorContent.guide.title}
                     </h3>
-                    <div className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-8 md:text-lg'>
+                    <div className='mt-6 text-[15px] font-normal leading-relaxed text-[#5a677a] md:mt-8 md:text-lg'>
                       {visitorContent.guide.body.split('\n').map((line, index) => (
                         <p key={index} className='mb-4 last:mb-0'>
                           {line}
@@ -233,7 +233,7 @@ const VisitorGuidePage = () => {
                     </h2>
                   </div>
 
-                  <div className='rounded-2xl border border-[#071544]/[0.08] bg-white shadow-[0_20px_40px_-28px_rgba(7,21,68,0.2)] md:rounded-3xl'>
+                  <div className='rounded-2xl border border-[#071544]/[0.15] bg-white shadow-[0_20px_40px_-28px_rgba(7,21,68,0.2)] md:rounded-3xl'>
                     <div className='divide-y divide-[#071544]/[0.08]'>
                       {visitorContent.rulesEtiquette.map((rule, index) => (
                         <MotionDiv
@@ -267,7 +267,7 @@ const VisitorGuidePage = () => {
                           {additionalGuidelines.map((guideline) => (
                             <div key={guideline} className='flex items-start gap-3'>
                               <span className='mt-[8px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#f6ab3c]' />
-                              <span className='text-[14px] font-light leading-relaxed text-[#5a677a] md:text-[15px]'>{guideline}</span>
+                              <span className='text-[14px] font-normal leading-relaxed text-[#5a677a] md:text-[15px]'>{guideline}</span>
                             </div>
                           ))}
                         </div>
@@ -303,9 +303,9 @@ const VisitorGuidePage = () => {
                           {visitorContent.openingTimings.dailySchedule.map((item) => (
                             <div
                               key={item.label}
-                              className='group flex items-center justify-between rounded-xl border border-transparent p-3 transition-all duration-300 hover:border-[#071544]/05 hover:bg-[#f8f9fa]'
+                              className='group flex items-center justify-between rounded-xl border border-transparent p-3 transition-all duration-300 hover:border-[#071544]/[0.15] hover:bg-[#f8f9fa]'
                             >
-                              <span className='text-[14px] font-light text-[#5a677a] md:text-[15px]'>
+                              <span className='text-[14px] font-normal text-[#5a677a] md:text-[15px]'>
                                 {item.label}
                               </span>
                               <span className='rounded-full border border-[#071544]/10 bg-white px-3 py-0.5 text-[11px] font-semibold tracking-wide text-[#071544]'>
@@ -325,9 +325,9 @@ const VisitorGuidePage = () => {
                           {visitorContent.openingTimings.langarSchedule.map((item) => (
                             <div
                               key={item.label}
-                              className='group flex items-center justify-between rounded-xl border border-transparent p-3 transition-all duration-300 hover:border-[#071544]/05 hover:bg-[#f8f9fa]'
+                              className='group flex items-center justify-between rounded-xl border border-transparent p-3 transition-all duration-300 hover:border-[#071544]/[0.15] hover:bg-[#f8f9fa]'
                             >
-                              <span className='text-[14px] font-light text-[#5a677a] md:text-[15px]'>
+                              <span className='text-[14px] font-normal text-[#5a677a] md:text-[15px]'>
                                 {item.label}
                               </span>
                               <span className='rounded-full border border-[#071544]/10 bg-white px-3 py-0.5 text-[11px] font-semibold tracking-wide text-[#071544]'>
@@ -339,14 +339,14 @@ const VisitorGuidePage = () => {
                       </div>
                     </div>
 
-                    <div className='rounded-2xl border border-[#071544]/[0.08] bg-[#f8f9fa] p-6 md:rounded-3xl md:p-8'>
+                    <div className='rounded-2xl border border-[#071544]/[0.15] bg-[#f8f9fa] p-6 md:rounded-3xl md:p-8'>
                       <h3 className='flex items-center gap-3 text-xl font-semibold tracking-tight text-[#071544]'>
                         <div className='flex h-10 w-10 items-center justify-center rounded-full bg-[#f6ab3c]/10'>
                           <Star className='h-5 w-5 text-[#f6ab3c]' />
                         </div>
                         {t('visitors.sundaySpecialTitle')}
                       </h3>
-                      <p className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                      <p className='mt-6 text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                         {visitorContent.openingTimings.sundaySpecial}
                       </p>
                     </div>
@@ -374,7 +374,7 @@ const VisitorGuidePage = () => {
                           <h3 className='text-[10px] font-bold uppercase tracking-widest text-[#071544]/40'>
                             {t('visitors.addressTitle')}
                           </h3>
-                          <p className='mt-3 text-[15px] font-light leading-relaxed text-[#5a677a]'>
+                          <p className='mt-3 text-[15px] font-normal leading-relaxed text-[#5a677a]'>
                             {visitorContent.location.addressLines.map((line, i, arr) => (
                               <React.Fragment key={line}>
                                 {line}{i < arr.length - 1 && <br />}
@@ -407,7 +407,7 @@ const VisitorGuidePage = () => {
                     </div>
 
                     <div className='lg:w-2/3'>
-                      <div className='relative overflow-hidden rounded-2xl border border-[#071544]/[0.08] bg-white p-3 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)]'>
+                      <div className='relative overflow-hidden rounded-2xl border border-[#071544]/[0.15] bg-white p-3 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)]'>
                         <div className='aspect-video w-full overflow-hidden rounded-xl'>
                           <iframe
                             title='Visitor location map'
@@ -442,7 +442,7 @@ const VisitorGuidePage = () => {
                   </div>
 
                   <div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
-                    <article className='group relative flex flex-col overflow-hidden rounded-2xl border border-[#071544]/[0.08] bg-[#f8f9fa] p-6 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-8'>
+                    <article className='group relative flex flex-col overflow-hidden rounded-2xl border border-[#071544]/[0.15] bg-[#f8f9fa] p-6 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-8'>
                       <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white md:h-14 md:w-14 md:rounded-2xl'>
                         <Phone className='h-6 w-6' />
                       </div>
@@ -450,7 +450,7 @@ const VisitorGuidePage = () => {
                         <h3 className='text-lg font-semibold tracking-tight text-[#071544] md:text-xl'>
                           {t('visitors.phone')}
                         </h3>
-                        <p className='mt-2 text-[15px] font-light text-[#5a677a]'>
+                        <p className='mt-2 text-[15px] font-normal text-[#5a677a]'>
                           {visitorContent.contact.phone}
                         </p>
                       </div>
@@ -472,7 +472,7 @@ const VisitorGuidePage = () => {
                       </div>
                     </article>
 
-                    <article className='group relative flex flex-col overflow-hidden rounded-2xl border border-[#071544]/[0.08] bg-[#f8f9fa] p-6 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-8'>
+                    <article className='group relative flex flex-col overflow-hidden rounded-2xl border border-[#071544]/[0.15] bg-[#f8f9fa] p-6 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-8'>
                       <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white md:h-14 md:w-14 md:rounded-2xl'>
                         <Mail className='h-6 w-6' />
                       </div>
@@ -480,7 +480,7 @@ const VisitorGuidePage = () => {
                         <h3 className='text-lg font-semibold tracking-tight text-[#071544] md:text-xl'>
                           {t('visitors.email')}
                         </h3>
-                        <p className='mt-2 text-[15px] font-light text-[#5a677a]'>
+                        <p className='mt-2 text-[15px] font-normal text-[#5a677a]'>
                           {visitorContent.contact.email}
                         </p>
                       </div>
@@ -521,12 +521,12 @@ const VisitorGuidePage = () => {
                       {visitorContent.faq.map((item) => (
                         <article
                           key={item.question}
-                          className='group rounded-2xl border border-[#071544]/[0.08] bg-white p-5 transition-all duration-300 hover:border-[#f6ab3c]/40 hover:shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] md:rounded-3xl md:p-8'
+                          className='group rounded-2xl border border-[#071544]/[0.15] bg-white p-5 transition-all duration-300 hover:border-[#f6ab3c]/40 hover:shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] md:rounded-3xl md:p-8'
                         >
                           <h3 className='text-[15px] font-semibold tracking-tight text-[#071544] md:text-lg'>
                             {item.question}
                           </h3>
-                          <p className='mt-3 text-[14px] font-light leading-relaxed text-[#5a677a] md:text-[15px]'>
+                          <p className='mt-3 text-[14px] font-normal leading-relaxed text-[#5a677a] md:text-[15px]'>
                             {item.answer}
                           </p>
                         </article>

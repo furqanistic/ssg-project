@@ -95,7 +95,7 @@ const CremationFundPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {readLocalizedValue(serviceContent.heroSubtitle, language)}
               </Motion.p>
@@ -111,7 +111,7 @@ const CremationFundPage = () => {
               whileInView='visible'
               viewport={{ once: true }}
               variants={sectionVariants}
-              className='rounded-2xl border border-[#071544]/[0.08] bg-white p-6 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-10 md:rounded-3xl md:p-16'
+              className='rounded-2xl border border-[#071544]/[0.15] bg-white p-6 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-10 md:rounded-3xl md:p-16'
             >
               <div className='max-w-3xl'>
                 <SectionLabel>About This Fund</SectionLabel>
@@ -119,7 +119,7 @@ const CremationFundPage = () => {
                   {readLocalizedValue(serviceContent.aboutTitle, language)}
                 </h2>
                 
-                <div className='mt-8 space-y-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-12 md:text-lg'>
+                <div className='mt-8 space-y-6 text-[15px] font-normal leading-relaxed text-[#5a677a] md:mt-12 md:text-lg'>
                   {aboutParagraphs.map((paragraph, index) => (
                     <p key={`about-${index}`} className='whitespace-pre-line'>
                       {paragraph}
@@ -133,7 +133,7 @@ const CremationFundPage = () => {
                 </div>
 
                 {serviceContent.supportImage && (
-                  <div className='mt-10 overflow-hidden rounded-2xl border border-[#071544]/05 md:mt-12 md:rounded-3xl'>
+                  <div className='mt-10 overflow-hidden rounded-2xl border border-[#071544]/[0.15] md:mt-12 md:rounded-3xl'>
                     <img
                       src={serviceContent.supportImage}
                       alt='Cremation fund support'

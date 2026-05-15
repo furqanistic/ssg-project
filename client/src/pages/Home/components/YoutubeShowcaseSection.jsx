@@ -271,7 +271,7 @@ const YoutubeShowcaseSection = () => {
             <h2 className='mt-3 text-2xl font-medium leading-[1.08] tracking-tighter text-[#111318] sm:text-3xl md:text-4xl'>
               Latest Kirtan & Streams
             </h2>
-            <p className='mt-1.5 max-w-2xl text-[14px] font-light leading-[1.5] text-[#5a677a] md:text-[15px]'>
+            <p className='mt-1.5 max-w-2xl text-[14px] font-normal leading-[1.5] text-[#5a677a] md:text-[15px]'>
               Watch recent uploads and join us live on our official YouTube channel.
             </p>
           </div>
@@ -298,7 +298,7 @@ const YoutubeShowcaseSection = () => {
           {isLoading ? (
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className='overflow-hidden rounded-2xl border border-[#111318]/8 bg-white/50 p-3'>
+                <div key={index} className='overflow-hidden rounded-2xl border border-[#111318]/[0.15] bg-white/50 p-3'>
                   <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-[#111318]/5'>
                     <div className='absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent' />
                   </div>
@@ -378,7 +378,7 @@ const YoutubeShowcaseSection = () => {
                 </div>
               </div>
 
-              <div className='pt-6 border-t border-[#111318]/8 md:pt-8'>
+              <div className='pt-6 border-t border-[#111318]/[0.15] md:pt-8'>
                 <div className='flex items-center justify-between mb-3 md:mb-4'>
                   <h4 className='text-[10px] font-medium uppercase tracking-[0.2em] text-[#5a677a]/80'>RECENT BROADCASTS</h4>
                   <div className='flex items-center gap-1.5'>
@@ -420,7 +420,7 @@ const YoutubeShowcaseSection = () => {
                         <div className={`relative aspect-video w-full overflow-hidden rounded-xl bg-[#111318]/5 border transition-all duration-500 md:rounded-2xl ${
                           isActive
                             ? 'border-[#f6ab3c]/40'
-                            : 'border-[#111318]/8 group-hover:border-[#111318]/15'
+                            : 'border-[#111318]/[0.15] group-hover:border-[#111318]/15'
                         }`}>
                           <img
                             src={thumbnailUrl(videoId)}

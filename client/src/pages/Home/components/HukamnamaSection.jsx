@@ -233,7 +233,7 @@ const HukamnamaSection = () => {
               <span className="text-[8px] font-medium uppercase tracking-[0.22em] text-[#f6ab3c]/50">
                 {t('home.hukamnama.transliteration')}
               </span>
-              <p className="mt-2 text-[13px] font-light leading-relaxed text-white/55 md:text-[14px]">
+              <p className="mt-2 text-[13px] font-normal leading-relaxed text-white/55 md:text-[14px]">
                 {transliteration}
               </p>
             </div>
@@ -242,7 +242,7 @@ const HukamnamaSection = () => {
               <span className="text-[8px] font-medium uppercase tracking-[0.22em] text-[#f6ab3c]/50">
                 {t('home.hukamnama.translation')}
               </span>
-              <p className="mt-2 text-[13px] font-light leading-relaxed text-white/60 md:text-[14px]">
+              <p className="mt-2 text-[13px] font-normal leading-relaxed text-white/60 md:text-[14px]">
                 {translationText}
               </p>
             </div>

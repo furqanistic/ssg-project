@@ -91,7 +91,7 @@ const ContactPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {t('contact.subtitle')}
               </motion.p>
@@ -131,7 +131,7 @@ const ContactPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + index * 0.1 }}
-                  className='group rounded-2xl border border-[#071544]/05 bg-white p-8 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] transition-all duration-500 hover:border-[#f6ab3c]/30 md:p-10'
+                  className='group rounded-2xl border border-[#071544]/[0.15] bg-white p-8 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] transition-all duration-500 hover:border-[#f6ab3c]/30 md:p-10'
                 >
                   <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-[#f6ab3c]/10 text-[#f6ab3c] transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
                     <item.icon className='h-6 w-6' />
@@ -184,12 +184,12 @@ const ContactPage = () => {
                     </div>
                     <div>
                       <h3 className='text-xl font-semibold text-[#071544]'>{t('contact.openingHours')}</h3>
-                      <div className='mt-4 space-y-3 text-[15px] font-light text-[#5a677a] md:text-lg'>
-                        <p className='flex justify-between gap-10 border-b border-[#071544]/05 pb-2'>
+                      <div className='mt-4 space-y-3 text-[15px] font-normal text-[#5a677a] md:text-lg'>
+                        <p className='flex justify-between gap-10 border-b border-[#071544]/[0.15] pb-2'>
                           <span className='font-bold uppercase tracking-widest text-[11px] text-[#071544]/40'>{t('contact.daily')}</span>
                           <span>6:00 AM - 9:00 PM</span>
                         </p>
-                        <p className='flex justify-between gap-10 border-b border-[#071544]/05 pb-2'>
+                        <p className='flex justify-between gap-10 border-b border-[#071544]/[0.15] pb-2'>
                           <span className='font-bold uppercase tracking-widest text-[11px] text-[#071544]/40'>{t('contact.sundayKirtan')}</span>
                           <span>11:00 AM - 1:00 PM</span>
                         </p>
@@ -207,7 +207,7 @@ const ContactPage = () => {
                     </div>
                     <div>
                       <h3 className='text-xl font-semibold text-[#071544]'>{t('contact.howToReach')}</h3>
-                      <div className='mt-4 space-y-3 text-[15px] font-light text-[#5a677a] md:text-lg'>
+                      <div className='mt-4 space-y-3 text-[15px] font-normal text-[#5a677a] md:text-lg'>
                         <p className='flex items-center gap-3'>
                           <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
                           <span className='font-bold uppercase tracking-widest text-[11px] text-[#071544]/40 mr-2'>{t('contact.ubahn')}:</span> 
@@ -228,7 +228,7 @@ const ContactPage = () => {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className='relative overflow-hidden rounded-[2.5rem] border border-[#071544]/05 bg-white p-3 shadow-[0_40px_80px_-16px_rgba(7,21,68,0.08)]'
+                className='relative overflow-hidden rounded-[2.5rem] border border-[#071544]/[0.15] bg-white p-3 shadow-[0_40px_80px_-16px_rgba(7,21,68,0.08)]'
               >
                 <div className='h-[400px] w-full overflow-hidden rounded-[2rem] md:h-[500px]'>
                   <iframe
@@ -249,7 +249,7 @@ const ContactPage = () => {
         </section>
 
         {/* Volunteer Section */}
-        <section id='volunteer' className='relative bg-white py-20 md:py-32 overflow-hidden border-t border-[#071544]/05'>
+        <section id='volunteer' className='relative bg-white py-20 md:py-32 overflow-hidden border-t border-[#071544]/[0.15]'>
           {/* Internal Grid Motif - Subtle on white */}
           <div className='absolute inset-0 z-0 opacity-[0.03]' 
                style={{ backgroundImage: 'linear-gradient(#071544 0.5px, transparent 0.5px), linear-gradient(90deg, #071544 0.5px, transparent 0.5px)', backgroundSize: '60px 60px' }} />
@@ -260,7 +260,7 @@ const ContactPage = () => {
               <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-6xl'>
                 {t('contact.volunteerTitle')}
               </h2>
-              <p className='mx-auto mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-xl'>
+              <p className='mx-auto mt-6 max-w-2xl text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-xl'>
                 {t('contact.volunteerSubtitle')}
               </p>
             </div>
@@ -273,10 +273,10 @@ const ContactPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className='group relative rounded-[2rem] border border-[#071544]/05 bg-[#fafafa] p-8 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.1)]'
+                  className='group relative rounded-[2rem] border border-[#071544]/[0.15] bg-[#fafafa] p-8 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.1)]'
                 >
                   <h3 className='text-xl font-semibold text-[#071544]'>{opportunity.title}</h3>
-                  <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a]'>
+                  <p className='mt-4 text-[15px] font-normal leading-relaxed text-[#5a677a]'>
                     {opportunity.description}
                   </p>
                   <div className='mt-8 flex items-center gap-3'>
@@ -303,7 +303,7 @@ const ContactPage = () => {
               
               <div className='relative z-10'>
                 <h3 className='text-3xl font-semibold tracking-tight text-white md:text-4xl'>{t('contact.readyTitle')}</h3>
-                <p className='mt-6 text-[15px] font-light leading-relaxed text-white/60 md:text-lg'>{t('contact.readyDesc')}</p>
+                <p className='mt-6 text-[15px] font-normal leading-relaxed text-white/60 md:text-lg'>{t('contact.readyDesc')}</p>
                 <button
                   type='button'
                   onClick={() => setShowInterestOptions(true)}
@@ -342,7 +342,7 @@ const ContactPage = () => {
                 <h3 className='text-2xl font-semibold tracking-tight text-[#071544] md:text-3xl'>
                   {t('common.actions.expressInterest')}
                 </h3>
-                <p className='mt-3 text-[15px] font-light text-[#5a677a]'>
+                <p className='mt-3 text-[15px] font-normal text-[#5a677a]'>
                   Choose your preferred method to connect with us.
                 </p>
               </div>
@@ -350,7 +350,7 @@ const ContactPage = () => {
               <div className='grid grid-cols-1 gap-4'>
                 <a
                   href={contactPhoneDigits ? `tel:${contactPhoneDigits}` : '#'}
-                  className='flex h-14 items-center justify-between rounded-2xl border border-[#071544]/05 bg-[#071544]/02 px-6 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:bg-[#f6ab3c]/05'
+                  className='flex h-14 items-center justify-between rounded-2xl border border-[#071544]/[0.15] bg-[#071544]/02 px-6 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:bg-[#f6ab3c]/05'
                 >
                   <div className='flex items-center gap-4'>
                     <Phone className='h-5 w-5 text-[#f6ab3c]' />
@@ -360,7 +360,7 @@ const ContactPage = () => {
                 </a>
                 <a
                   href={contactEmail ? `mailto:${contactEmail}` : '#'}
-                  className='flex h-14 items-center justify-between rounded-2xl border border-[#071544]/05 bg-[#071544]/02 px-6 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:bg-[#f6ab3c]/05'
+                  className='flex h-14 items-center justify-between rounded-2xl border border-[#071544]/[0.15] bg-[#071544]/02 px-6 transition-all duration-500 hover:border-[#f6ab3c]/30 hover:bg-[#f6ab3c]/05'
                 >
                   <div className='flex items-center gap-4'>
                     <Mail className='h-5 w-5 text-[#f6ab3c]' />

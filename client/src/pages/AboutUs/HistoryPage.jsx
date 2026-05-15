@@ -71,7 +71,7 @@ const FeaturedCard = ({ section, index }) => {
         <h2 className='mt-5 text-xl font-semibold leading-snug tracking-tight text-[#071544] md:text-2xl'>
           {section?.title}
         </h2>
-        <p className='mt-4 flex-1 text-[14px] font-light leading-relaxed text-[#5a677a] md:text-[15px]'>
+        <p className='mt-4 flex-1 text-[14px] font-normal leading-relaxed text-[#5a677a] md:text-[15px]'>
           {section?.body}
         </p>
       </div>
@@ -108,12 +108,12 @@ const TimelineCard = ({ section, index, totalCount }) => {
       </div>
 
       {/* Content */}
-      <div className='group mb-10 flex-1 rounded-2xl border border-[#071544]/[0.06] bg-white p-6 transition-all duration-500 hover:border-[#f6ab3c]/20 hover:shadow-[0_12px_32px_-8px_rgba(7,21,68,0.05)] md:p-8'>
+      <div className='group mb-10 flex-1 rounded-2xl border border-[#071544]/[0.15] bg-white p-6 transition-all duration-500 hover:border-[#f6ab3c]/20 hover:shadow-[0_12px_32px_-8px_rgba(7,21,68,0.05)] md:p-8'>
         <h3 className='text-lg font-semibold tracking-tight text-[#071544] md:text-xl'>
           {section?.title}
         </h3>
         <div className='mt-3 h-px w-6 bg-[#f6ab3c]/40 transition-all duration-500 group-hover:w-12 group-hover:bg-[#f6ab3c]/70' />
-        <p className='mt-4 text-[14px] font-light leading-relaxed text-[#5a677a] md:text-[15px]'>
+        <p className='mt-4 text-[14px] font-normal leading-relaxed text-[#5a677a] md:text-[15px]'>
           {section?.body}
         </p>
       </div>
@@ -190,7 +190,7 @@ const HistoryPage = () => {
               >
                 {/* Gold hairline accent */}
                 <div className='mb-4 h-px w-10 bg-[#f6ab3c]/50' />
-                <p className='text-[15px] font-light leading-relaxed text-white/65 md:text-base'>
+                <p className='text-[15px] font-normal leading-relaxed text-white/65 md:text-base'>
                   {history.heroSubtitle}
                 </p>
               </Motion.div>

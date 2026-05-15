@@ -107,7 +107,7 @@ const DonatePage = () => {
               <h1 className='text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'>
                 {t('donate.heading')}
               </h1>
-              <p className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'>
+              <p className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'>
                 {t('donate.subtitle')}
               </p>
             </div>
@@ -122,7 +122,7 @@ const DonatePage = () => {
             whileInView='visible'
             viewport={{ once: true, margin: '-80px' }}
             variants={sectionReveal}
-            className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'
+            className='rounded-2xl border border-[#071544]/[0.15] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'
           >
             <div className='text-center'>
               <span className='inline-flex items-center rounded-full border border-[#2d4f9f]/15 bg-[#2d4f9f]/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#2d4f9f]'>

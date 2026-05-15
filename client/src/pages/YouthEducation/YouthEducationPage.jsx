@@ -55,7 +55,7 @@ const ProgramCard = ({ title, description, icon: IconComponent, scheduleDay, sch
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ delay: index * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.08] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
+      className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.15] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
     >
       <div className='flex items-start justify-between'>
         <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
@@ -70,17 +70,17 @@ const ProgramCard = ({ title, description, icon: IconComponent, scheduleDay, sch
         <h3 className='text-xl font-semibold tracking-tight text-[#071544] transition-colors duration-300 group-hover:text-[#f6ab3c] md:text-2xl'>
           {title}
         </h3>
-        <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
+        <p className='mt-4 text-[15px] font-normal leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
           {description}
         </p>
       </div>
 
-      <div className='mt-10 pt-6 border-t border-[#071544]/05'>
+      <div className='mt-10 pt-6 border-t border-[#071544]/[0.15]'>
         <div className='flex items-start gap-4'>
           <CalendarDays className='mt-1 h-4 w-4 shrink-0 text-[#f6ab3c]' />
           <div className='space-y-1'>
             <p className='text-[13px] font-bold uppercase tracking-widest text-[#071544]'>{scheduleDay}</p>
-            <p className='text-[14px] font-light text-[#5a677a]'>{scheduleTime} &middot; {scheduleLocation}</p>
+            <p className='text-[14px] font-normal text-[#5a677a]'>{scheduleTime} &middot; {scheduleLocation}</p>
           </div>
         </div>
       </div>
@@ -221,7 +221,7 @@ const YouthEducationPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {youth.subtitle}
               </Motion.p>
@@ -232,13 +232,13 @@ const YouthEducationPage = () => {
         {/* Overlapping Content Container */}
         <section id='education-content' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-20'>
           <div className='container mx-auto max-w-[1200px]'>
-            <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
+            <div className='rounded-2xl border border-[#071544]/[0.15] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
               
               {/* Internal Intro Block */}
               <div className='border-b border-[#071544]/[0.03] pb-10 md:pb-12'>
                 <div className='max-w-3xl'>
                   <SectionLabel>Overview</SectionLabel>
-                  <p className='text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                  <p className='text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                     {youth.intro}
                   </p>
                 </div>
@@ -260,7 +260,7 @@ const YouthEducationPage = () => {
                       <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
                         {youth.gurmukhi.title}
                       </h2>
-                      <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                      <p className='mt-6 max-w-2xl text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                         {youth.gurmukhi.description}
                       </p>
                     </div>
@@ -305,7 +305,7 @@ const YouthEducationPage = () => {
                       <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
                         {youth.german.title}
                       </h2>
-                      <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                      <p className='mt-6 max-w-2xl text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                         {youth.german.description}
                       </p>
                     </div>
@@ -349,7 +349,7 @@ const YouthEducationPage = () => {
                     <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
                       {youth.camps.title}
                     </h2>
-                    <p className='mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                    <p className='mt-6 max-w-2xl text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                       {youth.camps.subtitle}
                     </p>
                   </div>
@@ -362,7 +362,7 @@ const YouthEducationPage = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-40px' }}
                         transition={{ delay: index * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                        className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.08] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
+                        className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.15] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
                       >
                         <div className='flex items-start justify-between'>
                           <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
@@ -377,12 +377,12 @@ const YouthEducationPage = () => {
                           <h3 className='text-xl font-semibold tracking-tight text-[#071544] transition-colors duration-300 group-hover:text-[#f6ab3c] md:text-2xl'>
                             {card.title}
                           </h3>
-                          <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
+                          <p className='mt-4 text-[15px] font-normal leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
                             {card.description}
                           </p>
                         </div>
 
-                        <div className='mt-10 pt-6 border-t border-[#071544]/05'>
+                        <div className='mt-10 pt-6 border-t border-[#071544]/[0.15]'>
                           <div className='flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#f6ab3c]'>
                             <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
                             {card.time}
@@ -411,7 +411,7 @@ const YouthEducationPage = () => {
                     <h2 className='text-3xl font-semibold tracking-tight text-white md:text-5xl'>
                       {youth.registration.title}
                     </h2>
-                    <p className='mx-auto mt-6 text-[15px] font-light leading-relaxed text-white/60 md:text-lg'>
+                    <p className='mx-auto mt-6 text-[15px] font-normal leading-relaxed text-white/60 md:text-lg'>
                       {youth.registration.description}
                     </p>
                     <div className='mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row'>
@@ -463,7 +463,7 @@ const YouthEducationPage = () => {
                         <h3 className='mt-6 text-xl font-semibold tracking-tight text-[#071544]'>
                           {item.title}
                         </h3>
-                        <p className='mt-3 text-[15px] font-light leading-relaxed text-[#5a677a]'>
+                        <p className='mt-3 text-[15px] font-normal leading-relaxed text-[#5a677a]'>
                           {item.text}
                         </p>
                       </Motion.div>

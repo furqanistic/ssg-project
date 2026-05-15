@@ -97,7 +97,7 @@ const ServiceDetailPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+                  className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
                 >
                   {subtitle}
                 </motion.p>
@@ -114,7 +114,7 @@ const ServiceDetailPage = () => {
               whileInView='visible'
               viewport={{ once: true }}
               variants={sectionVariants}
-              className='rounded-2xl border border-[#071544]/[0.08] bg-white p-6 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-10 md:rounded-3xl md:p-16'
+              className='rounded-2xl border border-[#071544]/[0.15] bg-white p-6 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-10 md:rounded-3xl md:p-16'
             >
               {service ? (
                 <div className='max-w-3xl'>
@@ -124,13 +124,13 @@ const ServiceDetailPage = () => {
                   </h2>
                   
                   {body ? (
-                    <div className='mt-8 space-y-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-12 md:text-lg'>
+                    <div className='mt-8 space-y-6 text-[15px] font-normal leading-relaxed text-[#5a677a] md:mt-12 md:text-lg'>
                       {body.split('\n').filter(Boolean).map((paragraph, i) => (
                         <p key={i}>{paragraph}</p>
                       ))}
                     </div>
                   ) : (
-                    <p className='mt-8 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-12 md:text-lg'>
+                    <p className='mt-8 text-[15px] font-normal leading-relaxed text-[#5a677a] md:mt-12 md:text-lg'>
                       Content for this service has not been added yet.
                     </p>
                   )}
@@ -140,7 +140,7 @@ const ServiceDetailPage = () => {
                   <h2 className='text-3xl font-semibold tracking-tight text-[#071544] md:text-5xl'>
                     Service Not Found
                   </h2>
-                  <p className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                  <p className='mt-6 text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                     This service link is not configured in the dashboard yet.
                   </p>
                   <Link
@@ -171,7 +171,7 @@ const ServiceDetailPage = () => {
                   {serviceImages.map((imageUrl, index) => (
                     <div
                       key={`${imageUrl}-${index}`}
-                      className='group relative aspect-video w-full overflow-hidden rounded-[2rem] border border-[#071544]/05 bg-white shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.1)]'
+                      className='group relative aspect-video w-full overflow-hidden rounded-[2rem] border border-[#071544]/[0.15] bg-white shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.1)]'
                     >
                       <img
                         src={imageUrl}

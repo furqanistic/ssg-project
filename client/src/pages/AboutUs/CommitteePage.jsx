@@ -50,7 +50,7 @@ const CommitteePage = () => {
         />
 
         <div className='relative z-10 mx-auto max-w-[1280px]'>
-          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
+          <div className='rounded-2xl border border-[#071544]/[0.15] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
             <motion.div 
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}

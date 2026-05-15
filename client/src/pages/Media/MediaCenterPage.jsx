@@ -137,7 +137,7 @@ const MediaCenterPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {t('mediaPage.subtitle')}
               </motion.p>
@@ -158,7 +158,7 @@ const MediaCenterPage = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + index * 0.1 }}
-                    className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/05 bg-white p-8 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] transition-all duration-500 hover:border-[#f6ab3c]/30 md:p-10'
+                    className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.15] bg-white p-8 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] transition-all duration-500 hover:border-[#f6ab3c]/30 md:p-10'
                   >
                     <div className='flex items-center justify-between'>
                       <div 
@@ -174,7 +174,7 @@ const MediaCenterPage = () => {
                       <h2 className='text-xl font-semibold tracking-tight text-[#071544] md:text-2xl'>
                         {card.title}
                       </h2>
-                      <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a]'>
+                      <p className='mt-4 text-[15px] font-normal leading-relaxed text-[#5a677a]'>
                         {card.description}
                       </p>
                     </div>
@@ -223,7 +223,7 @@ const MediaCenterPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className='group relative flex flex-col overflow-hidden rounded-[2.5rem] border border-[#071544]/05 bg-white shadow-[0_40px_80px_-16px_rgba(7,21,68,0.04)] transition-all duration-500 hover:shadow-[0_40px_80px_-16px_rgba(7,21,68,0.08)]'
+                  className='group relative flex flex-col overflow-hidden rounded-[2.5rem] border border-[#071544]/[0.15] bg-white shadow-[0_40px_80px_-16px_rgba(7,21,68,0.04)] transition-all duration-500 hover:shadow-[0_40px_80px_-16px_rgba(7,21,68,0.08)]'
                 >
                   <div className='p-6 md:p-8'>
                     <div className='mb-4 flex items-center gap-3'>
@@ -233,7 +233,7 @@ const MediaCenterPage = () => {
                     <h3 className='text-xl font-semibold tracking-tight text-[#071544] md:text-2xl'>
                       {update.title}
                     </h3>
-                    <p className='mt-3 text-[14px] font-light leading-relaxed text-[#5a677a] md:text-base'>
+                    <p className='mt-3 text-[14px] font-normal leading-relaxed text-[#5a677a] md:text-base'>
                       {update.description}
                     </p>
                     <button

@@ -79,7 +79,7 @@ const AboutPageHero = ({
               className={`mx-auto flex flex-col items-center ${compact ? 'mt-3 md:mt-4' : 'mt-4 md:mt-6'}`}
             >
               <p
-                className={`text-pretty font-light leading-relaxed text-white/70 ${
+                className={`text-pretty font-normal leading-relaxed text-white/70 ${
                   compact ? 'max-w-[560px] text-[14px] sm:text-[15px] md:text-[17px]' : 'max-w-[680px] text-[15px] sm:text-[16px] md:text-lg'
                 }`}
               >

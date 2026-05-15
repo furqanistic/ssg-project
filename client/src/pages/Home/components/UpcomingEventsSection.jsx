@@ -38,14 +38,14 @@ const UpcomingEventsSection = () => {
         {/* Header */}
         <div className='flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 md:mb-12'>
           <div className='max-w-[700px]'>
-            <div className='inline-flex items-center gap-2 rounded-full border border-[#111318]/8 bg-[#111318]/[0.03] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.22em] text-[#111318]/60'>
+            <div className='inline-flex items-center gap-2 rounded-full border border-[#111318]/[0.15] bg-[#111318]/[0.03] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.22em] text-[#111318]/60'>
               <span className='h-1 w-1 rounded-full bg-[#f6ab3c]' />
               Spiritual Engagements
             </div>
             <h2 className='mt-4 text-[32px] font-medium leading-[1.06] tracking-tighter text-[#111318] sm:text-[40px] md:text-[48px] lg:text-[56px]'>
               {t('home.events.title')}
             </h2>
-            <p className='mt-2 max-w-lg text-[15px] font-light leading-relaxed text-[#5a677a] md:text-[16px]'>
+            <p className='mt-2 max-w-lg text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-[16px]'>
               {t('home.events.subtitle')}
             </p>
           </div>
@@ -68,7 +68,7 @@ const UpcomingEventsSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className='group relative flex flex-col rounded-2xl border border-[#111318]/8 bg-white overflow-hidden transition-all duration-500 hover:bg-[#faf8f5]'
+                className='group relative flex flex-col rounded-2xl border border-[#111318]/[0.15] bg-white overflow-hidden transition-all duration-500 hover:bg-[#faf8f5]'
               >
                 {/* Image */}
                 {event.image ? (
@@ -110,7 +110,7 @@ const UpcomingEventsSection = () => {
                   </div>
 
                   {event.description && (
-                    <p className='mt-4 text-[13px] font-light leading-relaxed text-[#5a677a]/80 line-clamp-2 md:text-[14px]'>
+                    <p className='mt-4 text-[13px] font-normal leading-relaxed text-[#5a677a]/80 line-clamp-2 md:text-[14px]'>
                       {formatDescription(event.description)}
                     </p>
                   )}
@@ -128,7 +128,7 @@ const UpcomingEventsSection = () => {
               </motion.article>
             ))
           ) : (
-            <div className='lg:col-span-3 rounded-2xl border border-[#111318]/8 bg-[#111318]/[0.02] px-6 py-16 text-center'>
+            <div className='lg:col-span-3 rounded-2xl border border-[#111318]/[0.15] bg-[#111318]/[0.02] px-6 py-16 text-center'>
               <CalendarDays className='h-8 w-8 text-[#111318]/10 mx-auto mb-4' strokeWidth={1} />
               <p className='text-[14px] font-medium text-[#111318]/40 uppercase tracking-[0.15em]'>No Upcoming Sessions</p>
             </div>

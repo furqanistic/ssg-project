@@ -99,7 +99,7 @@ const ProgramsPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+              className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
             >
               {t('eventsPage.subtitle')}
             </motion.p>
@@ -109,7 +109,7 @@ const ProgramsPage = () => {
       {/* Events Browser */}
       <section id='events-tabs' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-20'>
         <div className='container mx-auto max-w-[1200px]'>
-          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-3 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-4 md:rounded-3xl md:p-8'>
+          <div className='rounded-2xl border border-[#071544]/[0.15] bg-white p-3 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-4 md:rounded-3xl md:p-8'>
             <div className='flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-8'>
               <div className='max-w-xl'>
                 <SectionLabel>Live Calendar</SectionLabel>
@@ -160,7 +160,7 @@ const ProgramsPage = () => {
                       whileInView='visible'
                       viewport={{ once: true, margin: '-40px' }}
                       variants={cardVariants}
-                      className='group flex flex-col overflow-hidden rounded-xl border border-[#071544]/[0.08] bg-white transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_32px_64px_-16px_rgba(7,21,68,0.06)] md:rounded-2xl'
+                      className='group flex flex-col overflow-hidden rounded-xl border border-[#071544]/[0.15] bg-white transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_32px_64px_-16px_rgba(7,21,68,0.06)] md:rounded-2xl'
                     >
                       {/* Image Container */}
                       <div className='relative aspect-[16/9] overflow-hidden bg-[#f8f9fa]'>
@@ -203,7 +203,7 @@ const ProgramsPage = () => {
                           <span className='truncate'>{event.location}</span>
                         </div>
 
-                        <p className='mt-3 line-clamp-2 text-[13px] font-light leading-relaxed text-[#5a677a]/80 md:mt-4 md:line-clamp-3 md:text-[14px]'>
+                        <p className='mt-3 line-clamp-2 text-[13px] font-normal leading-relaxed text-[#5a677a]/80 md:mt-4 md:line-clamp-3 md:text-[14px]'>
                           {event.description}
                         </p>
                       </div>
@@ -226,7 +226,7 @@ const ProgramsPage = () => {
                 <h2 className='text-4xl font-semibold tracking-tight text-[#071544] md:text-5xl lg:text-6xl'>
                   Our Core <span className='text-[#f6ab3c]'>Programs</span>
                 </h2>
-                <p className='mt-6 text-[15px] font-light leading-relaxed text-[#5a677a] md:text-lg'>
+                <p className='mt-6 text-[15px] font-normal leading-relaxed text-[#5a677a] md:text-lg'>
                   Discover our range of spiritual, educational, and community initiatives designed to foster growth and connection for all generations.
                 </p>
               </div>
@@ -246,7 +246,7 @@ const ProgramsPage = () => {
                   whileInView='visible'
                   viewport={{ once: true }}
                   variants={cardVariants}
-                  className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.08] bg-[#f8f9fa] p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
+                  className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.15] bg-[#f8f9fa] p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:bg-white hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)] md:p-10'
                 >
                   <div className='flex items-start justify-between'>
                     <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white'>
@@ -261,7 +261,7 @@ const ProgramsPage = () => {
                   <h3 className='text-2xl font-semibold tracking-tight text-[#071544] transition-colors duration-300 group-hover:text-[#f6ab3c] md:text-3xl'>
                     {program.title}
                   </h3>
-                  <p className='mt-4 text-[15px] font-light leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
+                  <p className='mt-4 text-[15px] font-normal leading-relaxed text-[#5a677a] md:mt-5 md:text-lg'>
                     {program.description}
                   </p>
                 </div>

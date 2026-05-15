@@ -60,7 +60,7 @@ const LibraryPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-light leading-relaxed text-white/70 md:mt-6 md:text-lg'
+                className='mx-auto mt-4 max-w-2xl text-balance text-[15px] font-normal leading-relaxed text-white/70 md:mt-6 md:text-lg'
               >
                 {t('resourcesPage.library.subtitle')}
               </motion.p>
@@ -71,7 +71,7 @@ const LibraryPage = () => {
         {/* Overlapping Content Container */}
         <section id='library-content' className='relative z-20 -mt-6 px-4 pb-16 md:-mt-8 md:px-6 md:pb-20'>
           <div className='container mx-auto max-w-[1200px]'>
-            <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
+            <div className='rounded-2xl border border-[#071544]/[0.15] bg-white p-5 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.02)] sm:p-6 md:rounded-3xl md:p-10'>
               
               <div className='border-b border-[#071544]/[0.03] pb-10 md:pb-12'>
                 <SectionLabel>Our Collections</SectionLabel>
@@ -95,7 +95,7 @@ const LibraryPage = () => {
                         transition: { delay: index * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] } 
                       }
                     }}
-                    className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.08] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)]'
+                    className='group relative flex flex-col overflow-hidden rounded-[2rem] border border-[#071544]/[0.15] bg-white p-8 transition-all duration-500 hover:border-[#f6ab3c]/40 hover:shadow-[0_40px_80px_-16px_rgba(246,171,60,0.12)]'
                   >
                     <div className='flex items-start justify-between'>
                       <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-[#f6ab3c]/10 text-[#f6ab3c] shadow-sm transition-all duration-500 group-hover:bg-[#f6ab3c] group-hover:text-white md:h-14 md:w-14 md:rounded-2xl'>
@@ -110,12 +110,12 @@ const LibraryPage = () => {
                       <h3 className='text-lg font-semibold tracking-tight text-[#071544] transition-colors duration-300 group-hover:text-[#f6ab3c] md:text-xl'>
                         {collection.title}
                       </h3>
-                      <p className='mt-4 text-[14px] font-light leading-relaxed text-[#5a677a] md:mt-5 md:text-[15px]'>
+                      <p className='mt-4 text-[14px] font-normal leading-relaxed text-[#5a677a] md:mt-5 md:text-[15px]'>
                         {collection.description}
                       </p>
                     </div>
 
-                    <div className='mt-10 pt-6 border-t border-[#071544]/05'>
+                    <div className='mt-10 pt-6 border-t border-[#071544]/[0.15]'>
                       <div className='flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#f6ab3c]'>
                         <Bookmark className='h-3 w-3' />
                         Archived

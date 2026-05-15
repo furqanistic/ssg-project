@@ -84,7 +84,7 @@ const GovernancePage = () => {
       <section className='relative z-20 -mt-6 overflow-hidden px-4 pb-12 sm:px-5 md:-mt-8 md:px-6 md:pb-20'>
         <div className='pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(246,171,60,0.08)_1px,transparent_1px),linear-gradient(180deg,rgba(7,21,68,0.045)_1px,transparent_1px)] bg-[size:44px_44px] opacity-50' />
         <div className='mx-auto max-w-[1280px]'>
-          <div className='rounded-2xl border border-[#071544]/[0.08] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
+          <div className='rounded-2xl border border-[#071544]/[0.15] bg-white p-4 shadow-[0_24px_48px_-12px_rgba(7,21,68,0.03)] sm:p-6 md:rounded-3xl md:p-10'>
             <div className='relative mx-auto max-w-[1000px]'>
 
               <motion.div

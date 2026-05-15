@@ -142,9 +142,10 @@ const GovernancePage = () => {
         <div className='relative z-10 mx-auto max-w-[1280px]'>
           <div className="space-y-14 md:space-y-24">
             <motion.div variants={staggerContainer} initial="initial" whileInView="animate" viewport={{ once: true }}>
+              <div className='mx-auto max-w-[1000px]'>
               <div className="mb-7 flex items-center gap-3 sm:gap-5 md:mb-10 md:gap-6">
                 <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#f6ab3c]/10 text-[#f6ab3c] sm:h-12 sm:w-12'>
-                  <ShieldCheck className='h-6 w-6' />
+                  <ShieldCheck className='h-5 w-5' />
                 </div>
                 <h2 className='text-balance text-[22px] font-extrabold tracking-normal text-[#071544] md:text-[34px]'>
                   {governance.documentsTitle}
@@ -154,6 +155,7 @@ const GovernancePage = () => {
               <div className='mb-5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95]'>
                 <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#071544] px-2 text-white'>{docsCount}</span>
                 Available Documents
+              </div>
               </div>
               <div className='rounded-[1.8rem] border border-[#f6ab3c]/14 bg-[#fffdf9] p-4 sm:p-6 md:p-8'>
                 <div className='grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3'>
@@ -172,9 +174,10 @@ const GovernancePage = () => {
             </motion.div>
 
             <motion.div variants={staggerContainer} initial="initial" whileInView="animate" viewport={{ once: true }}>
+              <div className='mx-auto max-w-[1000px]'>
               <div className="mb-7 flex items-center gap-3 sm:gap-5 md:mb-10 md:gap-6">
                 <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[#f6ab3c]/10 text-[#f6ab3c] sm:h-12 sm:w-12'>
-                  <FileText className='h-6 w-6' />
+                  <FileText className='h-5 w-5' />
                 </div>
                 <h2 className='text-balance text-[22px] font-extrabold tracking-normal text-[#071544] md:text-[34px]'>
                   {governance.reportsTitle}
@@ -184,6 +187,7 @@ const GovernancePage = () => {
               <div className='mb-5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6f7f95]'>
                 <span className='inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2d4f9f] px-2 text-white'>{reportsCount}</span>
                 Published Reports
+              </div>
               </div>
               <div className='rounded-[1.8rem] border border-[#2d4f9f]/12 bg-[#f8faff] p-4 sm:p-6 md:p-8'>
                 <div className='grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3'>

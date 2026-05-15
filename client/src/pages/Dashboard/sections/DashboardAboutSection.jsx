@@ -70,6 +70,7 @@ const DashboardAboutSection = ({
   normalizeColorValue,
 }) => {
   const [activeAboutPage, setActiveAboutPage] = useState(null)
+  const [activeGovernanceTab, setActiveGovernanceTab] = useState('hero')
   const aboutPageCards = [
     {
       key: 'history',
@@ -95,6 +96,12 @@ const DashboardAboutSection = ({
       description: 'Governance structure, documents, reports, and trust sections.',
       icon: Shield,
     },
+  ]
+  const governanceTabs = [
+    { key: 'hero', label: 'Hero' },
+    { key: 'structure', label: 'Structure' },
+    { key: 'documents', label: 'Documents & Reports' },
+    { key: 'transparency', label: 'Transparency & Tax' },
   ]
 
   const renderImageField = (pageKey, label, successMessage) => (
@@ -471,219 +478,248 @@ const DashboardAboutSection = ({
         onSave={() => saveAboutUsNonPopupSection('Governance page')}
         saveIcon={saveIcon}
       >
-        <FieldGroup title='Hero Section' description='Top section content and image for the Governance page.'>
-          <input
-            value={aboutUsForm.governance.heroTitle}
-            onChange={(event) => updateAboutUsText('governance', 'heroTitle', event.target.value)}
-            className={inputClass}
-            placeholder='Governance page title'
-          />
-          <input
-            value={aboutUsForm.governance.heroSubtitle}
-            onChange={(event) => updateAboutUsText('governance', 'heroSubtitle', event.target.value)}
-            className={inputClass}
-            placeholder='Governance page subtitle'
-          />
-          <div className='md:col-span-2'>
-            {renderImageField('governance', 'Governance', 'Governance image uploaded.')}
-          </div>
-        </FieldGroup>
-
-        <FieldGroup title='Structure Section' description='Heading and intro shown before the governance structure content blocks.'>
-          <input
-            value={aboutUsForm.governance.structureTitle}
-            onChange={(event) => updateAboutUsText('governance', 'structureTitle', event.target.value)}
-            className={inputClass}
-            placeholder='Structure section title'
-          />
-          <textarea
-            value={aboutUsForm.governance.structureIntro}
-            onChange={(event) => updateAboutUsText('governance', 'structureIntro', event.target.value)}
-            className={textareaClass}
-            placeholder='Structure section intro'
-          />
-        </FieldGroup>
-
-        <div className='space-y-3'>
-          {React.createElement(dataTableComponent, {
-            title: 'Structure Blocks',
-            rows: aboutUsForm.governance.structureBlocks,
-            alwaysShowActions: true,
-            actionButtonStyle: 'labeled-compact',
-            columns: [
-              { key: 'title', label: 'Title' },
-              { key: 'body', label: 'Body' },
-            ],
-            emptyMessage: 'No structure blocks yet.',
-            onEdit: (index) =>
-              startEdit('about-governance-structure', index, aboutUsForm.governance.structureBlocks[index]),
-            onDelete: (index) =>
-              removeAboutUsArrayItem('governance', 'structureBlocks', index, {
-                title: '',
-                body: '',
-              }),
-          })}
-          <button
-            type='button'
-            onClick={() => startEdit('about-governance-structure', -1, { title: '', body: '' })}
-            className={actionButtonClass}
-          >
-            {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Structure Block
-          </button>
+        <div className='grid grid-cols-2 gap-3 md:grid-cols-4'>
+          {governanceTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type='button'
+              onClick={() => setActiveGovernanceTab(tab.key)}
+              className={`rounded-[10px] border px-3 py-2 text-left text-[12px] font-bold transition ${
+                activeGovernanceTab === tab.key
+                  ? 'border-[#001da5]/35 bg-[#001da5]/5 text-[#001da5]'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-[#001da5]/25 hover:text-[#001da5]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        <FieldGroup title='Documents and Reports Headers' description='Section labels and button text used in the governance resources area.'>
-          <input
-            value={aboutUsForm.governance.documentsTitle}
-            onChange={(event) => updateAboutUsText('governance', 'documentsTitle', event.target.value)}
-            className={inputClass}
-            placeholder='Documents section title'
-          />
-          <input
-            value={aboutUsForm.governance.reportsTitle}
-            onChange={(event) => updateAboutUsText('governance', 'reportsTitle', event.target.value)}
-            className={inputClass}
-            placeholder='Reports section title'
-          />
-          <input
-            value={aboutUsForm.governance.downloadCtaLabel}
-            onChange={(event) => updateAboutUsText('governance', 'downloadCtaLabel', event.target.value)}
-            className={inputClass}
-            placeholder='Download button label'
-          />
-        </FieldGroup>
+        {activeGovernanceTab === 'hero' ? (
+          <FieldGroup title='Hero Section' description='Top section content and image for the Governance page.'>
+            <input
+              value={aboutUsForm.governance.heroTitle}
+              onChange={(event) => updateAboutUsText('governance', 'heroTitle', event.target.value)}
+              className={inputClass}
+              placeholder='Governance page title'
+            />
+            <input
+              value={aboutUsForm.governance.heroSubtitle}
+              onChange={(event) => updateAboutUsText('governance', 'heroSubtitle', event.target.value)}
+              className={inputClass}
+              placeholder='Governance page subtitle'
+            />
+            <div className='md:col-span-2'>
+              {renderImageField('governance', 'Governance', 'Governance image uploaded.')}
+            </div>
+          </FieldGroup>
+        ) : null}
 
-        <div className='space-y-3'>
-          {React.createElement(dataTableComponent, {
-            title: 'Governance Documents',
-            rows: aboutUsForm.governance.documents,
-            alwaysShowActions: true,
-            actionButtonStyle: 'labeled-compact',
-            columns: [
-              { key: 'title', label: 'Title' },
-              { key: 'size', label: 'Size' },
-              {
-                key: 'accent',
-                label: 'Accent',
-                render: (row) => (
-                  <span className='inline-flex items-center gap-2'>
-                    <span
-                      className='h-4 w-4 rounded-full border border-gray-200'
-                      style={{ backgroundColor: normalizeColorValue(row.accent, '#f6ab3c') }}
-                    />
-                    {normalizeColorValue(row.accent, '#f6ab3c')}
-                  </span>
-                ),
-              },
-              {
-                key: 'fileUrl',
-                label: 'File',
-                render: (row) =>
-                  row.fileUrl ? (
-                    <a href={row.fileUrl} target='_blank' rel='noreferrer' className='text-[#001da5] underline'>
-                      Open file
-                    </a>
-                  ) : (
-                    '-'
-                  ),
-              },
-            ],
-            emptyMessage: 'No documents yet.',
-            onEdit: (index) =>
-              startEdit('about-governance-document', index, aboutUsForm.governance.documents[index]),
-            onDelete: (index) =>
-              removeAboutUsArrayItem('governance', 'documents', index, {
-                title: '',
-                size: '',
-                accent: '#f6ab3c',
-                fileUrl: '',
-              }),
-          })}
-          <button
-            type='button'
-            onClick={() =>
-              startEdit('about-governance-document', -1, {
-                title: '',
-                size: '',
-                accent: '#f6ab3c',
-                fileUrl: '',
-              })
-            }
-            className={actionButtonClass}
-          >
-            {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Document
-          </button>
-        </div>
+        {activeGovernanceTab === 'structure' ? (
+          <>
+            <FieldGroup title='Structure Section' description='Heading and intro shown before the governance structure content blocks.'>
+              <input
+                value={aboutUsForm.governance.structureTitle}
+                onChange={(event) => updateAboutUsText('governance', 'structureTitle', event.target.value)}
+                className={inputClass}
+                placeholder='Structure section title'
+              />
+              <textarea
+                value={aboutUsForm.governance.structureIntro}
+                onChange={(event) => updateAboutUsText('governance', 'structureIntro', event.target.value)}
+                className={textareaClass}
+                placeholder='Structure section intro'
+              />
+            </FieldGroup>
 
-        <div className='space-y-3'>
-          {React.createElement(dataTableComponent, {
-            title: 'Governance Reports',
-            rows: aboutUsForm.governance.reports,
-            alwaysShowActions: true,
-            actionButtonStyle: 'labeled-compact',
-            columns: [
-              { key: 'title', label: 'Title' },
-              { key: 'size', label: 'Size' },
-              {
-                key: 'fileUrl',
-                label: 'File',
-                render: (row) =>
-                  row.fileUrl ? (
-                    <a href={row.fileUrl} target='_blank' rel='noreferrer' className='text-[#001da5] underline'>
-                      Open file
-                    </a>
-                  ) : (
-                    '-'
-                  ),
-              },
-            ],
-            emptyMessage: 'No reports yet.',
-            onEdit: (index) =>
-              startEdit('about-governance-report', index, aboutUsForm.governance.reports[index]),
-            onDelete: (index) =>
-              removeAboutUsArrayItem('governance', 'reports', index, {
-                title: '',
-                size: '',
-                fileUrl: '',
-              }),
-          })}
-          <button
-            type='button'
-            onClick={() => startEdit('about-governance-report', -1, { title: '', size: '', fileUrl: '' })}
-            className={actionButtonClass}
-          >
-            {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Report
-          </button>
-        </div>
+            <div className='space-y-3'>
+              {React.createElement(dataTableComponent, {
+                title: 'Structure Blocks',
+                rows: aboutUsForm.governance.structureBlocks,
+                alwaysShowActions: true,
+                actionButtonStyle: 'labeled-compact',
+                columns: [
+                  { key: 'title', label: 'Title' },
+                  { key: 'body', label: 'Body' },
+                ],
+                emptyMessage: 'No structure blocks yet.',
+                onEdit: (index) =>
+                  startEdit('about-governance-structure', index, aboutUsForm.governance.structureBlocks[index]),
+                onDelete: (index) =>
+                  removeAboutUsArrayItem('governance', 'structureBlocks', index, {
+                    title: '',
+                    body: '',
+                  }),
+              })}
+              <button
+                type='button'
+                onClick={() => startEdit('about-governance-structure', -1, { title: '', body: '' })}
+                className={actionButtonClass}
+              >
+                {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Structure Block
+              </button>
+            </div>
+          </>
+        ) : null}
 
-        <FieldGroup title='Transparency and Tax Sections' description='Text blocks shown lower down on the Governance page.'>
-          <input
-            value={aboutUsForm.governance.financialTitle}
-            onChange={(event) => updateAboutUsText('governance', 'financialTitle', event.target.value)}
-            className={inputClass}
-            placeholder='Financial transparency title'
-          />
-          <textarea
-            value={aboutUsForm.governance.financialDescription}
-            onChange={(event) =>
-              updateAboutUsText('governance', 'financialDescription', event.target.value)
-            }
-            className={textareaClass}
-            placeholder='Financial transparency description'
-          />
-          <input
-            value={aboutUsForm.governance.taxTitle}
-            onChange={(event) => updateAboutUsText('governance', 'taxTitle', event.target.value)}
-            className={inputClass}
-            placeholder='Tax section title'
-          />
-          <textarea
-            value={aboutUsForm.governance.taxDescription}
-            onChange={(event) => updateAboutUsText('governance', 'taxDescription', event.target.value)}
-            className={textareaClass}
-            placeholder='Tax section description'
-          />
-        </FieldGroup>
+        {activeGovernanceTab === 'documents' ? (
+          <>
+            <FieldGroup title='Documents and Reports Headers' description='Section labels and button text used in the governance resources area.'>
+              <input
+                value={aboutUsForm.governance.documentsTitle}
+                onChange={(event) => updateAboutUsText('governance', 'documentsTitle', event.target.value)}
+                className={inputClass}
+                placeholder='Documents section title'
+              />
+              <input
+                value={aboutUsForm.governance.reportsTitle}
+                onChange={(event) => updateAboutUsText('governance', 'reportsTitle', event.target.value)}
+                className={inputClass}
+                placeholder='Reports section title'
+              />
+              <input
+                value={aboutUsForm.governance.downloadCtaLabel}
+                onChange={(event) => updateAboutUsText('governance', 'downloadCtaLabel', event.target.value)}
+                className={inputClass}
+                placeholder='Download button label'
+              />
+            </FieldGroup>
+
+            <div className='space-y-3'>
+              {React.createElement(dataTableComponent, {
+                title: 'Governance Documents',
+                rows: aboutUsForm.governance.documents,
+                alwaysShowActions: true,
+                actionButtonStyle: 'labeled-compact',
+                columns: [
+                  { key: 'title', label: 'Title' },
+                  { key: 'size', label: 'Size' },
+                  {
+                    key: 'accent',
+                    label: 'Accent',
+                    render: (row) => (
+                      <span className='inline-flex items-center gap-2'>
+                        <span
+                          className='h-4 w-4 rounded-full border border-gray-200'
+                          style={{ backgroundColor: normalizeColorValue(row.accent, '#f6ab3c') }}
+                        />
+                        {normalizeColorValue(row.accent, '#f6ab3c')}
+                      </span>
+                    ),
+                  },
+                  {
+                    key: 'fileUrl',
+                    label: 'File',
+                    render: (row) =>
+                      row.fileUrl ? (
+                        <a href={row.fileUrl} target='_blank' rel='noreferrer' className='text-[#001da5] underline'>
+                          Open file
+                        </a>
+                      ) : (
+                        '-'
+                      ),
+                  },
+                ],
+                emptyMessage: 'No documents yet.',
+                onEdit: (index) =>
+                  startEdit('about-governance-document', index, aboutUsForm.governance.documents[index]),
+                onDelete: (index) =>
+                  removeAboutUsArrayItem('governance', 'documents', index, {
+                    title: '',
+                    size: '',
+                    accent: '#f6ab3c',
+                    fileUrl: '',
+                  }),
+              })}
+              <button
+                type='button'
+                onClick={() =>
+                  startEdit('about-governance-document', -1, {
+                    title: '',
+                    size: '',
+                    accent: '#f6ab3c',
+                    fileUrl: '',
+                  })
+                }
+                className={actionButtonClass}
+              >
+                {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Document
+              </button>
+            </div>
+
+            <div className='space-y-3'>
+              {React.createElement(dataTableComponent, {
+                title: 'Governance Reports',
+                rows: aboutUsForm.governance.reports,
+                alwaysShowActions: true,
+                actionButtonStyle: 'labeled-compact',
+                columns: [
+                  { key: 'title', label: 'Title' },
+                  { key: 'size', label: 'Size' },
+                  {
+                    key: 'fileUrl',
+                    label: 'File',
+                    render: (row) =>
+                      row.fileUrl ? (
+                        <a href={row.fileUrl} target='_blank' rel='noreferrer' className='text-[#001da5] underline'>
+                          Open file
+                        </a>
+                      ) : (
+                        '-'
+                      ),
+                  },
+                ],
+                emptyMessage: 'No reports yet.',
+                onEdit: (index) =>
+                  startEdit('about-governance-report', index, aboutUsForm.governance.reports[index]),
+                onDelete: (index) =>
+                  removeAboutUsArrayItem('governance', 'reports', index, {
+                    title: '',
+                    size: '',
+                    fileUrl: '',
+                  }),
+              })}
+              <button
+                type='button'
+                onClick={() => startEdit('about-governance-report', -1, { title: '', size: '', fileUrl: '' })}
+                className={actionButtonClass}
+              >
+                {React.createElement(plusIcon, { size: 14, className: 'mr-1.5' })} Add Report
+              </button>
+            </div>
+          </>
+        ) : null}
+
+        {activeGovernanceTab === 'transparency' ? (
+          <FieldGroup title='Transparency and Tax Sections' description='Text blocks shown lower down on the Governance page.'>
+            <input
+              value={aboutUsForm.governance.financialTitle}
+              onChange={(event) => updateAboutUsText('governance', 'financialTitle', event.target.value)}
+              className={inputClass}
+              placeholder='Financial transparency title'
+            />
+            <textarea
+              value={aboutUsForm.governance.financialDescription}
+              onChange={(event) =>
+                updateAboutUsText('governance', 'financialDescription', event.target.value)
+              }
+              className={textareaClass}
+              placeholder='Financial transparency description'
+            />
+            <input
+              value={aboutUsForm.governance.taxTitle}
+              onChange={(event) => updateAboutUsText('governance', 'taxTitle', event.target.value)}
+              className={inputClass}
+              placeholder='Tax section title'
+            />
+            <textarea
+              value={aboutUsForm.governance.taxDescription}
+              onChange={(event) => updateAboutUsText('governance', 'taxDescription', event.target.value)}
+              className={textareaClass}
+              placeholder='Tax section description'
+            />
+          </FieldGroup>
+        ) : null}
       </AboutPagePanel>
       ) : null}
 

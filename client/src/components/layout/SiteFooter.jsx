@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SITE_LOCATION } from '@/config/siteLocation'
 
 const quickLinkPaths = [
   '/about-us/history',
@@ -39,7 +40,7 @@ const socialLinks = [
 const CONTACT_PHONE_DISPLAY = '+49 15567 277478'
 const CONTACT_PHONE_E164 = '+4915567277478'
 const CONTACT_WHATSAPP_URL = 'https://wa.me/4915567277478'
-const CONTACT_ADDRESS = 'Alt Biesdorf 71, 12683, Berlin'
+const CONTACT_ADDRESS = SITE_LOCATION.displayAddress
 
 const SiteFooter = () => {
   const { t } = useTranslation()

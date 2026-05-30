@@ -14,9 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
-
-const mapEmbedUrl =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3156207235006!2d13.54695737668049!3d52.50962697205845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a849415a3c34c1%3A0x38e28ffe06a0b655!2sAlt-Biesdorf%2071%2C%2012683%20Berlin%2C%20Germany!5e0!3m2!1sen!2s!4v1777803546100!5m2!1sen!2s'
+import { SITE_LOCATION } from '@/config/siteLocation'
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -102,8 +100,13 @@ const VisitorGuidePage = () => {
         addressLines:
           content?.visitors?.location?.addressLines?.length > 0
             ? content.visitors.location.addressLines
-            : content?.contact?.addressLines ?? [],
-        howToReach: content?.visitors?.location?.howToReach ?? [],
+            : content?.contact?.addressLines?.length > 0
+              ? content.contact.addressLines
+              : SITE_LOCATION.addressLines,
+        howToReach:
+          content?.visitors?.location?.howToReach?.length > 0
+            ? content.visitors.location.howToReach
+            : SITE_LOCATION.howToReach,
       },
       contact: {
         phone: content?.contact?.phone ?? '',
@@ -411,7 +414,7 @@ const VisitorGuidePage = () => {
                         <div className='aspect-video w-full overflow-hidden rounded-xl'>
                           <iframe
                             title='Visitor location map'
-                            src={mapEmbedUrl}
+                            src={SITE_LOCATION.mapEmbedUrl}
                             width='100%'
                             height='100%'
                             style={{ border: 0 }}

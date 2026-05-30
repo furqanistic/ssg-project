@@ -39,14 +39,14 @@
     },
     "location": {
       "addressLines": [
-        "Sikh Tempel Berlin",
-        "Wollankstraße 8",
-        "13187 Berlin",
+        "Singh Sabha Gurudwara Berlin",
+        "Alt-Biesdorf 71",
+        "12683 Berlin",
         "Germany"
       ],
       "howToReach": [
-        "U-Bahn: Take U8 to Pankstraße station (5 min walk)",
-        "Tram: M1 or 50 to Wollankstraße/Soldiner Straße"
+        "S-Bahn: S5/S75 to Biesdorf station",
+        "U-Bahn: U5 to Biesdorf-Süd station"
       ]
     }
   },
@@ -164,8 +164,9 @@
     "phone": "+49 30 47375651",
     "email": "info@ssgberlin.de",
     "addressLines": [
-      "Wollankstraße 8",
-      "13187 Berlin"
+      "Alt-Biesdorf 71",
+      "12683 Berlin",
+      "Germany"
     ]
   },
   "aboutUs": {

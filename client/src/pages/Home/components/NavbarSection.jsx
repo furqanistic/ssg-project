@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/authStore'
 import { useSiteContentQuery } from '@/hooks/useContent'
+import { SITE_LOCATION } from '@/config/siteLocation'
 
 const getDefaultAboutSections = (t) => [
   {
@@ -329,13 +330,13 @@ const NavbarSection = () => {
             </div>
           </div>
           <a
-            href='https://maps.google.com/?q=Alt+Biesdorf+71,+12683+Berlin'
+            href={SITE_LOCATION.mapsUrl}
             target='_blank'
             rel='noreferrer'
             className='inline-flex items-center gap-1.5 text-white/65 transition-colors duration-500 hover:text-white/90'
           >
             <MapPin className='h-3.5 w-3.5 text-white/70' />
-            <span className='hidden sm:inline'>Alt Biesdorf 71, 12683, Berlin</span>
+            <span className='hidden sm:inline'>{SITE_LOCATION.displayAddress}</span>
           </a>
         </div>
       </div>

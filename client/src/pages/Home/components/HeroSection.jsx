@@ -6,6 +6,7 @@ import { ArrowUpRight, Heart } from 'lucide-react'
 import LocationIcon from '../../../components/svg/LocationIcon'
 import PhoneIcon from '../../../components/svg/PhoneIcon'
 import WhatsAppIcon from '../../../components/svg/WhatsAppIcon'
+import { SITE_LOCATION } from '@/config/siteLocation'
 
 const contactLinks = [
   {
@@ -20,8 +21,8 @@ const contactLinks = [
     external: true,
   },
   {
-    href: 'https://www.google.com/maps/dir//Gurudwara+Sri+Guru+Singh+Sabha,+Bahnstra%C3%9Fe+2,+14513+Teltow,+Germany/@33.5506831,73.1467615,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x47a853e960dbf5bb:0x33da324c8881f212!2m2!1d13.2986853!2d52.3875629?entry=ttu&g_ep=EgoyMDI2MDQxMy4wIKXMDSoASAFQAw%3D%3D',
-    label: 'Alt Biesdorf 71, Berlin',
+    href: SITE_LOCATION.mapsUrl,
+    label: SITE_LOCATION.shortLabel,
     Icon: LocationIcon,
     external: true,
   },

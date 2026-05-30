@@ -6,10 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useSiteContentQuery } from '@/hooks/useContent'
 import SiteFooter from '@/components/layout/SiteFooter'
 import NavbarSection from '@/pages/Home/components/NavbarSection'
+import { SITE_LOCATION } from '@/config/siteLocation'
 
 const scrollTargets = ['volunteer']
-const mapEmbedUrl =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3156207235006!2d13.54695737668049!3d52.50962697205845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a849415a3c34c1%3A0x38e28ffe06a0b655!2sAlt-Biesdorf%2071%2C%2012683%20Berlin%2C%20Germany!5e0!3m2!1sen!2s!4v1777803546100!5m2!1sen!2s'
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -36,7 +35,10 @@ const ContactPage = () => {
   const contactPhone = typeof contact.phone === 'string' ? contact.phone.trim() : ''
   const contactPhoneDigits = contactPhone.replace(/[^\d+]/g, '')
   const contactEmail = typeof contact.email === 'string' ? contact.email.trim() : ''
-  const contactAddressLines = Array.isArray(contact.addressLines) ? contact.addressLines : []
+  const contactAddressLines =
+    Array.isArray(contact.addressLines) && contact.addressLines.length > 0
+      ? contact.addressLines
+      : [SITE_LOCATION.displayAddress]
 
   const opportunities = t('contact.opportunities', { returnObjects: true })
 
@@ -123,7 +125,7 @@ const ContactPage = () => {
                   icon: MapPin, 
                   label: t('contact.address'), 
                   value: contactAddressLines.join(', '),
-                  actions: [{ label: 'Get Directions', href: 'https://maps.google.com/?q=Alt-Biesdorf+71+12683+Berlin', external: true }]
+                  actions: [{ label: 'Get Directions', href: SITE_LOCATION.mapsUrl, external: true }]
                 }
               ].map((item, index) => (
                 <motion.article
@@ -208,16 +210,12 @@ const ContactPage = () => {
                     <div>
                       <h3 className='text-xl font-semibold text-[#071544]'>{t('contact.howToReach')}</h3>
                       <div className='mt-4 space-y-3 text-[15px] font-normal text-[#5a677a] md:text-lg'>
-                        <p className='flex items-center gap-3'>
-                          <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
-                          <span className='font-bold uppercase tracking-widest text-[11px] text-[#071544]/40 mr-2'>{t('contact.ubahn')}:</span> 
-                          U8 to Pankstraße
-                        </p>
-                        <p className='flex items-center gap-3'>
-                          <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
-                          <span className='font-bold uppercase tracking-widest text-[11px] text-[#071544]/40 mr-2'>{t('contact.tram')}:</span> 
-                          Alt Biesdorf 71 (S5/S75 Biesdorf)
-                        </p>
+                        {SITE_LOCATION.howToReach.map((instruction) => (
+                          <p key={instruction} className='flex items-center gap-3'>
+                            <span className='h-1.5 w-1.5 rounded-full bg-[#f6ab3c]' />
+                            {instruction}
+                          </p>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -233,7 +231,7 @@ const ContactPage = () => {
                 <div className='h-[400px] w-full overflow-hidden rounded-[2rem] md:h-[500px]'>
                   <iframe
                     title='Gurudwara location map'
-                    src={mapEmbedUrl}
+                    src={SITE_LOCATION.mapEmbedUrl}
                     width='100%'
                     height='100%'
                     style={{ border: 0, filter: 'grayscale(0.2) contrast(1.1)' }}
